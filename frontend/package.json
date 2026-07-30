@@ -1,0 +1,35 @@
+{
+  "name": "walksafe-ai-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "copy-data": "mkdir -p public/data && cp ../data/summary.json ../data/intersections.geojson public/data/ && (cp ../data/imagery_scores.json public/data/ 2>/dev/null || true)",
+    "predev": "npm run copy-data",
+    "prebuild": "npm run copy-data",
+    "dev": "next dev",
+    "build": "next build",
+    "build:static": "NEXT_OUTPUT=export next build",
+    "build:pages": "NEXT_OUTPUT=export NEXT_PUBLIC_BASE_PATH=/walksafe-ai-dashboard next build",
+    "preview:static": "npm run build:static && npx serve out",
+    "preview:pages": "npm run build:pages && rm -rf .preview && mkdir -p .preview/walksafe-ai-dashboard && cp -r out/. .preview/walksafe-ai-dashboard/ && echo '\\nOpen http://localhost:3000/walksafe-ai-dashboard/\\n' && npx serve .preview",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "maplibre-gl": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.4.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.0"
+  }
+}
