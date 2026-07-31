@@ -327,6 +327,15 @@ for zid in sorted(geometries):
     has_data = any(x is not None for x in (frow, crow, prow))
     matched_any += has_data
 
+    # Zones with no analysis data at all lie outside Bogotá D.C. — they are
+    # greater-metropolitan-area ZATs that the 2019 boundary file carries but no
+    # analysis covers. Dropping them frames the map on the city rather than
+    # ringing it with permanently grey polygons. The per-variable gates
+    # (has_features / has_covariates / has_pop60) still apply WITHIN the city,
+    # where missingness is real and must stay visible.
+    if not has_data:
+        continue
+
     props = {
         # --- generic analysis-unit identity (shared with the point schema) ---
         "unit_id": zid,
@@ -445,14 +454,19 @@ geojson = {
         "city": "bogota",
         "unit_type": "polygon",
         "unit_label": "ZAT (Zona de Analisis de Transporte)",
+        "extent": (
+            "Bogota D.C. Zones with no analysis data in any table lie outside "
+            "the city, in the greater metropolitan area, and are not rendered."
+        ),
         "description": (
-            "Bogota transport analysis zones, 2019 vintage, joined to cluster "
+            "Bogota D.C. transport analysis zones, 2019 vintage, joined to cluster "
             "profiles from a DINO/STRIDE extraction of 27 built-environment "
             "features over ~312,000 Google Street View prediction points, and "
             "to 2015-2019 crash counts."
         ),
         "caveat": (
-            "ECOLOGICAL. These are area-level associations across ZAT zones, "
+            "ECOLOGICAL. These are area-level associations across Bogota D.C. "
+            "ZAT zones, "
             "not individual risk. A zone's colour describes the zone, not the "
             "people in it."
         ),
@@ -481,12 +495,14 @@ geojson = {
         "generated": datetime.now().isoformat(timespec="seconds"),
         "join": {
             "key": "id_zat -> ZAT",
-            "zones_total": n_geom,
+            "zones_total": len(features),
+            "zones_in_boundary_file": n_geom,
+            "zones_outside_city_dropped": n_geom - len(features),
             "with_features": matched_feat,
             "with_covariates": matched_covar,
             "with_pop60": matched_pop,
             "with_any_data": matched_any,
-            "with_no_data": n_geom - matched_any,
+            "with_no_data": n_geom - matched_any,   # all outside the city, dropped
         },
         "cluster_rr": {
             "primary_model": PRIMARY_MODEL,

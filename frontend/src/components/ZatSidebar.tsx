@@ -194,8 +194,9 @@ export default function ZatSidebar({
             onClick={() => update("showNoData", !filters.showNoData)}
           />
           <p className="text-[10px] text-gray-400 mt-2 leading-snug">
-            Applies to whichever variable the map is showing: 301 zones have no
-            profile, 358 no crash data, 290 no population.
+            Applies to whichever variable the map is showing. Within Bogot&aacute;
+            D.C., 39 zones have no cluster profile, 96 no crash data and 28 no
+            population.
           </p>
         </div>
 
@@ -241,7 +242,7 @@ export default function ZatSidebar({
           )}
           <p className="text-[10px] text-gray-400 mt-2 leading-snug">
             Ranked among the 783 zones with crash data. Density, not a rate per
-            person — it does not adjust for how many people walk there.
+            person &mdash; it does not adjust for how many people walk there.
           </p>
         </div>
       </div>
