@@ -62,6 +62,15 @@ export default function AboutPage() {
                   parks, and school locations.
                 </span>
               </li>
+              <li className="flex items-start gap-2">
+                <span className="text-walksafe-green font-bold mt-0.5">-</span>
+                <span>
+                  <strong>City of Bogot&aacute; open data:</strong> street
+                  segments, transport analysis zones, crash records and
+                  built-environment attributes. Processing by Universidad de
+                  los Andes under subcontract to the WalkSafe-AI project.
+                </span>
+              </li>
             </ul>
           </section>
 

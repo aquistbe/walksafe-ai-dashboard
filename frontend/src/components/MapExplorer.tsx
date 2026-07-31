@@ -464,7 +464,12 @@ export default function MapExplorer({
         )}
       </div>
 
-      <Legend dataset={dataset} layerMode={layerMode} counts={legendCounts} />
+      <Legend
+        dataset={dataset}
+        layerMode={layerMode}
+        counts={legendCounts}
+        attribution={dataset.attribution}
+      />
     </div>
   );
 }

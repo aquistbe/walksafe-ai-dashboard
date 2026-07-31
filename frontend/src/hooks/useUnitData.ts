@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import type { UnitCollection, UnitFeature, SummaryData } from "@/lib/types";
 import { API_BASE_URL, BASE_PATH } from "@/lib/constants";
-import type { DatasetConfig } from "@/lib/cities";
+import { resolveDataUrl, type DatasetConfig } from "@/lib/cities";
 
 interface UseUnitDataReturn {
   collection: UnitCollection | null;
@@ -67,9 +67,13 @@ export function useUnitData(dataset: DatasetConfig): UseUnitDataReturn {
           return fetch(staticPath, { signal: controller.signal });
         };
 
+        // BASE_PATH only applies to same-origin paths. A remote URL (R2) is
+        // absolute and must be left alone — prefixing it would produce
+        // "/walksafe-ai-dashboard/https://...".
+        const { url, remote } = resolveDataUrl(dataset);
         const geoRes = await fetchWithFallback(
           dataset.apiPath,
-          `${BASE_PATH}${dataset.dataUrl}`
+          remote ? url : `${BASE_PATH}${url}`
         );
         if (!geoRes.ok) {
           throw new Error(

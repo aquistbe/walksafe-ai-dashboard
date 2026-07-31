@@ -35,6 +35,38 @@ export default function DataPage() {
             Data download links will be available here.
           </p>
         </div>
+
+        {/* Attribution is visible rather than buried: the dashboard
+            republishes municipal open data, so the sources are credited on
+            the page that offers it for download. */}
+        <section className="mt-8 bg-white rounded-xl border border-gray-200 p-6">
+          <h2 className="text-sm font-semibold text-walksafe-text mb-3">
+            Sources and attribution
+          </h2>
+          <dl className="space-y-3 text-sm">
+            <div>
+              <dt className="font-semibold text-walksafe-text">Philadelphia</dt>
+              <dd className="text-walksafe-text-muted mt-0.5 leading-relaxed">
+                PennDOT PCDS crash records 2015&ndash;2024; DVRPC and PennDOT
+                traffic volumes; City of Philadelphia GIS for street
+                centerlines, nodes, the High Injury Network, schools and parks.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-walksafe-text">Bogot&aacute;</dt>
+              <dd className="text-walksafe-text-muted mt-0.5 leading-relaxed">
+                Source: City of Bogot&aacute; open data; processing by
+                Universidad de los Andes.
+              </dd>
+            </div>
+          </dl>
+          <p className="text-xs text-gray-500 mt-4 leading-relaxed">
+            Derived layers are produced by the WalkSafe-AI pipeline in this
+            repository. Risk estimates for different cities and analysis units
+            are not numerically comparable &mdash; each uses its own crash
+            definition, exposure measure and model.
+          </p>
+        </section>
       </div>
     </div>
   );

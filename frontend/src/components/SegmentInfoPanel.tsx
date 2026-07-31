@@ -10,6 +10,12 @@ interface SegmentInfoPanelProps {
   feature: SegmentFeature | null;
   metadata: SegmentCollection["metadata"] | null;
   onClose: () => void;
+  /** "mi" for Philadelphia, "km" for Bogotá. */
+  distanceUnit?: "mi" | "km";
+  /** Philadelphia counts KSI; Bogotá counts all pedestrian-involved crashes.
+   *  Calling both "KSI" would assert an equivalence that does not hold. */
+  outcomeLabel?: string;
+  attribution?: string;
 }
 
 const CLASS_LABEL: Record<number, string> = {
@@ -25,7 +31,15 @@ export default function SegmentInfoPanel({
   feature,
   metadata,
   onClose,
+  distanceUnit = "mi",
+  outcomeLabel = "Ped KSI",
+  attribution,
 }: SegmentInfoPanelProps) {
+  const U = distanceUnit;
+  const dist = (p: SegmentFeature["properties"]) =>
+    U === "km" ? p.length_km : p.length_mi;
+  const perDist = (p: SegmentFeature["properties"]) =>
+    U === "km" ? p.mu_per_km : p.mu_per_mile;
   const [shareLabel, setShareLabel] = useState("Share");
 
   const handleExport = useCallback(() => {
@@ -56,7 +70,11 @@ export default function SegmentInfoPanel({
 
   if (!feature) return null;
   const p = feature.properties;
-  const ksi = p.ped_ksi_seg ?? 0;
+  // Philadelphia emits ped_ksi_seg (KSI); Bogotá emits ped_crashes_seg (all
+  // pedestrian-involved). Different quantities, hence the label prop.
+  const outcome = p.ped_ksi_seg ?? p.ped_crashes_seg ?? 0;
+  const len = dist(p);
+  const perU = perDist(p);
 
   return (
     <div className="absolute right-4 top-4 bottom-4 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden z-20">
@@ -69,7 +87,7 @@ export default function SegmentInfoPanel({
             </h3>
             <p className="text-[11px] text-gray-400 mt-0.5">
               {CLASS_LABEL[p.class] ?? `Class ${p.class}`} ·{" "}
-              {n2(p.length_mi)} mi block
+              {n2(len)} {U} block
             </p>
           </div>
           <button
@@ -104,31 +122,29 @@ export default function SegmentInfoPanel({
         {/* The non-comparability warning comes before any number. */}
         <div className="mx-5 mt-3 mb-1 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
           <p className="text-[11px] text-amber-900 leading-snug">
-            <span className="font-semibold">Mid-block only.</span> This segment
-            and the intersections at its ends split the crash record between
-            them. These numbers are not on the same scale as intersection risk
-            and must not be added to it.
+            {metadata?.caveat ??
+              "This layer's numbers are not on the same scale as the other layers' and must not be added to them."}
           </p>
         </div>
 
-        <Section title="Mid-block crashes, 2015–2024">
+        <Section title="Observed crashes">
           <div className="grid grid-cols-2 gap-2 mb-2">
-            <StatCard label="Ped KSI" value={n0(ksi)} sublabel="killed or serious" />
+            <StatCard label={outcomeLabel} value={n0(outcome)} />
             <StatCard
-              label="Per mile"
-              value={
-                p.exposure_mi && p.exposure_mi > 0
-                  ? (ksi / p.exposure_mi).toFixed(2)
-                  : "—"
-              }
+              label={`Per ${U}`}
+              value={len && len > 0 ? (outcome / len).toFixed(2) : "—"}
             />
           </div>
-          <DetailRow label="All pedestrian crashes" value={n0(p.ped_any_seg ?? 0)} />
-          <DetailRow
-            label="Deaths"
-            value={n0(p.ped_deaths_seg ?? 0)}
-            highlight={(p.ped_deaths_seg ?? 0) > 0}
-          />
+          {p.ped_any_seg !== undefined && (
+            <DetailRow label="All pedestrian crashes" value={n0(p.ped_any_seg)} />
+          )}
+          {p.ped_deaths_seg !== undefined && (
+            <DetailRow
+              label="Deaths"
+              value={n0(p.ped_deaths_seg)}
+              highlight={(p.ped_deaths_seg ?? 0) > 0}
+            />
+          )}
           {p.ksi_corridor !== undefined && (
             <DetailRow
               label="On this corridor"
@@ -143,13 +159,16 @@ export default function SegmentInfoPanel({
             <>
               <div className="grid grid-cols-2 gap-2 mb-2">
                 <StatCard
-                  label="Expected KSI/mi"
-                  value={n2(p.mu_per_mile)}
-                  sublabel="10-year, this road type"
+                  label={`Expected per ${U}`}
+                  value={n2(perU)}
+                  sublabel="this road type"
                 />
-                <StatCard label="Exposure" value={`${n2(p.exposure_mi)} mi`} />
+                <StatCard
+                  label="Exposure"
+                  value={`${n2(p.exposure_mi ?? len)} ${U}`}
+                />
               </div>
-              <DetailRow label="Rank by expected KSI/mi" value={`#${n0(p.rank_seg_spf)}`} />
+              <DetailRow label={`Rank by expected per ${U}`} value={`#${n0(p.rank_seg_spf)}`} />
 
               {/* Estimate and its weight are shown together, always. A shrunk
                   estimate without its weight invites reading a model prediction
@@ -160,16 +179,17 @@ export default function SegmentInfoPanel({
                   value={n2(p.eb_ksi_seg)}
                   sublabel={`${Math.round((1 - (p.eb_weight_seg ?? 1)) * 100)}% observed`}
                 />
-                <DetailRow
-                  label="Empirical Bayes (corridor)"
-                  value={n2(p.eb_ksi_corr)}
-                  sublabel={`${Math.round((1 - (p.eb_weight_corr ?? 1)) * 100)}% observed`}
-                />
+                {p.eb_ksi_corr !== undefined && (
+                  <DetailRow
+                    label="Empirical Bayes (corridor)"
+                    value={n2(p.eb_ksi_corr)}
+                    sublabel={`${Math.round((1 - (p.eb_weight_corr ?? 1)) * 100)}% observed`}
+                  />
+                )}
                 <p className="text-[10px] text-gray-400 mt-2 leading-snug">
-                  At this fine a unit an empirical Bayes estimate is almost
-                  entirely the model. The corridor figure is the one worth
-                  ranking on — across the streets that carry crashes, observed
-                  data supplies about 56% of it against 17% at the segment.
+                  An empirical Bayes estimate blends the model with what was
+                  observed. The weight beside each figure says how much came
+                  from the data — read the estimate and its weight together.
                 </p>
               </div>
             </>
@@ -229,6 +249,11 @@ export default function SegmentInfoPanel({
           {shareLabel}
         </button>
       </div>
+      {attribution && (
+        <div className="px-5 py-2 border-t border-gray-100 bg-gray-50 shrink-0">
+          <p className="text-[9px] text-gray-400 leading-snug">{attribution}</p>
+        </div>
+      )}
     </div>
   );
 }

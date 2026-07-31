@@ -22,7 +22,8 @@ export type CityId = "philadelphia" | "bogota";
 export type DatasetId =
   | "philadelphia-intersections"
   | "philadelphia-segments"
-  | "bogota-zats";
+  | "bogota-zats"
+  | "bogota-segments";
 
 /** One entry in the map's layer-mode toolbar. */
 export interface LayerModeConfig {
@@ -63,8 +64,26 @@ export interface DatasetConfig {
   unitLabel: string;
   unitLabelPlural: string;
 
-  /** Static data path, relative to BASE_PATH. */
+  /**
+   * Data location. A relative path is served from the site's own origin and
+   * gets BASE_PATH prefixed. An absolute http(s) URL is used as-is — the
+   * Bogotá segment layer is ~55 MB, over Cloudflare Workers' 25 MiB per-asset
+   * limit, so it lives in R2 and is fetched cross-origin.
+   */
   dataUrl: string;
+  /**
+   * Object key under NEXT_PUBLIC_R2_BASE_URL. When that env var is set the
+   * dataset loads from R2; otherwise it falls back to `dataUrl` so local
+   * development still reads from public/data.
+   */
+  remoteKey?: string;
+  /** Distance unit the numbers are expressed in. */
+  distanceUnit?: "mi" | "km";
+  /** Label for the crash outcome — these differ per city and are not the same
+   *  quantity, so the UI must not call them all "KSI". */
+  outcomeLabel?: string;
+  /** Shown in the legend footer. Required where we republish open data. */
+  attribution?: string;
   /** Companion summary file, or null when the collection carries its own. */
   summaryUrl: string | null;
   /** API route used when NEXT_PUBLIC_API_URL is set, or null when none exists. */
@@ -205,6 +224,54 @@ const BOGOTA_ZATS: DatasetConfig = {
     "carry more pedestrians and traffic.",
 };
 
+const BOGOTA_SEGMENTS: DatasetConfig = {
+  id: "bogota-segments",
+  label: "Segments",
+  unitType: "line",
+  idField: "seg_id",
+  nameField: "unit_name",
+  unitLabel: "street segment",
+  unitLabelPlural: "street segments",
+  // ~55 MB, over Cloudflare Workers' 25 MiB per-asset cap, so it is served
+  // from R2. The relative path is the local-development fallback.
+  dataUrl: "/data/bogota_segments.geojson",
+  remoteKey: "bogota_segments.geojson",
+  distanceUnit: "km",
+  outcomeLabel: "pedestrian crashes",
+  attribution:
+    "Source: City of Bogotá open data; processing by Universidad de los Andes.",
+  summaryUrl: null,
+  apiPath: null,
+  layerModes: [
+    {
+      id: "spf",
+      label: "Expected/km",
+      title: "Colour by expected pedestrian crashes per km",
+      icon: "road",
+      gateField: "has_model",
+    },
+    {
+      id: "observed",
+      label: "Observed",
+      title: "Colour by observed pedestrian-involved crashes",
+      icon: "crosshair",
+      gateField: "has_crashes",
+    },
+  ],
+  defaultLayerMode: "spf",
+  filterKind: "philadelphia-segment",
+  measureLabel:
+    "Expected pedestrian-involved crashes per km (length as offset)",
+  mapCaveat:
+    "Pedestrian-INVOLVED crashes, not killed or seriously injured, and " +
+    "exposure includes junctions. Not comparable with the Philadelphia " +
+    "segment layer or with the ZAT layer.",
+  notComparableTo:
+    "A different outcome (all pedestrian-involved crashes, not KSI), a " +
+    "different exposure (junctions included) and a different model from the " +
+    "Philadelphia segment layer.",
+};
+
 export const CITY_CONFIGS: Record<CityId, CityConfig> = {
   philadelphia: {
     id: "philadelphia",
@@ -248,7 +315,9 @@ export const CITY_CONFIGS: Record<CityId, CityConfig> = {
       "Published DINO/STRIDE extraction over ~312,000 Google Street View " +
       "prediction points, 27 built-environment features, 840 ZATs, and " +
       "2015–2019 crash models.",
-    datasets: [BOGOTA_ZATS],
+    // ZATs first and default: nobody should load the 55 MB segment file by
+    // accident.
+    datasets: [BOGOTA_ZATS, BOGOTA_SEGMENTS],
     defaultDatasetId: "bogota-zats",
   },
 };
@@ -261,7 +330,25 @@ const DATASETS: Record<DatasetId, DatasetConfig> = {
   "philadelphia-intersections": PHILLY_INTERSECTIONS,
   "philadelphia-segments": PHILLY_SEGMENTS,
   "bogota-zats": BOGOTA_ZATS,
+  "bogota-segments": BOGOTA_SEGMENTS,
 };
+
+/**
+ * Where a dataset's data actually lives.
+ *
+ * Absolute URLs are used as-is. A dataset with a `remoteKey` resolves against
+ * NEXT_PUBLIC_R2_BASE_URL when that is set, so production reads the large
+ * artefacts from R2 while local development keeps reading public/data.
+ * Everything else is same-origin and gets BASE_PATH prefixed by the caller.
+ */
+export function resolveDataUrl(ds: DatasetConfig): { url: string; remote: boolean } {
+  if (/^https?:\/\//i.test(ds.dataUrl)) return { url: ds.dataUrl, remote: true };
+  const base = process.env.NEXT_PUBLIC_R2_BASE_URL;
+  if (ds.remoteKey && base) {
+    return { url: `${base.replace(/\/$/, "")}/${ds.remoteKey}`, remote: true };
+  }
+  return { url: ds.dataUrl, remote: false };
+}
 
 export function getCityConfig(id: string | null | undefined): CityConfig {
   if (id && id in CITY_CONFIGS) return CITY_CONFIGS[id as CityId];

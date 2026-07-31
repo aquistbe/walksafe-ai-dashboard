@@ -120,7 +120,8 @@ export default function HomePage() {
         .filter((f): f is SegmentFeature => isSegmentFeature(f))
         .sort(
           (a, b) =>
-            (b.properties.ped_ksi_seg ?? 0) - (a.properties.ped_ksi_seg ?? 0)
+            ((b.properties.ped_ksi_seg ?? b.properties.ped_crashes_seg ?? 0) -
+             (a.properties.ped_ksi_seg ?? a.properties.ped_crashes_seg ?? 0))
         )
         .slice(0, 50);
     }
@@ -203,6 +204,8 @@ export default function HomePage() {
           filteredCount={filteredFeatures.length}
           topSegments={topUnits as SegmentFeature[]}
           onSelectUnit={handleSelect}
+          showAadtFilter={dataset.id !== "bogota-segments"}
+          outcomeLabel={dataset.outcomeLabel ?? "KSI"}
           caveat={segMetadata?.caveat ?? dataset.mapCaveat}
           collapsed={sidebarCollapsed}
           onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
@@ -262,6 +265,9 @@ export default function HomePage() {
             feature={selectedFeature}
             metadata={segMetadata}
             onClose={() => handleSelect(null)}
+            distanceUnit={dataset.distanceUnit ?? "mi"}
+            outcomeLabel={dataset.outcomeLabel ?? "Ped KSI"}
+            attribution={dataset.attribution}
           />
         )}
         {selectedFeature && isIntersectionFeature(selectedFeature) && (
@@ -289,30 +295,59 @@ export default function HomePage() {
 
               {segMetadata ? (
                 <>
+                  {/* Two segment layers with different metadata shapes:
+                      Philadelphia carries the mid-block/intersection crash
+                      split, Bogota carries plain coverage counts. Neither is
+                      assumed present. */}
+                  {segMetadata.crash_accounting && (
+                    <>
+                      <Divider />
+                      <div>
+                        <span className="text-gray-500">Mid-block KSI:</span>{" "}
+                        <span className="font-semibold text-walksafe-red">
+                          {segMetadata.crash_accounting.segment_on_walkable_network.toLocaleString()}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                  {segMetadata.coverage && (
+                    <>
+                      <Divider />
+                      <div>
+                        <span className="text-gray-500">Pedestrian crashes:</span>{" "}
+                        <span className="font-semibold text-walksafe-red">
+                          {segMetadata.coverage.pedestrian_crashes.toLocaleString()}
+                        </span>
+                      </div>
+                      <Divider />
+                      <div>
+                        <span className="text-gray-500">With a crash:</span>{" "}
+                        <span className="font-semibold text-walksafe-text">
+                          {segMetadata.coverage.with_crashes.toLocaleString()}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                  {segMetadata.exposure && (
+                    <>
+                      <Divider />
+                      <div>
+                        <span className="text-gray-500">Exposure:</span>{" "}
+                        <span className="font-semibold text-walksafe-text">
+                          {segMetadata.exposure.exposure_mi.toLocaleString()} mi
+                        </span>{" "}
+                        <span className="text-gray-500">
+                          of {segMetadata.exposure.network_mi.toLocaleString()}
+                        </span>
+                      </div>
+                    </>
+                  )}
                   <Divider />
-                  <div>
-                    <span className="text-gray-500">Mid-block KSI:</span>{" "}
-                    <span className="font-semibold text-walksafe-red">
-                      {segMetadata.crash_accounting.segment_on_walkable_network.toLocaleString()}
-                    </span>
-                  </div>
-                  <Divider />
-                  <div>
-                    <span className="text-gray-500">Exposure:</span>{" "}
-                    <span className="font-semibold text-walksafe-text">
-                      {segMetadata.exposure.exposure_mi.toLocaleString()} mi
-                    </span>{" "}
-                    <span className="text-gray-500">
-                      of {segMetadata.exposure.network_mi.toLocaleString()}
-                    </span>
-                  </div>
-                  <Divider />
-                  {/* The whole point of this layer, stated where it cannot be
-                      missed: intersections alone saw about half the burden. */}
                   <div className="text-gray-400">
-                    Crashes {segMetadata.crash_window} | mid-block only, split
-                    from the {segMetadata.crash_accounting.intersection_layer} at
-                    intersections
+                    Crashes {segMetadata.crash_window}
+                    {segMetadata.crash_accounting
+                      ? ` | mid-block only, split from the ${segMetadata.crash_accounting.intersection_layer} at intersections`
+                      : " | pedestrian-involved, not KSI"}
                   </div>
                 </>
               ) : zatMetadata ? (

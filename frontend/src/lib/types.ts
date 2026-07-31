@@ -361,6 +361,19 @@ export interface SegmentProperties {
   length_mi?: number;
   /** Length outside the 25 m intersection influence zone. The SPF offset. */
   exposure_mi?: number;
+  /** Bogotá reports kilometres. Exposure equals length there — junctions are
+   *  included, unlike Philadelphia — so no separate exposure_km is emitted. */
+  length_km?: number;
+  mu_per_km?: number;
+  /** Bogotá's outcome: pedestrian-INVOLVED crashes, not KSI. */
+  ped_crashes_seg?: number;
+  width_m?: number;
+  lanes?: number;
+  speed?: number;
+  has_signal?: boolean;
+  ses_cat?: number;
+  /** Bogotá gate: SES joined for this segment. */
+  has_ses?: boolean;
 
   ped_ksi_seg?: number;
   ped_any_seg?: number;
@@ -414,7 +427,8 @@ export interface SegmentCollection {
     caveat: string;
     not_comparable_to: Record<string, string>;
     crash_window: string;
-    crash_accounting: {
+    /** Present on the Philadelphia segment layer only. */
+    crash_accounting?: {
       geocoded_ped_ksi: number;
       intersection_layer: number;
       intersection_within_25m: number;
@@ -426,13 +440,24 @@ export interface SegmentCollection {
       segment_on_expressway_ramp_private: number;
       rule: string;
     };
-    exposure: {
+    exposure?: {
       definition: string;
       network_mi: number;
       exposure_mi: number;
       zero_exposure_segments: number;
     };
-    spf: Record<string, string>;
+    /** Present on the Bogotá segment layer only. */
+    coverage?: {
+      segments: number;
+      with_model: number;
+      with_crashes: number;
+      pedestrian_crashes: number;
+    };
+    distance_unit?: "mi" | "km";
+    attribution?: string;
+    taxonomy_note?: string;
+    geometry_note?: string;
+    spf?: Record<string, string>;
     coordinate_system: string;
     coordinate_decimals: number;
     generated: string;

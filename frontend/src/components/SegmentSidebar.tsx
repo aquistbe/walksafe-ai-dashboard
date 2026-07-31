@@ -18,6 +18,9 @@ interface SegmentSidebarProps {
   topSegments: SegmentFeature[];
   onSelectUnit: (id: number) => void;
   caveat: string | null;
+  /** Bogotá has no traffic-volume attribute, so the chip is hidden there. */
+  showAadtFilter?: boolean;
+  outcomeLabel?: string;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
 }
@@ -30,6 +33,8 @@ export default function SegmentSidebar({
   topSegments,
   onSelectUnit,
   caveat,
+  showAadtFilter = true,
+  outcomeLabel = "KSI",
   collapsed = false,
   onToggleCollapse,
 }: SegmentSidebarProps) {
@@ -165,21 +170,25 @@ export default function SegmentSidebar({
               active={filters.withCrashesOnly}
               onClick={() => update("withCrashesOnly", !filters.withCrashesOnly)}
             />
-            <FilterChip
-              label="Measured traffic"
-              active={filters.measuredAadtOnly}
-              onClick={() => update("measuredAadtOnly", !filters.measuredAadtOnly)}
-            />
+            {showAadtFilter && (
+              <FilterChip
+                label="Measured traffic"
+                active={filters.measuredAadtOnly}
+                onClick={() => update("measuredAadtOnly", !filters.measuredAadtOnly)}
+              />
+            )}
           </div>
-          <p className="text-[10px] text-gray-400 mt-2 leading-snug">
-            Only a third of segments carry a genuine traffic count — the rest
-            hold PennDOT&rsquo;s nominal 300 veh/day placeholder.
-          </p>
+          {showAadtFilter && (
+            <p className="text-[10px] text-gray-400 mt-2 leading-snug">
+              Only a third of segments carry a genuine traffic count — the rest
+              hold PennDOT&rsquo;s nominal 300 veh/day placeholder.
+            </p>
+          )}
         </div>
 
         <div className="px-4 py-3">
           <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-            Most mid-block KSI
+            Most {outcomeLabel}
           </h3>
           {topSegments.length === 0 ? (
             <p className="text-[11px] text-gray-400">No segments match the filters.</p>
@@ -200,7 +209,7 @@ export default function SegmentSidebar({
                       {p.unit_name}
                     </span>
                     <span className="text-[10px] text-walksafe-red font-semibold tabular-nums shrink-0">
-                      {p.ped_ksi_seg ?? 0} KSI
+                      {p.ped_ksi_seg ?? p.ped_crashes_seg ?? 0}
                     </span>
                   </button>
                 );
@@ -208,7 +217,7 @@ export default function SegmentSidebar({
             </div>
           )}
           <p className="text-[10px] text-gray-400 mt-2 leading-snug">
-            Observed mid-block killed or seriously injured, 2015&ndash;2024.
+            Observed {outcomeLabel}.
           </p>
         </div>
       </div>

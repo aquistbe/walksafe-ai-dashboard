@@ -14,6 +14,7 @@ import {
   CASUALTY_DENSITY_RAMP,
   PCT60_BREAKS,
   PCT60_RAMP,
+  BOG_SPF_BREAKS,
 } from "@/lib/constants";
 import {
   SEG_SPF_BREAKS, SEG_SPF_RAMP,
@@ -27,15 +28,68 @@ interface LegendProps {
   dataset: DatasetConfig;
   layerMode: string;
   counts: LegendCounts;
+  /** Shown as a footer. The dashboard republishes municipal open data, so
+   *  the credit belongs on the map, not only on an About page. */
+  attribution?: string | null;
 }
 
-export default function Legend({ dataset, layerMode, counts }: LegendProps) {
+export default function Legend({
+  dataset,
+  layerMode,
+  counts,
+  attribution,
+}: LegendProps) {
+  const isBogotaSegments = dataset.id === "bogota-segments";
   return (
     <div className="absolute bottom-14 left-3 z-10 bg-white/95 backdrop-blur-sm rounded-lg shadow-md border border-gray-200 p-3 min-w-[190px] max-w-[250px]">
       {dataset.unitType === "polygon" && renderZatLegend(layerMode, counts)}
-      {dataset.unitType === "line" && renderSegmentLegend(layerMode, counts)}
+      {dataset.unitType === "line" &&
+        (isBogotaSegments
+          ? renderBogotaSegmentLegend(layerMode, counts)
+          : renderSegmentLegend(layerMode, counts))}
       {dataset.unitType === "point" && renderIntersectionLegend(layerMode, counts)}
+      {attribution && (
+        <p className="text-[9px] text-gray-400 mt-2 pt-2 border-t border-gray-100 leading-snug">
+          {attribution}
+        </p>
+      )}
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Bogota — street segments
+// ---------------------------------------------------------------------------
+
+function renderBogotaSegmentLegend(layerMode: string, counts: LegendCounts) {
+  const total = counts.total ?? 0;
+  if (layerMode === "observed") {
+    return (
+      <>
+        <Title>Pedestrian crashes</Title>
+        <Ramp ramp={SEG_OBSERVED_RAMP} breaks={SEG_OBSERVED_BREAKS} />
+        <Coverage have={counts.hasCrashes ?? 0} total={total} what="a recorded crash" />
+        <NoDataRow label="None recorded" count={counts.noCrashes} />
+        <Foot>
+          Pedestrian-INVOLVED crashes, not killed-or-seriously-injured. A
+          different outcome from the Philadelphia layer &mdash; the two numbers
+          are not comparable.
+        </Foot>
+      </>
+    );
+  }
+  return (
+    <>
+      <Title>Expected crashes per km</Title>
+      <Ramp ramp={SEG_SPF_RAMP} breaks={BOG_SPF_BREAKS} />
+      <Coverage have={counts.hasModel ?? 0} total={total} what="a model estimate" />
+      <NoDataRow label="Outside the model" count={counts.noModel} />
+      <Foot>
+        Length as an offset, per km. NOT comparable with Philadelphia segment
+        risk or with the ZAT layer &mdash; different crash definition, exposure
+        and model.
+      </Foot>
+    </>
   );
 }
 
