@@ -1,6 +1,10 @@
 # WalkSafe-AI Dashboard
 
+**Live: https://aquistbe.github.io/walksafe-ai-dashboard/**
+
 Interactive web platform for exploring pedestrian safety data, viewing the Senior Pedestrian Mobility Index (SPMI), testing interventions, and supporting community decision-making about pedestrian infrastructure. Part of the WalkSafe-AI R01 project (NIA) and integrated with the PedAudit neurosymbolic benchmark.
+
+The site rebuilds automatically on any push to `main` that touches `frontend/` or `data/`. To publish new imagery scores, rerun `scoring/join_scores.py --write-geojson`, then commit and push `data/`.
 
 **Phase 0 prototype** — built on empirical Bayes analysis of PennDOT crash data (2015–2024) for 16,984 Philadelphia intersections, combined with DVRPC traffic volumes and City of Philadelphia GIS layers. SPMI model outputs will replace the crash-based risk scores as they become available from the Aim 1 GNN pipeline.
 

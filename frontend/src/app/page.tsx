@@ -1,163 +1,133 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import { useIntersectionData } from "@/hooks/useIntersectionData";
-import type { FilterState, IntersectionFeature } from "@/lib/types";
-import { DEFAULT_FILTERS } from "@/lib/constants";
-import Sidebar from "@/components/Sidebar";
+import { useUnitData } from "@/hooks/useUnitData";
+import { useCity } from "@/lib/cityContext";
+import type {
+  FilterState,
+  UnitFeature,
+  IntersectionFeature,
+  ZatFeature,
+  ZatCollection,
+  RiskTier,
+} from "@/lib/types";
+import { isZatFeature, isZatCollection } from "@/lib/types";
+import { defaultFiltersFor } from "@/lib/constants";
+import { matchesFilters } from "@/lib/filters";
+import CrashSidebar from "@/components/Sidebar";
+import ZatSidebar from "@/components/ZatSidebar";
 import MapExplorer from "@/components/MapExplorer";
 import InfoPanel from "@/components/InfoPanel";
+import ZatInfoPanel from "@/components/ZatInfoPanel";
+import type { LegendCounts } from "@/components/map/Legend";
 
 export default function HomePage() {
-  const { geojson, summary, loading, error, getFeature } =
-    useIntersectionData();
+  const { cityId, city } = useCity();
+  const { collection, summary, loading, error, getFeature, featureIndex } =
+    useUnitData(cityId);
 
-  const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
-  const [selectedNodeId, setSelectedNodeId] = useState<number | null>(null);
+  const [filters, setFilters] = useState<FilterState>(() => defaultFiltersFor(city));
+  const [selectedId, setSelectedId] = useState<number | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // Filter features based on current filter state
-  const filteredFeatures = useMemo(() => {
-    if (!geojson) return [];
+  /**
+   * The active layer mode decides which "no data" gate applies, and MapExplorer
+   * owns that state. Mirroring just the gate field here keeps the JS predicate
+   * and the GPU filter in step without lifting the whole toolbar.
+   */
+  const gateField = city.layerModes.find((m) => m.id === city.defaultLayerMode)?.gateField;
 
-    return geojson.features.filter((f) => {
-      const p = f.properties;
+  // Filters are per unit type — reset them when the city changes, or a
+  // Philadelphia risk-tier filter would silently exclude every Bogotá zone.
+  useEffect(() => {
+    setFilters(defaultFiltersFor(city));
+    setSelectedId(null);
+    deepLinkApplied.current = false;
+  }, [city]);
 
-      // Risk tier filter
-      if (
-        filters.riskTiers.length > 0 &&
-        !filters.riskTiers.includes(p.risk_tier)
-      ) {
-        return false;
+  const features = useMemo(
+    () => (collection ? (collection.features as UnitFeature[]) : []),
+    [collection]
+  );
+
+  const filteredFeatures = useMemo(
+    () => features.filter((f) => matchesFilters(f, filters, gateField)),
+    [features, filters, gateField]
+  );
+
+  /** Legend counts, keyed per city. */
+  const legendCounts = useMemo<LegendCounts>(() => {
+    const counts: LegendCounts = {};
+    if (city.unitType === "polygon") {
+      counts["1"] = 0; counts["2"] = 0; counts["3"] = 0; counts["4"] = 0;
+      counts.none = 0;
+      for (const f of filteredFeatures) {
+        if (!isZatFeature(f)) continue;
+        const c = f.properties.clus;
+        if (c) counts[String(c)]++;
+        else counts.none++;
       }
-
-      // Risk score range
-      if (
-        p.eb_ksi < filters.riskScoreRange[0] ||
-        p.eb_ksi > filters.riskScoreRange[1]
-      ) {
-        return false;
+    } else {
+      const tiers: RiskTier[] = ["Critical", "High", "Moderate", "Low"];
+      for (const t of tiers) counts[t] = 0;
+      for (const f of filteredFeatures) {
+        if (isZatFeature(f)) continue;
+        counts[(f as IntersectionFeature).properties.risk_tier]++;
       }
-
-      // Stop type filter
-      if (
-        filters.stopTypes.length > 0 &&
-        !filters.stopTypes.includes(p.stoptype)
-      ) {
-        return false;
-      }
-
-      // HIN filter
-      if (filters.onHin !== null && p.on_hin !== filters.onHin) {
-        return false;
-      }
-
-      // Camera filter
-      if (
-        filters.hasCamera !== null &&
-        (p.any_camera > 0) !== filters.hasCamera
-      ) {
-        return false;
-      }
-
-      // Near school
-      if (
-        filters.nearSchool !== null &&
-        (p.schools_200m > 0) !== filters.nearSchool
-      ) {
-        return false;
-      }
-
-      // Near park
-      if (
-        filters.nearPark !== null &&
-        (p.parks_200m > 0) !== filters.nearPark
-      ) {
-        return false;
-      }
-
-      // Top 50
-      if (filters.top50Only && !p.top50) {
-        return false;
-      }
-
-      // Search
-      if (filters.searchQuery) {
-        const q = filters.searchQuery.toLowerCase();
-        if (!p.int_name.toLowerCase().includes(q)) {
-          return false;
-        }
-      }
-
-      return true;
-    });
-  }, [geojson, filters]);
-
-  // Tier counts after filtering — drives the map legend.
-  // NOTE: the map receives the FULL collection and filters GPU-side, so we
-  // never rebuild a 17k-feature GeoJSON on filter changes.
-  const tierCounts = useMemo(() => {
-    const counts = { Critical: 0, High: 0, Moderate: 0, Low: 0 };
-    for (const f of filteredFeatures) counts[f.properties.risk_tier]++;
+    }
     return counts;
-  }, [filteredFeatures]);
+  }, [filteredFeatures, city.unitType]);
 
-  // Top intersections for the priority list (sorted by eb_ksi desc)
-  const topIntersections = useMemo(() => {
-    if (!geojson) return [];
-    return [...geojson.features]
+  /** Priority list: highest eb_ksi for Philadelphia, highest density for Bogotá. */
+  const topUnits = useMemo(() => {
+    if (city.unitType === "polygon") {
+      return [...filteredFeatures]
+        .filter((f): f is ZatFeature => isZatFeature(f) && f.properties.has_covariates)
+        .sort(
+          (a, b) =>
+            (b.properties.casualties_per_km2 ?? 0) - (a.properties.casualties_per_km2 ?? 0)
+        )
+        .slice(0, 50);
+    }
+    return [...features]
+      .filter((f): f is IntersectionFeature => !isZatFeature(f))
       .sort((a, b) => b.properties.eb_ksi - a.properties.eb_ksi)
       .slice(0, 50);
-  }, [geojson]);
+  }, [features, filteredFeatures, city.unitType]);
 
-  // Selected feature
-  const selectedFeature = useMemo(() => {
-    if (selectedNodeId === null) return null;
-    return getFeature(selectedNodeId) ?? null;
-  }, [selectedNodeId, getFeature]);
+  const selectedFeature = useMemo(
+    () => (selectedId === null ? null : getFeature(selectedId) ?? null),
+    [selectedId, getFeature]
+  );
 
-  const handleSelectIntersection = useCallback((nodeId: number | null) => {
-    setSelectedNodeId(nodeId);
-    // Keep the URL shareable without adding history entries.
-    if (typeof window !== "undefined") {
-      const url = new URL(window.location.href);
-      if (nodeId === null) url.searchParams.delete("site");
-      else url.searchParams.set("site", String(nodeId));
-      window.history.replaceState(null, "", url.toString());
-    }
+  const handleSelect = useCallback((id: number | null) => {
+    setSelectedId(id);
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    if (id === null) url.searchParams.delete("site");
+    else url.searchParams.set("site", String(id));
+    window.history.replaceState(null, "", url.toString());
   }, []);
 
-  // Open the intersection named in ?site= once data has loaded (deep links).
+  // Open the unit named in ?site= once data has loaded. The ref is reset on
+  // city change above, because ?site= means a different thing per city.
   const deepLinkApplied = useRef(false);
   useEffect(() => {
-    if (deepLinkApplied.current || !geojson) return;
+    if (deepLinkApplied.current || !collection) return;
     const param = new URLSearchParams(window.location.search).get("site");
-    if (!param) {
-      deepLinkApplied.current = true;
-      return;
-    }
-    const nodeId = Number(param);
-    if (Number.isFinite(nodeId) && getFeature(nodeId)) {
-      setSelectedNodeId(nodeId);
+    if (param) {
+      const id = Number(param);
+      if (Number.isFinite(id) && getFeature(id)) setSelectedId(id);
     }
     deepLinkApplied.current = true;
-  }, [geojson, getFeature]);
+  }, [collection, getFeature]);
 
-  // Error state
   if (error) {
     return (
       <div className="h-[calc(100vh-3.5rem)] flex items-center justify-center bg-walksafe-bg">
         <div className="text-center max-w-md">
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-50 flex items-center justify-center">
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              className="text-walksafe-red"
-            >
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-walksafe-red">
               <circle cx="12" cy="12" r="10" />
               <line x1="15" y1="9" x2="9" y2="15" />
               <line x1="9" y1="9" x2="15" y2="15" />
@@ -172,39 +142,64 @@ export default function HomePage() {
     );
   }
 
+  const zatMetadata: ZatCollection["metadata"] | null =
+    collection && isZatCollection(collection) ? collection.metadata : null;
+
   return (
     <div className="h-[calc(100vh-3.5rem)] flex overflow-hidden">
-      {/* Sidebar */}
-      <Sidebar
-        filters={filters}
-        onFiltersChange={setFilters}
-        totalCount={geojson?.features.length ?? 0}
-        filteredCount={filteredFeatures.length}
-        topIntersections={topIntersections}
-        onSelectIntersection={(id) => handleSelectIntersection(id)}
-        collapsed={sidebarCollapsed}
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
-      />
+      {filters.kind === "bogota-zat" ? (
+        <ZatSidebar
+          filters={filters}
+          onFiltersChange={setFilters}
+          totalCount={features.length}
+          filteredCount={filteredFeatures.length}
+          clusterCounts={legendCounts}
+          topZones={topUnits as ZatFeature[]}
+          onSelectUnit={handleSelect}
+          caveat={zatMetadata?.caveat ?? city.mapCaveat}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+        />
+      ) : (
+        <CrashSidebar
+          filters={filters}
+          onFiltersChange={setFilters}
+          totalCount={features.length}
+          filteredCount={filteredFeatures.length}
+          topIntersections={topUnits as IntersectionFeature[]}
+          onSelectIntersection={handleSelect}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+        />
+      )}
 
-      {/* Map area */}
       <div className="flex-1 relative">
         <MapExplorer
-          geojson={geojson}
+          city={city}
+          collection={collection}
+          featureIndex={featureIndex}
           filters={filters}
-          selectedNodeId={selectedNodeId}
-          onSelectIntersection={handleSelectIntersection}
+          selectedId={selectedId}
+          onSelectUnit={handleSelect}
           loading={loading}
-          tierCounts={tierCounts}
+          legendCounts={legendCounts}
         />
 
-        {/* Info Panel — floats over the map on the right */}
-        <InfoPanel
-          feature={selectedFeature}
-          onClose={() => handleSelectIntersection(null)}
-        />
+        {selectedFeature && isZatFeature(selectedFeature) ? (
+          <ZatInfoPanel
+            feature={selectedFeature}
+            metadata={zatMetadata}
+            onClose={() => handleSelect(null)}
+          />
+        ) : (
+          <InfoPanel
+            feature={(selectedFeature as IntersectionFeature) ?? null}
+            onClose={() => handleSelect(null)}
+          />
+        )}
 
-        {/* Summary stats bar at bottom of map */}
-        {summary && !loading && (
+        {/* Stats bar */}
+        {!loading && (summary || zatMetadata) && (
           <div className="absolute bottom-4 left-4 right-4 z-10">
             <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 px-4 py-2 flex items-center gap-6 text-xs">
               <div>
@@ -214,33 +209,64 @@ export default function HomePage() {
                 </span>{" "}
                 <span className="text-gray-500">of</span>{" "}
                 <span className="font-semibold text-walksafe-text">
-                  {summary.total_intersections.toLocaleString()}
+                  {features.length.toLocaleString()}
                 </span>{" "}
-                <span className="text-gray-500">intersections</span>
+                <span className="text-gray-500">{city.unitLabelPlural}</span>
               </div>
-              <div className="h-4 w-px bg-gray-200" />
-              <div>
-                <span className="text-gray-500">Total KSI:</span>{" "}
-                <span className="font-semibold text-walksafe-red">
-                  {summary.total_ped_ksi_crashes.toLocaleString()}
-                </span>
-              </div>
-              <div className="h-4 w-px bg-gray-200" />
-              <div>
-                <span className="text-gray-500">Fatalities:</span>{" "}
-                <span className="font-semibold text-walksafe-red">
-                  {summary.total_ped_deaths.toLocaleString()}
-                </span>
-              </div>
-              <div className="h-4 w-px bg-gray-200" />
-              <div className="text-gray-400">
-                {summary.date_range.start}&#8211;{summary.date_range.end} |{" "}
-                {summary.data_source}
-              </div>
+
+              {zatMetadata ? (
+                <>
+                  <Divider />
+                  <div>
+                    <span className="text-gray-500">With profile:</span>{" "}
+                    <span className="font-semibold text-walksafe-text">
+                      {zatMetadata.join.with_features.toLocaleString()}
+                    </span>
+                  </div>
+                  <Divider />
+                  <div>
+                    <span className="text-gray-500">With crash data:</span>{" "}
+                    <span className="font-semibold text-walksafe-text">
+                      {zatMetadata.join.with_covariates.toLocaleString()}
+                    </span>
+                  </div>
+                  <Divider />
+                  <div className="text-gray-400">
+                    Crashes {zatMetadata.crash_window} | DINO/STRIDE extraction,
+                    ~312,000 Street View points
+                  </div>
+                </>
+              ) : summary ? (
+                <>
+                  <Divider />
+                  <div>
+                    <span className="text-gray-500">Total KSI:</span>{" "}
+                    <span className="font-semibold text-walksafe-red">
+                      {summary.total_ped_ksi_crashes.toLocaleString()}
+                    </span>
+                  </div>
+                  <Divider />
+                  <div>
+                    <span className="text-gray-500">Fatalities:</span>{" "}
+                    <span className="font-semibold text-walksafe-red">
+                      {summary.total_ped_deaths.toLocaleString()}
+                    </span>
+                  </div>
+                  <Divider />
+                  <div className="text-gray-400">
+                    {summary.date_range.start}&#8211;{summary.date_range.end} |{" "}
+                    {summary.data_source}
+                  </div>
+                </>
+              ) : null}
             </div>
           </div>
         )}
       </div>
     </div>
   );
+}
+
+function Divider() {
+  return <div className="h-4 w-px bg-gray-200" />;
 }

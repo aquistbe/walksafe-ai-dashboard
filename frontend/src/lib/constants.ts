@@ -1,4 +1,11 @@
-import type { RiskTier, FilterState } from "./types";
+import type {
+  RiskTier,
+  CrashFilterState,
+  ZatFilterState,
+  ZatCluster,
+  SesCategory,
+} from "./types";
+import type { CityConfig } from "./cities";
 
 /** API base URL — falls back to relative path for same-origin deployment. */
 export const API_BASE_URL =
@@ -19,14 +26,11 @@ export const MAP_STYLE_URL =
   process.env.NEXT_PUBLIC_MAPLIBRE_STYLE ??
   "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
 
-/** Philadelphia default center and zoom. */
-export const PHILADELPHIA_CENTER: [number, number] = [-75.1652, 39.9526];
-export const PHILADELPHIA_ZOOM = 12;
-
-/** Bounding box for Philadelphia [sw_lng, sw_lat, ne_lng, ne_lat]. */
-export const PHILADELPHIA_BOUNDS: [number, number, number, number] = [
-  -75.2803, 39.8670, -74.9558, 40.1380,
-];
+/**
+ * Per-city geography (centre, zoom, bounds, unit type) now lives in
+ * `lib/cities.ts`. It moved out of here so a second city does not mean a second
+ * set of PHILADELPHIA_*-shaped module constants.
+ */
 
 // ---------------------------------------------------------------------------
 // Risk tier configuration
@@ -67,7 +71,8 @@ export const RISK_TIER_RADIUS: Record<RiskTier, number> = {
 // Filter defaults
 // ---------------------------------------------------------------------------
 
-export const DEFAULT_FILTERS: FilterState = {
+export const DEFAULT_CRASH_FILTERS: CrashFilterState = {
+  kind: "philadelphia-crash",
   riskScoreRange: [0, 2.2],
   riskTiers: ["Critical", "High", "Moderate", "Low"],
   stopTypes: [],
@@ -78,6 +83,18 @@ export const DEFAULT_FILTERS: FilterState = {
   top50Only: false,
   searchQuery: "",
 };
+
+export const DEFAULT_ZAT_FILTERS: ZatFilterState = {
+  kind: "bogota-zat",
+  clusters: [],
+  sesCategories: [],
+  showNoData: true,
+  searchQuery: "",
+};
+
+export function defaultFiltersFor(city: CityConfig) {
+  return city.unitType === "polygon" ? DEFAULT_ZAT_FILTERS : DEFAULT_CRASH_FILTERS;
+}
 
 // ---------------------------------------------------------------------------
 // Navigation
@@ -98,10 +115,80 @@ export const NAV_ITEMS: NavItem[] = [
   { label: "About", href: "/about" },
 ];
 
-export const CITIES = [
-  { id: "philadelphia" as const, label: "Philadelphia", enabled: true },
-  { id: "salt-lake-city" as const, label: "Salt Lake City", enabled: false },
+/** Cities on the roadmap with no data yet. Rendered as disabled chips. */
+export const PLANNED_CITIES: { label: string; note: string }[] = [
+  { label: "Salt Lake City", note: "Not built" },
 ];
+
+// ---------------------------------------------------------------------------
+// Bogotá — ZAT cluster profiles
+// ---------------------------------------------------------------------------
+
+/**
+ * The four clusters are an INTENSITY GRADIENT, not four unrelated types.
+ * Median total across all 27 CANVAS features: cluster 1 ≈ 6,500,
+ * cluster 3 ≈ 20,200, cluster 2 ≈ 44,400, cluster 4 ≈ 61,700.
+ *
+ * That ordering is the exposure story behind the relative risks: cluster 4
+ * carries the most infrastructure AND the most crashes because it carries the
+ * most pedestrians and traffic. The palette is sequential along that gradient
+ * so the map reads the way the data actually runs.
+ *
+ * Deliberately a cool ramp: the warm red/orange palette already means "risk
+ * tier" elsewhere in this dashboard, and a cluster is a profile, not a score.
+ */
+export const CLUSTER_ORDER: ZatCluster[] = [1, 3, 2, 4];
+
+export const CLUSTER_COLORS: Record<ZatCluster, string> = {
+  1: "#BFE0E6",
+  3: "#7FBFD0",
+  2: "#3D8FAE",
+  4: "#1D4E6B",
+};
+
+/**
+ * Labels derived from the cluster feature and crash profiles, not invented.
+ * Cluster 4's description is the one documented in data/source/README.md.
+ */
+export const CLUSTER_LABELS: Record<ZatCluster, string> = {
+  1: "Peripheral, low-density",
+  3: "Residential, moderate density",
+  2: "Dense local street network",
+  4: "Dense arterial / mass-transit corridor",
+};
+
+export const CLUSTER_DESCRIPTIONS: Record<ZatCluster, string> = {
+  1: "Lowest counts on every feature. Median zero traffic lights, bike lanes and bus lanes; the highest share of roads outside the collector/local classes. Lowest crash burden.",
+  3: "About a third of cluster 2's infrastructure. The lowest-SES cluster — 45% of its zones are in stratum 2.",
+  2: "The highest population density and walking/transit trips, but below average on traffic lights, pedestrian signals and bus lanes. Managed by signage and speed bumps rather than signals.",
+  4: "Highest on all 27 features and the only cluster with BRT stations and bus lanes at the median. Highest crash burden. This is the model's reference category.",
+};
+
+export const NO_DATA_FILL = "#D8D5CE";
+export const NO_DATA_FILL_DARK = "#4B5563";
+
+/**
+ * Step breaks from the empirical distributions in bogota_zats.geojson
+ * (n = 783 for casualties, 851 for the 60+ share).
+ */
+export const CASUALTY_DENSITY_BREAKS = [22, 44, 73, 114, 153];
+export const CASUALTY_DENSITY_RAMP = [
+  "#FEF0D9", "#FDD49E", "#FDBB84", "#FC8D59", "#E34A33", "#B30000",
+];
+
+export const PCT60_BREAKS = [10, 14, 18, 22, 25];
+export const PCT60_RAMP = [
+  "#F2F0F7", "#DADAEB", "#BCBDDC", "#9E9AC8", "#756BB1", "#54278F",
+];
+
+export const SES_CATEGORIES: SesCategory[] = [1, 2, 3, 4, 5, 6];
+
+/**
+ * Colombian *estrato*. Rendered without a colour gradient on purpose: the
+ * SES–crash relationship is NOT monotonic (it peaks at stratum 2), so a 1→6
+ * ramp would assert a gradient the data do not support.
+ */
+export const SES_LABEL = "Estrato";
 
 // ---------------------------------------------------------------------------
 // Trend icons

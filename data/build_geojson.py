@@ -20,18 +20,50 @@ from pathlib import Path
 
 # ---------------------------------------------------------------------------
 # Paths
+#
+# Resolved relative to this file so the script runs anywhere. Layout assumed:
+#
+#   <parent>/walksafe-ai-dashboard/data/build_geojson.py   <- this file
+#   <parent>/WALKSAFE_site_selection/outputs/              <- ranking outputs
+#
+# Override either location if your checkout differs:
+#   WALKSAFE_RANKING_DIR=/path/to/outputs python build_geojson.py
 # ---------------------------------------------------------------------------
-BASE = Path("/sessions/youthful-serene-babbage/mnt/Pedestrian Safety")
-SRC  = BASE / "WALKSAFE_site_selection" / "outputs"
-OUT  = BASE / "walksafe-ai-dashboard" / "data"
+import os
+import sys
+
+HERE = Path(__file__).resolve().parent          # .../walksafe-ai-dashboard/data
+REPO = HERE.parent                              # .../walksafe-ai-dashboard
+BASE = REPO.parent                              # parent holding both projects
+
+SRC = Path(
+    os.getenv("WALKSAFE_RANKING_DIR", BASE / "WALKSAFE_site_selection" / "outputs")
+)
+OUT = Path(os.getenv("WALKSAFE_DATA_DIR", HERE))
 
 ALL_CSV       = SRC / "all_intersections_ranked.csv"
 TOP50_CSV     = SRC / "top50_trends_cameras.csv"
 SHORTLIST_CSV = SRC / "narrowed_shortlist_full.csv"
 
+if not SRC.exists():
+    sys.exit(
+        f"Ranking outputs not found at:\n    {SRC}\n\n"
+        "This script reads the intersection ranking pipeline's outputs, which\n"
+        "live outside this repository (see README, 'Related Projects').\n"
+        "Set the location explicitly if it is elsewhere:\n"
+        "    WALKSAFE_RANKING_DIR=/path/to/WALKSAFE_site_selection/outputs \\\n"
+        "        python data/build_geojson.py"
+    )
+
+missing = [p.name for p in (ALL_CSV, TOP50_CSV, SHORTLIST_CSV) if not p.exists()]
+if missing:
+    sys.exit(f"Missing input file(s) in {SRC}:\n    " + "\n    ".join(missing))
+
 # ---------------------------------------------------------------------------
 # 1. Load data
 # ---------------------------------------------------------------------------
+print(f"Reading ranking outputs from {SRC}")
+print(f"Writing dashboard data to    {OUT}")
 print("Loading CSVs...")
 df_all       = pd.read_csv(ALL_CSV)
 df_top50     = pd.read_csv(TOP50_CSV)

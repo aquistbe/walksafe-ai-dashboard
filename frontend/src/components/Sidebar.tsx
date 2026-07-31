@@ -1,9 +1,14 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import type { FilterState, RiskTier, StopType, IntersectionFeature } from "@/lib/types";
+import type {
+  CrashFilterState,
+  RiskTier,
+  StopType,
+  IntersectionFeature,
+} from "@/lib/types";
 import {
-  DEFAULT_FILTERS,
+  DEFAULT_CRASH_FILTERS,
   RISK_TIERS,
   RISK_TIER_COLORS,
   RISK_TIER_LABELS,
@@ -12,8 +17,8 @@ import FilterChip from "./FilterChip";
 import RiskBadge from "./RiskBadge";
 
 interface SidebarProps {
-  filters: FilterState;
-  onFiltersChange: (filters: FilterState) => void;
+  filters: CrashFilterState;
+  onFiltersChange: (filters: CrashFilterState) => void;
   totalCount: number;
   filteredCount: number;
   topIntersections: IntersectionFeature[];
@@ -22,7 +27,7 @@ interface SidebarProps {
   onToggleCollapse?: () => void;
 }
 
-export default function Sidebar({
+export default function CrashSidebar({
   filters,
   onFiltersChange,
   totalCount,
@@ -35,7 +40,7 @@ export default function Sidebar({
   const [expandedSection, setExpandedSection] = useState<string | null>("risk");
 
   const updateFilter = useCallback(
-    <K extends keyof FilterState>(key: K, value: FilterState[K]) => {
+    <K extends keyof CrashFilterState>(key: K, value: CrashFilterState[K]) => {
       onFiltersChange({ ...filters, [key]: value });
     },
     [filters, onFiltersChange]
@@ -64,7 +69,7 @@ export default function Sidebar({
   );
 
   const resetFilters = useCallback(() => {
-    onFiltersChange(DEFAULT_FILTERS);
+    onFiltersChange(DEFAULT_CRASH_FILTERS);
   }, [onFiltersChange]);
 
   const toggleSection = (section: string) => {

@@ -56,6 +56,19 @@ venv/
 # Docker
 .docker/
 
+# Source data for the build scripts.
+#
+# The small analysis tables (~470 KB total) ARE committed — they make the
+# build reproducible from a clean clone. Large raw geometry is not; its
+# provenance and checksum are recorded in data/source/README.md so anyone
+# can obtain and verify the same input.
+data/source/*.geojson
+data/source/*.zip
+data/source/*.gpkg
+data/source/*.shp
+data/source/*.shx
+data/source/*.dbf
+
 # Imagery scoring
 scoring/.env
 scoring/.venv/

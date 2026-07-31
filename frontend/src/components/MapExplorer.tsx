@@ -1,314 +1,152 @@
 "use client";
 
 /**
- * MapExplorer — Interactive MapLibre GL JS map for the WalkSafe-AI dashboard.
+ * MapExplorer — MapLibre GL JS map for the WalkSafe-AI dashboard.
  *
- * Renders Philadelphia intersections as color-coded circles by risk tier,
- * supports click-to-select, hover popups, layer toggling, and a legend.
+ * Renders an "analysis unit" layer whose shape comes from the city config:
+ * Philadelphia intersections as circles, Bogotá ZAT zones as a choropleth.
+ * Layer construction lives in ./map/layers.ts so the load handler and the
+ * basemap-swap handler share one builder.
  *
- * Base style: CARTO Positron (free, no token required).
- * Dependencies: maplibre-gl (in package.json)
+ * Base style: CARTO Positron / Dark Matter (free, no token required).
  */
 
 import { useEffect, useRef, useCallback, useState, useMemo } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
-import type { IntersectionCollection, FilterState, RiskTier } from "@/lib/types";
+import type { UnitCollection, UnitFeature, FilterState } from "@/lib/types";
+import { isZatFeature } from "@/lib/types";
+import type { CityConfig } from "@/lib/cities";
+import { MAP_STYLE_URL } from "@/lib/constants";
+import { buildMapFilter, searchMatchIds } from "@/lib/filters";
+import { featureBounds } from "@/lib/geo";
 import {
-  MAP_STYLE_URL,
-  PHILADELPHIA_CENTER,
-  PHILADELPHIA_ZOOM,
-  PHILADELPHIA_BOUNDS,
-  RISK_TIER_COLORS,
-  RISK_TIER_LABELS,
-  RISK_TIER_RADIUS,
-  RISK_TIERS,
-} from "@/lib/constants";
-
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
-
-const SOURCE_ID = "intersections";
-const CIRCLE_LAYER_ID = "intersections-circles";
-const CIRCLE_HOVER_LAYER_ID = "intersections-circles-hover";
-const SELECTED_LAYER_ID = "intersections-selected";
-const SELECTED_PULSE_LAYER_ID = "intersections-selected-pulse";
+  addUnitLayers,
+  applyLayerMode,
+  EMPTY_FC,
+  SOURCE_ID,
+  CIRCLE_LAYER_ID,
+  FILL_LAYER_ID,
+  OUTLINE_LAYER_ID,
+  hoverLayerId,
+  interactiveLayerId,
+  selectionLayerIds,
+  type BasemapMode,
+  type UnitLayerOptions,
+} from "./map/layers";
+import { buildPopupHtml } from "./map/popup";
+import Legend, { type LegendCounts } from "./map/Legend";
+import { matchId, matchNothing } from "@/lib/filters";
 
 const STYLE_DARK =
   "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
 const STYLE_LIGHT = MAP_STYLE_URL;
 
-type LayerMode = "risk" | "crashes" | "imagery";
-type BasemapMode = "light" | "dark";
-
-/** Colour ramp for the blind imagery safety score (0 hostile → 100 protected). */
-const IMAGERY_COLOR_EXPR: maplibregl.ExpressionSpecification = [
-  "case",
-  ["!", ["has", "img_score"]],
-  "#E5E7EB", // not scored
-  [
-    "interpolate",
-    ["linear"],
-    ["to-number", ["get", "img_score"], 50],
-    0,
-    "#7F1D1D",
-    25,
-    "#C44536",
-    50,
-    "#D4820A",
-    75,
-    "#65A30D",
-    100,
-    "#1B6B4A",
-  ],
-];
-
-// Empty GeoJSON used as initial / fallback source data
-const EMPTY_FC: GeoJSON.FeatureCollection = {
-  type: "FeatureCollection",
-  features: [],
-};
-
-// ---------------------------------------------------------------------------
-// Props
-// ---------------------------------------------------------------------------
-
 interface MapExplorerProps {
-  /** FULL, unfiltered collection. Uploaded to the map once; filtering is done
-   *  GPU-side via `setFilter` so large filter changes stay instant. */
-  geojson: IntersectionCollection | null;
+  city: CityConfig;
+  /** FULL, unfiltered collection. Filtering is GPU-side via setFilter. */
+  collection: UnitCollection | null;
+  featureIndex: ReadonlyMap<number, UnitFeature>;
   filters: FilterState;
-  selectedNodeId: number | null;
-  onSelectIntersection: (nodeId: number | null) => void;
+  selectedId: number | null;
+  onSelectUnit: (id: number | null) => void;
   loading?: boolean;
-  /** Counts per tier AFTER filtering, for the legend. */
-  tierCounts?: Record<RiskTier, number>;
+  legendCounts: LegendCounts;
 }
-
-// ---------------------------------------------------------------------------
-// Translate FilterState into a MapLibre filter expression
-// ---------------------------------------------------------------------------
-
-/** Fields that are null for most rows — coalesce to 0 before comparing. */
-const num = (field: string): maplibregl.ExpressionSpecification => [
-  "coalesce",
-  ["to-number", ["get", field], 0],
-  0,
-];
-
-function buildMapFilter(
-  filters: FilterState,
-  searchIds: number[] | null
-): maplibregl.FilterSpecification {
-  const conds: unknown[] = ["all"];
-
-  // Risk tiers (skip when all four selected — no-op)
-  if (filters.riskTiers.length > 0 && filters.riskTiers.length < 4) {
-    conds.push(["in", ["get", "risk_tier"], ["literal", filters.riskTiers]]);
-  } else if (filters.riskTiers.length === 0) {
-    return ["==", ["get", "node_id"], -1] as maplibregl.FilterSpecification;
-  }
-
-  // EB KSI score range
-  conds.push([">=", num("eb_ksi"), filters.riskScoreRange[0]]);
-  conds.push(["<=", num("eb_ksi"), filters.riskScoreRange[1]]);
-
-  if (filters.stopTypes.length > 0) {
-    conds.push(["in", ["get", "stoptype"], ["literal", filters.stopTypes]]);
-  }
-  if (filters.onHin !== null) {
-    conds.push(["==", ["get", "on_hin"], filters.onHin]);
-  }
-  if (filters.hasCamera !== null) {
-    conds.push([filters.hasCamera ? ">" : "==", num("any_camera"), 0]);
-  }
-  if (filters.nearSchool !== null) {
-    conds.push([filters.nearSchool ? ">" : "==", num("schools_200m"), 0]);
-  }
-  if (filters.nearPark !== null) {
-    conds.push([filters.nearPark ? ">" : "==", num("parks_200m"), 0]);
-  }
-  if (filters.top50Only) {
-    conds.push(["==", ["get", "top50"], true]);
-  }
-  // Substring search has no MapLibre operator — match precomputed ids instead.
-  if (searchIds !== null) {
-    conds.push(["in", ["get", "node_id"], ["literal", searchIds]]);
-  }
-
-  return conds as maplibregl.FilterSpecification;
-}
-
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
 
 export default function MapExplorer({
-  geojson,
+  city,
+  collection,
+  featureIndex,
   filters,
-  selectedNodeId,
-  onSelectIntersection,
+  selectedId,
+  onSelectUnit,
   loading = false,
-  tierCounts: tierCountsProp,
+  legendCounts,
 }: MapExplorerProps) {
-  // Refs
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const popupRef = useRef<maplibregl.Popup | null>(null);
   const hoveredIdRef = useRef<number | null>(null);
-  /** Latest geojson, readable from inside the map `load` handler closure. */
-  const geojsonRef = useRef<IntersectionCollection | null>(geojson);
-  geojsonRef.current = geojson;
 
-  // State
-  // Counter (not a boolean) so React StrictMode's double-mount — which destroys
-  // and recreates the map — always re-triggers the data effect below.
   const [mapVersion, setMapVersion] = useState(0);
   const mapReady = mapVersion > 0;
-  const [layerMode, setLayerMode] = useState<LayerMode>("risk");
+  const [layerMode, setLayerMode] = useState<string>(city.defaultLayerMode);
   const [basemap, setBasemap] = useState<BasemapMode>("light");
 
-  // Derived: count by tier for legend (parent supplies filtered counts)
-  const tierCounts = useMemo(() => {
-    if (tierCountsProp) return tierCountsProp;
-    const counts: Record<RiskTier, number> = {
-      Critical: 0,
-      High: 0,
-      Moderate: 0,
-      Low: 0,
-    };
-    if (geojson) {
-      for (const f of geojson.features) {
-        counts[f.properties.risk_tier]++;
-      }
-    }
-    return counts;
-  }, [geojson, tierCountsProp]);
-
-  // Node ids matching the search query (null when no query is active)
-  const searchIds = useMemo(() => {
-    const q = filters.searchQuery.trim().toLowerCase();
-    if (!q || !geojson) return null;
-    const ids: number[] = [];
-    for (const f of geojson.features) {
-      if (f.properties.int_name?.toLowerCase().includes(q)) {
-        ids.push(f.properties.node_id);
-      }
-    }
-    return ids;
-  }, [filters.searchQuery, geojson]);
-
-  // MapLibre filter expression — recomputed only when filters actually change
-  const mapFilter = useMemo(
-    () => buildMapFilter(filters, searchIds),
-    [filters, searchIds]
+  const gateField = useMemo(
+    () => city.layerModes.find((m) => m.id === layerMode)?.gateField,
+    [city, layerMode]
   );
 
-  // ------------------------------------------------------------------
-  // Build circle-color and circle-radius expressions
-  // ------------------------------------------------------------------
+  const searchIds = useMemo(
+    () => (collection ? searchMatchIds(collection.features as UnitFeature[], filters.searchQuery) : null),
+    [collection, filters.searchQuery]
+  );
 
-  const circleColorExpr: maplibregl.ExpressionSpecification = [
-    "match",
-    ["get", "risk_tier"],
-    "Critical",
-    RISK_TIER_COLORS.Critical,
-    "High",
-    RISK_TIER_COLORS.High,
-    "Moderate",
-    RISK_TIER_COLORS.Moderate,
-    "Low",
-    RISK_TIER_COLORS.Low,
-    "#6B7280", // fallback
-  ];
+  const mapFilter = useMemo(
+    () => buildMapFilter(filters, searchIds, gateField),
+    [filters, searchIds, gateField]
+  );
 
-  // Base radius by tier, scaled down when zoomed out to cut GPU overdraw
-  // across ~17k points.
-  const circleRadiusExprRisk: maplibregl.ExpressionSpecification = [
-    "interpolate",
-    ["linear"],
-    ["zoom"],
-    10,
-    [
-      "*",
-      0.45,
-      [
-        "match",
-        ["get", "risk_tier"],
-        "Critical",
-        RISK_TIER_RADIUS.Critical,
-        "High",
-        RISK_TIER_RADIUS.High,
-        "Moderate",
-        RISK_TIER_RADIUS.Moderate,
-        "Low",
-        RISK_TIER_RADIUS.Low,
-        3,
-      ],
-    ],
-    14,
-    [
-      "match",
-      ["get", "risk_tier"],
-      "Critical",
-      RISK_TIER_RADIUS.Critical,
-      "High",
-      RISK_TIER_RADIUS.High,
-      "Moderate",
-      RISK_TIER_RADIUS.Moderate,
-      "Low",
-      RISK_TIER_RADIUS.Low,
-      3,
-    ],
-  ];
+  const data = useMemo(
+    () =>
+      collection && collection.features.length > 0
+        ? (collection as unknown as GeoJSON.FeatureCollection)
+        : EMPTY_FC,
+    [collection]
+  );
 
-  const circleRadiusExprCrashes: maplibregl.ExpressionSpecification = [
-    "interpolate",
-    ["linear"],
-    ["get", "ped_ksi"],
-    0,
-    3,
-    2,
-    5,
-    5,
-    8,
-    10,
-    12,
-  ];
+  /**
+   * Current values, readable from the map's own event handlers.
+   *
+   * Those handlers are registered once in a []-dep effect, so anything they
+   * close over is frozen at mount. That was already true of
+   * `onSelectIntersection` and worked only because the parent memoised it with
+   * []. It stops working the moment the handler needs to know the city, so
+   * every value the handlers need goes through a ref instead.
+   */
+  const optsRef = useRef<UnitLayerOptions>({
+    city, data, basemap, layerMode, gateField, mapFilter, selectedId,
+  });
+  optsRef.current = { city, data, basemap, layerMode, gateField, mapFilter, selectedId };
+
+  const onSelectRef = useRef(onSelectUnit);
+  onSelectRef.current = onSelectUnit;
+
+  const featureIndexRef = useRef(featureIndex);
+  featureIndexRef.current = featureIndex;
+
+  /** Which city's layer stack is currently installed on the map. */
+  const installedCityRef = useRef<string | null>(null);
+
+  const install = useCallback((map: maplibregl.Map) => {
+    addUnitLayers(map, optsRef.current);
+    installedCityRef.current = optsRef.current.city.id;
+  }, []);
 
   // ------------------------------------------------------------------
-  // Initialize map
+  // Initialise map
   // ------------------------------------------------------------------
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
+    const startCity = optsRef.current.city;
 
     const map = new maplibregl.Map({
       container: containerRef.current,
       style: STYLE_LIGHT,
-      center: PHILADELPHIA_CENTER,
-      zoom: PHILADELPHIA_ZOOM,
-      maxBounds: [
-        [PHILADELPHIA_BOUNDS[0] - 0.1, PHILADELPHIA_BOUNDS[1] - 0.05],
-        [PHILADELPHIA_BOUNDS[2] + 0.1, PHILADELPHIA_BOUNDS[3] + 0.05],
-      ],
+      center: startCity.center,
+      zoom: startCity.zoom,
+      maxBounds: startCity.maxBounds,
       attributionControl: false,
     });
 
-    // Controls
-    map.addControl(
-      new maplibregl.NavigationControl({ showCompass: true }),
-      "top-right"
-    );
+    map.addControl(new maplibregl.NavigationControl({ showCompass: true }), "top-right");
     map.addControl(new maplibregl.ScaleControl({ maxWidth: 150 }), "bottom-right");
-    map.addControl(
-      new maplibregl.AttributionControl({ compact: true }),
-      "bottom-right"
-    );
+    map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
 
-    // Persistent popup for hover
     popupRef.current = new maplibregl.Popup({
       closeButton: false,
       closeOnClick: false,
@@ -317,163 +155,76 @@ export default function MapExplorer({
     });
 
     map.on("load", () => {
-      // Seed with whatever data has already arrived; the effect below keeps it
-      // in sync afterwards.
-      const initialData =
-        geojsonRef.current && geojsonRef.current.features.length > 0
-          ? (geojsonRef.current as unknown as GeoJSON.FeatureCollection)
-          : EMPTY_FC;
-
-      map.addSource(SOURCE_ID, {
-        type: "geojson",
-        data: initialData,
-        promoteId: "node_id",
-      });
-
-      // --- Circle layer (main) ---
-      map.addLayer({
-        id: CIRCLE_LAYER_ID,
-        type: "circle",
-        source: SOURCE_ID,
-        paint: {
-          "circle-radius": circleRadiusExprRisk,
-          "circle-color": circleColorExpr,
-          "circle-opacity": 0.75,
-          "circle-stroke-color": "#ffffff",
-          // Strokes are expensive across 17k points — fade them in with zoom.
-          "circle-stroke-width": [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            11,
-            0,
-            13.5,
-            1,
-          ],
-          "circle-stroke-opacity": 0.9,
-        },
-      });
-
-      // --- Hover highlight layer ---
-      map.addLayer({
-        id: CIRCLE_HOVER_LAYER_ID,
-        type: "circle",
-        source: SOURCE_ID,
-        paint: {
-          "circle-radius": ["+", circleRadiusExprRisk, 3],
-          "circle-color": circleColorExpr,
-          "circle-opacity": 0.4,
-          "circle-stroke-color": "#ffffff",
-          "circle-stroke-width": 2,
-        },
-        filter: ["==", "node_id", -1],
-      });
-
-      // --- Selected intersection outer ring ---
-      map.addLayer({
-        id: SELECTED_PULSE_LAYER_ID,
-        type: "circle",
-        source: SOURCE_ID,
-        paint: {
-          "circle-radius": 18,
-          "circle-color": "transparent",
-          "circle-stroke-color": "#1B6B4A",
-          "circle-stroke-width": 3,
-          "circle-opacity": 0,
-          "circle-stroke-opacity": 0.6,
-        },
-        filter: ["==", "node_id", -1],
-      });
-
-      map.addLayer({
-        id: SELECTED_LAYER_ID,
-        type: "circle",
-        source: SOURCE_ID,
-        paint: {
-          "circle-radius": 12,
-          "circle-color": "transparent",
-          "circle-stroke-color": "#1B6B4A",
-          "circle-stroke-width": 2.5,
-          "circle-opacity": 0,
-          "circle-stroke-opacity": 1,
-        },
-        filter: ["==", "node_id", -1],
-      });
-
+      install(map);
       setMapVersion((v) => v + 1);
     });
 
-    // --- Hover interactions ---
-    map.on("mousemove", CIRCLE_LAYER_ID, (e) => {
-      if (!e.features || e.features.length === 0) return;
+    // Map-level handlers rather than layer-scoped ones: the interactive layer
+    // id changes with the unit type, and a listener bound to "units-circles"
+    // would go deaf the moment the city switches to polygons.
+    const hitLayers = () =>
+      [CIRCLE_LAYER_ID, FILL_LAYER_ID].filter((id) => map.getLayer(id));
+
+    const clearHover = () => {
+      if (hoveredIdRef.current === null) return;
+      hoveredIdRef.current = null;
+      map.getCanvas().style.cursor = "";
+      const hid = hoverLayerId(optsRef.current.city);
+      if (map.getLayer(hid)) {
+        map.setFilter(hid, matchNothing(optsRef.current.city.idField));
+      }
+      popupRef.current?.remove();
+    };
+
+    map.on("mousemove", (e) => {
+      const layers = hitLayers();
+      if (layers.length === 0) return;
+      const hits = map.queryRenderedFeatures(e.point, { layers });
+      if (hits.length === 0) {
+        clearHover();
+        return;
+      }
+
+      const cfg = optsRef.current.city;
+      const id = Number(hits[0].properties?.[cfg.idField]);
+      if (!Number.isFinite(id)) return;
 
       map.getCanvas().style.cursor = "pointer";
 
-      const feat = e.features[0];
-      const nodeId = feat.properties?.node_id as number;
+      // Look the feature up in memory. Nested properties (Bogotá's `rr` and
+      // `features`) come back from map events as JSON strings, because
+      // MapLibre encodes GeoJSON sources to vector tiles and stringifies any
+      // non-primitive on the way.
+      const feat = featureIndexRef.current.get(id);
+      if (!feat) return;
 
-      if (hoveredIdRef.current !== nodeId) {
-        hoveredIdRef.current = nodeId;
-        map.setFilter(CIRCLE_HOVER_LAYER_ID, ["==", "node_id", nodeId]);
+      if (hoveredIdRef.current !== id) {
+        hoveredIdRef.current = id;
+        const hid = hoverLayerId(cfg);
+        if (map.getLayer(hid)) map.setFilter(hid, matchId(cfg.idField, id));
+        // Rebuild the HTML only on change — mousemove fires per pixel, and over
+        // a large polygon that would be a continuous re-parse.
+        popupRef.current?.setHTML(buildPopupHtml(feat, cfg));
       }
 
-      // Popup content
-      const p = feat.properties!;
-      const coords = (feat.geometry as GeoJSON.Point).coordinates.slice() as [
-        number,
-        number
-      ];
+      const anchor: [number, number] = isZatFeature(feat)
+        ? [e.lngLat.lng, e.lngLat.lat]
+        : (feat.geometry.coordinates.slice() as [number, number]);
 
-      const tierColor =
-        RISK_TIER_COLORS[p.risk_tier as RiskTier] ?? "#6B7280";
-
-      const html = `
-        <div style="font-family: 'DM Sans', system-ui, sans-serif; font-size: 12px; line-height: 1.5; color: #2D2D2D;">
-          <div style="font-weight: 700; font-size: 13px; margin-bottom: 4px;">${p.int_name || "Unknown"}</div>
-          <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
-            <span style="display: inline-flex; align-items: center; gap: 4px; background: ${tierColor}18; color: ${tierColor}; font-weight: 600; font-size: 10px; padding: 2px 8px; border-radius: 999px;">
-              <span style="width: 6px; height: 6px; border-radius: 50%; background: ${tierColor};"></span>
-              ${p.risk_tier} Risk
-            </span>
-            <span style="color: #9CA3AF; font-size: 10px;">Rank #${p.rank_eb}</span>
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px 12px; font-size: 11px;">
-            <span style="color: #6B7280;">EB KSI:</span>
-            <span style="font-weight: 600;">${typeof p.eb_ksi === "number" ? p.eb_ksi.toFixed(2) : p.eb_ksi}</span>
-            <span style="color: #6B7280;">KSI crashes:</span>
-            <span style="font-weight: 600;">${p.ped_ksi}</span>
-            <span style="color: #6B7280;">Total ped:</span>
-            <span style="font-weight: 600;">${p.ped_crashes}</span>
-            ${p.on_hin ? '<span style="color: #6B7280;">HIN:</span><span style="font-weight: 600; color: #C44536;">On HIN</span>' : ""}
-          </div>
-        </div>
-      `;
-
-      popupRef.current?.setLngLat(coords).setHTML(html).addTo(map);
+      popupRef.current?.setLngLat(anchor).addTo(map);
     });
 
-    map.on("mouseleave", CIRCLE_LAYER_ID, () => {
-      map.getCanvas().style.cursor = "";
-      hoveredIdRef.current = null;
-      map.setFilter(CIRCLE_HOVER_LAYER_ID, ["==", "node_id", -1]);
-      popupRef.current?.remove();
-    });
+    map.on("mouseout", clearHover);
 
-    // --- Click ---
-    map.on("click", CIRCLE_LAYER_ID, (e) => {
-      if (!e.features || e.features.length === 0) return;
-      const nodeId = e.features[0].properties?.node_id as number;
-      onSelectIntersection(nodeId);
-    });
-
-    // Click on empty space to deselect
     map.on("click", (e) => {
-      const features = map.queryRenderedFeatures(e.point, {
-        layers: [CIRCLE_LAYER_ID],
-      });
-      if (features.length === 0) {
-        onSelectIntersection(null);
+      const layers = hitLayers();
+      const hits = layers.length ? map.queryRenderedFeatures(e.point, { layers }) : [];
+      if (hits.length === 0) {
+        onSelectRef.current(null);
+        return;
       }
+      const id = Number(hits[0].properties?.[optsRef.current.city.idField]);
+      onSelectRef.current(Number.isFinite(id) ? id : null);
     });
 
     mapRef.current = map;
@@ -482,206 +233,115 @@ export default function MapExplorer({
       popupRef.current?.remove();
       map.remove();
       mapRef.current = null;
+      installedCityRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ------------------------------------------------------------------
-  // Update GeoJSON data when features change
+  // City change: move the camera, then swap the layer stack
   // ------------------------------------------------------------------
 
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapReady) return;
+    if (installedCityRef.current === city.id) return;
 
-    const source = map.getSource(SOURCE_ID) as maplibregl.GeoJSONSource | undefined;
-    if (!source) return;
+    // Order matters. Applying the new clamp while the camera still sits over
+    // the old city makes MapLibre clamp mid-move, and with disjoint bounds the
+    // camera can wedge. Release, move, then re-clamp.
+    map.setMaxBounds(null);
+    map.jumpTo({ center: city.center, zoom: city.zoom });
+    map.setMaxBounds(city.maxBounds);
 
-    if (geojson && geojson.features.length > 0) {
-      source.setData(geojson as unknown as GeoJSON.FeatureCollection);
-    } else {
-      source.setData(EMPTY_FC);
+    popupRef.current?.remove();
+    hoveredIdRef.current = null;
+    install(map);
+  }, [city, mapVersion, mapReady, install]);
+
+  /**
+   * A layer mode the new city does not offer would paint every unit the
+   * fallback colour — indistinguishable from a failed load.
+   */
+  useEffect(() => {
+    if (!city.layerModes.some((m) => m.id === layerMode)) {
+      setLayerMode(city.defaultLayerMode);
     }
-  }, [geojson, mapVersion, mapReady]);
+  }, [city, layerMode]);
 
   // ------------------------------------------------------------------
-  // Apply filters GPU-side (no data re-upload)
+  // Sync data / filter / selection / paint
   // ------------------------------------------------------------------
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !mapReady || !map.getLayer(CIRCLE_LAYER_ID)) return;
-    map.setFilter(CIRCLE_LAYER_ID, mapFilter);
+    if (!map || !mapReady) return;
+    const source = map.getSource(SOURCE_ID) as maplibregl.GeoJSONSource | undefined;
+    source?.setData(data);
+  }, [data, mapVersion, mapReady]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+    for (const id of [CIRCLE_LAYER_ID, FILL_LAYER_ID, OUTLINE_LAYER_ID]) {
+      if (map.getLayer(id)) map.setFilter(id, mapFilter);
+    }
   }, [mapFilter, mapVersion, mapReady]);
 
-  // ------------------------------------------------------------------
-  // Update selected intersection highlight
-  // ------------------------------------------------------------------
-
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapReady) return;
 
-    if (selectedNodeId !== null) {
-      map.setFilter(SELECTED_LAYER_ID, ["==", "node_id", selectedNodeId]);
-      map.setFilter(SELECTED_PULSE_LAYER_ID, ["==", "node_id", selectedNodeId]);
-
-      // Fly to selected intersection
-      if (geojson) {
-        const feat = geojson.features.find(
-          (f) => f.properties.node_id === selectedNodeId
-        );
-        if (feat) {
-          map.flyTo({
-            center: feat.geometry.coordinates as [number, number],
-            zoom: Math.max(map.getZoom(), 14),
-            duration: 800,
-          });
-        }
-      }
-    } else {
-      map.setFilter(SELECTED_LAYER_ID, ["==", "node_id", -1]);
-      map.setFilter(SELECTED_PULSE_LAYER_ID, ["==", "node_id", -1]);
+    const ids = selectionLayerIds(city);
+    const expr =
+      selectedId !== null ? matchId(city.idField, selectedId) : matchNothing(city.idField);
+    for (const id of ids) {
+      if (map.getLayer(id)) map.setFilter(id, expr);
     }
-  }, [selectedNodeId, mapVersion, mapReady, geojson]);
 
-  // ------------------------------------------------------------------
-  // Update circle radius based on layer mode
-  // ------------------------------------------------------------------
+    if (selectedId === null) return;
+    const feat = featureIndex.get(selectedId);
+    if (!feat) return;
+
+    if (isZatFeature(feat)) {
+      map.fitBounds(featureBounds(feat), {
+        // Clear the 384px (w-96) InfoPanel plus its 16px inset on the right.
+        padding: { top: 60, bottom: 90, left: 60, right: 420 },
+        // Without this a small downtown zone slams to street level.
+        maxZoom: 14,
+        duration: 800,
+      });
+    } else {
+      map.flyTo({
+        center: feat.geometry.coordinates as [number, number],
+        zoom: Math.max(map.getZoom(), 14),
+        duration: 800,
+      });
+    }
+  }, [selectedId, mapVersion, mapReady, city, featureIndex]);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !mapReady || !map.getLayer(CIRCLE_LAYER_ID)) return;
-
-    const radiusExpr =
-      layerMode === "crashes" ? circleRadiusExprCrashes : circleRadiusExprRisk;
-
-    map.setPaintProperty(CIRCLE_LAYER_ID, "circle-radius", radiusExpr);
-    map.setPaintProperty(CIRCLE_HOVER_LAYER_ID, "circle-radius", [
-      "+",
-      radiusExpr,
-      3,
-    ]);
-
-    // Colour by imagery score in imagery mode, by risk tier otherwise.
-    const colorExpr =
-      layerMode === "imagery" ? IMAGERY_COLOR_EXPR : circleColorExpr;
-    map.setPaintProperty(CIRCLE_LAYER_ID, "circle-color", colorExpr);
-    map.setPaintProperty(CIRCLE_HOVER_LAYER_ID, "circle-color", colorExpr);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [layerMode, mapVersion, mapReady]);
+    if (!map || !mapReady) return;
+    applyLayerMode(map, optsRef.current);
+  }, [layerMode, basemap, gateField, mapVersion, mapReady]);
 
   // ------------------------------------------------------------------
-  // Switch basemap
+  // Basemap
   // ------------------------------------------------------------------
 
   const switchBasemap = useCallback(
     (mode: BasemapMode) => {
       const map = mapRef.current;
-      if (!map || !mapReady) return;
-      if (mode === basemap) return;
-
+      if (!map || !mapReady || mode === basemap) return;
       setBasemap(mode);
-
-      const styleUrl = mode === "dark" ? STYLE_DARK : STYLE_LIGHT;
-
-      // Save current data so we can restore layers after style swap
-      const currentData: GeoJSON.FeatureCollection =
-        geojson && geojson.features.length > 0
-          ? (geojson as unknown as GeoJSON.FeatureCollection)
-          : EMPTY_FC;
-
-      map.setStyle(styleUrl);
-
-      map.once("style.load", () => {
-        // Re-add source and layers
-        map.addSource(SOURCE_ID, {
-          type: "geojson",
-          data: currentData,
-          promoteId: "node_id",
-        });
-
-        const radiusExpr =
-          layerMode === "crashes"
-            ? circleRadiusExprCrashes
-            : circleRadiusExprRisk;
-
-        map.addLayer({
-          id: CIRCLE_LAYER_ID,
-          type: "circle",
-          source: SOURCE_ID,
-          paint: {
-            "circle-radius": radiusExpr,
-            "circle-color": circleColorExpr,
-            "circle-opacity": 0.75,
-            "circle-stroke-color": mode === "dark" ? "#374151" : "#ffffff",
-            "circle-stroke-width": [
-              "interpolate",
-              ["linear"],
-              ["zoom"],
-              11,
-              0,
-              13.5,
-              1,
-            ],
-            "circle-stroke-opacity": 0.9,
-          },
-          filter: mapFilter,
-        });
-
-        map.addLayer({
-          id: CIRCLE_HOVER_LAYER_ID,
-          type: "circle",
-          source: SOURCE_ID,
-          paint: {
-            "circle-radius": ["+", radiusExpr, 3],
-            "circle-color": circleColorExpr,
-            "circle-opacity": 0.4,
-            "circle-stroke-color": mode === "dark" ? "#9CA3AF" : "#ffffff",
-            "circle-stroke-width": 2,
-          },
-          filter: ["==", "node_id", -1],
-        });
-
-        map.addLayer({
-          id: SELECTED_PULSE_LAYER_ID,
-          type: "circle",
-          source: SOURCE_ID,
-          paint: {
-            "circle-radius": 18,
-            "circle-color": "transparent",
-            "circle-stroke-color": mode === "dark" ? "#2A8F64" : "#1B6B4A",
-            "circle-stroke-width": 3,
-            "circle-opacity": 0,
-            "circle-stroke-opacity": 0.6,
-          },
-          filter:
-            selectedNodeId !== null
-              ? ["==", "node_id", selectedNodeId]
-              : ["==", "node_id", -1],
-        });
-
-        map.addLayer({
-          id: SELECTED_LAYER_ID,
-          type: "circle",
-          source: SOURCE_ID,
-          paint: {
-            "circle-radius": 12,
-            "circle-color": "transparent",
-            "circle-stroke-color": mode === "dark" ? "#2A8F64" : "#1B6B4A",
-            "circle-stroke-width": 2.5,
-            "circle-opacity": 0,
-            "circle-stroke-opacity": 1,
-          },
-          filter:
-            selectedNodeId !== null
-              ? ["==", "node_id", selectedNodeId]
-              : ["==", "node_id", -1],
-        });
-      });
+      // optsRef is stale for one tick — the render carrying the new basemap has
+      // not run yet — so hand the new value straight to the rebuild.
+      optsRef.current = { ...optsRef.current, basemap: mode };
+      map.setStyle(mode === "dark" ? STYLE_DARK : STYLE_LIGHT);
+      map.once("style.load", () => install(map));
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [basemap, mapReady, geojson, layerMode, selectedNodeId, mapFilter]
+    [basemap, mapReady, install]
   );
 
   // ------------------------------------------------------------------
@@ -690,87 +350,32 @@ export default function MapExplorer({
 
   return (
     <div className="relative w-full h-full">
-      {/* Map container */}
       <div ref={containerRef} className="absolute inset-0" />
 
-      {/* Loading overlay */}
       {loading && (
         <div className="absolute inset-0 bg-walksafe-bg/60 backdrop-blur-sm z-30 flex items-center justify-center">
           <div className="text-center">
             <div className="w-10 h-10 mx-auto mb-3 rounded-full border-2 border-walksafe-green/30 border-t-walksafe-green animate-spin" />
             <p className="text-sm font-medium text-walksafe-text">
-              Loading map data...
+              Loading {city.label} data…
             </p>
           </div>
         </div>
       )}
 
-      {/* Toolbar — top left */}
+      {/* Toolbar */}
       <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 bg-white/95 backdrop-blur-sm rounded-lg shadow-md border border-gray-200 p-1">
-        <ToolbarButton
-          active={layerMode === "risk"}
-          onClick={() => setLayerMode("risk")}
-          title="Size circles by risk tier"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        {city.layerModes.map((m) => (
+          <ToolbarButton
+            key={m.id}
+            active={layerMode === m.id}
+            onClick={() => setLayerMode(m.id)}
+            title={m.title}
           >
-            <circle cx="12" cy="12" r="10" />
-            <circle cx="12" cy="12" r="6" />
-            <circle cx="12" cy="12" r="2" />
-          </svg>
-          <span>Risk Tiers</span>
-        </ToolbarButton>
-
-        <ToolbarButton
-          active={layerMode === "crashes"}
-          onClick={() => setLayerMode("crashes")}
-          title="Size circles by KSI crash count"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M12 2v20M2 12h20" />
-            <circle cx="12" cy="12" r="4" />
-          </svg>
-          <span>Crash Count</span>
-        </ToolbarButton>
-
-        <ToolbarButton
-          active={layerMode === "imagery"}
-          onClick={() => setLayerMode("imagery")}
-          title="Colour by blind imagery safety score"
-        >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <rect x="3" y="3" width="18" height="18" rx="2" />
-            <circle cx="8.5" cy="8.5" r="1.5" />
-            <polyline points="21 15 16 10 5 21" />
-          </svg>
-          <span>Imagery</span>
-        </ToolbarButton>
+            <ModeIcon icon={m.icon} />
+            <span>{m.label}</span>
+          </ToolbarButton>
+        ))}
 
         <div className="w-px h-5 bg-gray-200 mx-0.5" />
 
@@ -779,113 +384,100 @@ export default function MapExplorer({
           onClick={() => switchBasemap(basemap === "dark" ? "light" : "dark")}
           title="Toggle dark basemap"
         >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
           </svg>
           <span>Dark</span>
         </ToolbarButton>
       </div>
 
-      {/* Legend — bottom left */}
-      <div className="absolute bottom-14 left-3 z-10 bg-white/95 backdrop-blur-sm rounded-lg shadow-md border border-gray-200 p-3 min-w-[160px]">
-        {layerMode === "imagery" ? (
-          <>
-            <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">
-              Imagery Safety Score
-            </div>
-            <div
-              className="h-2.5 rounded-full mb-1.5"
-              style={{
-                background:
-                  "linear-gradient(to right, #7F1D1D, #C44536, #D4820A, #65A30D, #1B6B4A)",
-              }}
-            />
-            <div className="flex justify-between text-[10px] text-gray-400 mb-2">
-              <span>0 hostile</span>
-              <span>100 protected</span>
-            </div>
-            <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
-              <span
-                className="w-3 h-3 rounded-full shrink-0"
-                style={{ backgroundColor: "#E5E7EB" }}
-              />
-              <span className="text-[11px] text-walksafe-text-muted">
-                Not yet scored
-              </span>
-            </div>
-            <p className="text-[10px] text-gray-400 mt-2 leading-snug">
-              Scored from street imagery only — the model never saw crash data.
-            </p>
-          </>
-        ) : (
-        <>
-        <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          Risk Tier
-        </div>
-        <div className="space-y-1.5">
-          {RISK_TIERS.map((tier) => (
-            <div key={tier} className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <span
-                  className="w-3 h-3 rounded-full shrink-0"
-                  style={{ backgroundColor: RISK_TIER_COLORS[tier] }}
-                />
-                <span className="text-xs text-walksafe-text">
-                  {RISK_TIER_LABELS[tier]}
-                </span>
-              </div>
-              <span className="text-[10px] tabular-nums text-gray-400 font-medium">
-                {tierCounts[tier].toLocaleString()}
-              </span>
-            </div>
-          ))}
-        </div>
+      {/* Maturity + the ecological caveat. Pinned to the map, non-dismissable:
+          a notice that can be dismissed fails the moment someone dismisses it
+          and screenshots the map. */}
+      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1.5 max-w-[min(560px,calc(100%-2rem))]">
+        <span
+          className={`px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider shadow-sm border ${
+            city.maturity === "demonstrated"
+              ? "bg-walksafe-green text-white border-walksafe-green"
+              : "bg-white/95 text-gray-600 border-gray-200"
+          }`}
+          title={city.maturityNote}
+        >
+          {city.label} · {city.maturityLabel}
+        </span>
 
-        {/* Radius legend when in crash count mode */}
-        {layerMode === "crashes" && (
-          <>
-            <div className="mt-3 pt-2 border-t border-gray-100">
-              <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
-                Circle Size = KSI Count
-              </div>
-              <div className="flex items-end gap-2 px-1">
-                {[3, 5, 8, 12].map((r, i) => (
-                  <div
-                    key={i}
-                    className="flex flex-col items-center gap-0.5"
-                  >
-                    <div
-                      className="rounded-full bg-gray-300"
-                      style={{ width: r * 2, height: r * 2 }}
-                    />
-                    <span className="text-[9px] text-gray-400">
-                      {[0, 2, 5, 10][i]}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
-        </>
+        {city.mapCaveat && (
+          <div className="bg-amber-50/95 backdrop-blur-sm border border-amber-200 rounded-lg px-3 py-2 shadow-sm">
+            <p className="text-[11px] text-amber-900 leading-snug text-center">
+              {city.mapCaveat}
+            </p>
+          </div>
         )}
       </div>
+
+      <Legend city={city} layerMode={layerMode} counts={legendCounts} />
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Toolbar button sub-component
+// Sub-components
 // ---------------------------------------------------------------------------
+
+function ModeIcon({ icon }: { icon: string }) {
+  const common = {
+    width: 14,
+    height: 14,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+  switch (icon) {
+    case "crosshair":
+      return (
+        <svg {...common}>
+          <path d="M12 2v20M2 12h20" />
+          <circle cx="12" cy="12" r="4" />
+        </svg>
+      );
+    case "image":
+      return (
+        <svg {...common}>
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <circle cx="8.5" cy="8.5" r="1.5" />
+          <polyline points="21 15 16 10 5 21" />
+        </svg>
+      );
+    case "grid":
+      return (
+        <svg {...common}>
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+        </svg>
+      );
+    case "people":
+      return (
+        <svg {...common}>
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        </svg>
+      );
+    default:
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="10" />
+          <circle cx="12" cy="12" r="6" />
+          <circle cx="12" cy="12" r="2" />
+        </svg>
+      );
+  }
+}
 
 function ToolbarButton({
   active,

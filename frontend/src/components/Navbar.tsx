@@ -3,12 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { NAV_ITEMS, CITIES } from "@/lib/constants";
-import type { City } from "@/lib/types";
+import { NAV_ITEMS, PLANNED_CITIES } from "@/lib/constants";
+import { CITY_LIST } from "@/lib/cities";
+import { useCity } from "@/lib/cityContext";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [selectedCity, setSelectedCity] = useState<City>("philadelphia");
+  const { cityId: selectedCity, setCityId: setSelectedCity } = useCity();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -66,26 +67,38 @@ export default function Navbar() {
           <span className="text-xs text-gray-400 uppercase tracking-wider mr-1">
             City
           </span>
-          {CITIES.map((city) => (
+          {CITY_LIST.map((city) => (
             <button
               key={city.id}
-              onClick={() => city.enabled && setSelectedCity(city.id)}
-              disabled={!city.enabled}
+              onClick={() => setSelectedCity(city.id)}
               className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
                 selectedCity === city.id
                   ? "bg-walksafe-green text-white"
-                  : city.enabled
-                  ? "bg-white/10 text-gray-300 hover:bg-white/20"
-                  : "bg-white/5 text-gray-500 cursor-not-allowed"
+                  : "bg-white/10 text-gray-300 hover:bg-white/20"
               }`}
-              title={
-                !city.enabled ? `${city.label} — coming soon` : city.label
-              }
+              title={`${city.label} — ${city.maturityLabel}. ${city.maturityNote}`}
             >
               {city.label}
-              {!city.enabled && (
-                <span className="ml-1 text-[10px] text-gray-500">soon</span>
-              )}
+              {/* The two cities are at very different stages. Saying so here
+                  stops the switcher from implying they are equivalent. */}
+              <span
+                className={`ml-1.5 text-[9px] uppercase tracking-wide ${
+                  selectedCity === city.id ? "text-white/70" : "text-gray-500"
+                }`}
+              >
+                {city.maturity === "demonstrated" ? "demo" : "phase 0"}
+              </span>
+            </button>
+          ))}
+          {PLANNED_CITIES.map((city) => (
+            <button
+              key={city.label}
+              disabled
+              className="px-3 py-1 rounded-full text-xs font-medium bg-white/5 text-gray-500 cursor-not-allowed"
+              title={`${city.label} — ${city.note}`}
+            >
+              {city.label}
+              <span className="ml-1 text-[10px] text-gray-500">soon</span>
             </button>
           ))}
         </div>
@@ -151,21 +164,28 @@ export default function Navbar() {
             <span className="block text-xs text-gray-400 uppercase tracking-wider px-3 mb-1">
               City
             </span>
-            <div className="flex gap-2 px-3">
-              {CITIES.map((city) => (
+            <div className="flex flex-wrap gap-2 px-3">
+              {CITY_LIST.map((city) => (
                 <button
                   key={city.id}
                   onClick={() => {
-                    if (city.enabled) setSelectedCity(city.id);
+                    setSelectedCity(city.id);
+                    setMobileMenuOpen(false);
                   }}
-                  disabled={!city.enabled}
                   className={`px-3 py-1 rounded-full text-xs font-medium ${
                     selectedCity === city.id
                       ? "bg-walksafe-green text-white"
-                      : city.enabled
-                      ? "bg-white/10 text-gray-300"
-                      : "bg-white/5 text-gray-500 cursor-not-allowed"
+                      : "bg-white/10 text-gray-300"
                   }`}
+                >
+                  {city.label}
+                </button>
+              ))}
+              {PLANNED_CITIES.map((city) => (
+                <button
+                  key={city.label}
+                  disabled
+                  className="px-3 py-1 rounded-full text-xs font-medium bg-white/5 text-gray-500 cursor-not-allowed"
                 >
                   {city.label}
                 </button>
