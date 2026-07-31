@@ -1,0 +1,23 @@
+{
+  // Cloudflare Workers static-assets config.
+  //
+  // Cloudflare has merged Pages into Workers, so a static site deploys as a
+  // Worker that serves an assets directory. This file tells it what to serve;
+  // the dashboard has no server-side code, so there is no Worker script.
+  //
+  // Build settings in the Cloudflare dashboard:
+  //   Path             frontend
+  //   Build command    npm run build:static
+  //   Deploy command   npx wrangler deploy
+  //
+  // Local deploy (optional):  npm run build:static && npx wrangler deploy
+  "name": "walksafe-ai-dashboard",
+  "compatibility_date": "2026-07-30",
+  "assets": {
+    // Next.js static export output, produced by `npm run build:static`.
+    "directory": "./out",
+    // The export is multi-page (/, /research, /data, ...), not a SPA, so
+    // unmatched paths should 404 rather than being rewritten to index.html.
+    "not_found_handling": "404-page"
+  }
+}
