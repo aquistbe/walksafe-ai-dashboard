@@ -34,11 +34,21 @@ consequences.
   of magnitude more than a centerline network. A line layer of the same city
   (`Malla_Vial_Integral`) carries 410,360 vertices for 136,957 features.
 - **Simplification tolerance.** Street footprints are long thin rectangles
-  with a median carriageway width of 6.14 m. Douglas-Peucker at a tolerance
+  with a median carriageway width of 6.12 m. Douglas-Peucker at a tolerance
   above roughly half the width collapses the rectangle into a triangle, so
   the 5–10 m tolerances that suit a zone boundary destroy the street. The
-  build uses **1.0 m**, which removes 98% of vertices (5,128,282 → 101,955)
-  while leaving the rectangles intact.
+  build uses **0.5 m**, which removes 75% of vertices (5,128,282 →
+  1,267,438) while leaving the rectangles intact.
+
+  An earlier version of this line claimed 98% removal, 5,128,282 → 101,955.
+  That was wrong: `final_v` in the build script summed
+  `len(geometry["coordinates"])`, which for a Polygon is the number of
+  **rings**, not vertices. 101,955 was a ring count and the true shipped
+  vertex count was 1,067,509 — ten times higher. The compression was
+  overstated by an order of magnitude. **The R2 decision does not depend on
+  this**: it rested on directly measured file sizes (16.8 MB for geometry
+  alone with zero properties, 28.5 MB at a seven-field schema) against the
+  25 MiB cap, not on the vertex figure. That decision stands unchanged.
 
 The obvious escape was checked and does not exist: `Malla_Vial_Integral` is
 genuine LineString geometry 12× lighter, but `CODIGO_IDE` and `MVICIV` do
@@ -64,13 +74,56 @@ R2 is a different product: no per-object limit that matters here, zero
 egress, and the browser fetches the file directly. That removed the size
 constraint without a tiling pipeline, so the layer shipped as GeoJSON:
 
-- **54.7 MB raw, 6.9 MB on the wire** — the upload gzips and sets
+- **60.9 MB raw, 8.7 MB on the wire** — the upload gzips and sets
   `Content-Encoding: gzip`; R2 serves exactly the bytes it is given, so
-  without that header a visitor would download all 54.7 MB.
+  without that header a visitor would download all 60.9 MB.
 - **Lazy-loaded per dataset.** Only someone who selects the Bogotá segment
   layer pays for it. Bogotá defaults to the ZAT layer.
 - `make bogota-segments` builds it; `make upload-bogota-segments` publishes
   it, idempotently.
+
+**3. Coordinate quantisation at 5 dp was too coarse and has been corrected.**
+
+The first build quantised output coordinates to **5 decimal places**, carried
+over from the size constraint R2 had already removed. At latitude 4.65 that
+is a **1.24 m** grid, and the median carriageway is 6.12 m — five cells
+across a street. The consequences were measured against the source
+shapefile:
+
+| | 1.0 m DP + 5 dp | 0.5 m DP + 6 dp |
+|---|---|---|
+| boundary displacement, median | 0.76 m (13% of street width) | **0.37 m (5.7%)** |
+| p90 | 1.17 m (27%) | **0.49 m (11.5%)** |
+| p99 | 2.63 m | **0.90 m** |
+| max | 44.5 m | **20.1 m** |
+| rings collapsed to a triangle or quad | 15.5% | — |
+| topologically invalid | 1,481 (1.5%) | **780 (0.77%)** |
+| geometry dropped entirely | 76 | **33** |
+
+Snapping to a grid a fifth of the street width stopped opposite kerb lines
+being parallel, made outlines ragged, and left 1,481 self-intersecting
+polygons. Area was preserved on average (median −0.1%), so this was shape
+damage, not systematic shrinkage — which is why it read as "the polygons do
+not line up with the street network".
+
+**Do not reintroduce 5 dp as a size optimisation.** The file is served from
+R2, where the 25 MiB cap that motivated it does not apply; 6 dp costs 6 MB
+raw and 1.8 MB gzipped. The build now also runs `make_valid` after
+simplification (128 invalid → 0) and re-checks validity on the encoded
+output, because quantisation can reintroduce self-intersection by snapping
+distinct vertices onto one cell. The 780 that survive are printed with their
+`seg_id` rather than dropped.
+
+This was checked against the alternative explanation and is **not** a
+reprojection fault. Registering the footprints against 5,011 OpenStreetMap
+carriageway centreline points put 99.9% of them inside a footprint at zero
+shift, with a sharp peak (0.53 at ±10 m, 0.29 at ±30 m). `PCS_CarMAGBOG`
+resolves correctly even though pyproj reports only a "Ballpark geographic
+offset", because `CGS_CarMAGBOG` is MAGNA-SIRGAS-based — GRS80 flattening,
+semi-major axis inflated by 2,550 m for Bogotá's elevation — and MAGNA-SIRGAS
+sits within about a metre of WGS84. The two readings of that inflated
+ellipsoid (inflation vs an equivalent `k0` on standard GRS80) differ by
+0.0 m across the data extent, so there is no wrong branch to take.
 
 **PMTiles remains the eventual answer for speed**, and would also help
 Philadelphia's 20 MB segment layer and 9.8 MB intersection layer. It is no

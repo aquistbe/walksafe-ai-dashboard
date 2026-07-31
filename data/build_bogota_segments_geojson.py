@@ -24,9 +24,22 @@ Design notes
   boundary would destroy the street. The tolerance here is deliberately small
   and the vertex count is reported before and after.
 
-* Quantisation to 5 dp (~1.1 m) is applied after simplifying, and is
-  topology-safe: adjacent footprints that share a boundary map their shared
-  vertices to the same cell.
+* QUANTISATION MUST STAY FINE RELATIVE TO THE CARRIAGEWAY. 5 dp was used
+  originally and was too coarse: at latitude 4.65 it is a 1.24 m grid, so a
+  6.12 m median carriageway spans only 5 cells. Vertices snapped onto that
+  grid stopped being parallel, kerb lines went ragged, 15.5% of rings
+  collapsed to a triangle or quad and 1,481 polygons (1.5%) became
+  self-intersecting. Median boundary displacement was 0.76 m — 13% of street
+  width, 27% at p90. 6 dp gives a 0.11 m grid and ~55 cells across the same
+  street. Do not reintroduce 5 dp as a size optimisation: the file is served
+  from R2, where the 25 MiB asset cap that motivated it does not apply.
+
+* Simplification and quantisation were verified NOT to be a georeferencing
+  problem. Registering the footprints against 5,011 OSM carriageway
+  centreline points put 99.9% of them inside a footprint at zero shift, with
+  a sharp peak — the source CRS resolves correctly despite pyproj reporting
+  only a ballpark datum shift, because CGS_CarMAGBOG is MAGNA-SIRGAS-based
+  (GRS80 flattening, semi-major inflated by 2,550 m for Bogotá's elevation).
 
 * Field names match data/segments.geojson wherever the concepts map, so the
   existing line rendering, SegmentSidebar and SegmentInfoPanel work with
@@ -49,6 +62,9 @@ from pathlib import Path
 import geopandas as gpd
 import numpy as np
 import pandas as pd
+from shapely.geometry import shape
+from shapely.ops import unary_union
+from shapely.validation import explain_validity, make_valid
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
@@ -59,10 +75,18 @@ OUT = HERE / "bogota_segments.geojson"
 SHP = SRC / "Calles_datos.shp"
 RANKED = WORK / "bogota_segment_ranked.csv"
 
-#: Metres. Kept well under half the median carriageway width (6.14 m) so a
+#: Metres. Kept well under half the median carriageway width (6.12 m) so a
 #: street footprint stays a rectangle rather than degenerating to a triangle.
-SIMPLIFY_M = 1.0
-COORD_DECIMALS = 5
+#: 1.0 m was 16% of that width — defensible under a size cap, unnecessary once
+#: the file moved to R2. DP is kept rather than dropped because 5.1M raw
+#: vertices is a rendering cost, and measured on its own DP is well behaved
+#: (max displacement 1.52 m, 2 invalid in 809).
+SIMPLIFY_M = 0.5
+
+#: Decimal places for output coordinates. 6 dp is ~0.11 m at this latitude.
+#: See the quantisation note in the module docstring before lowering this.
+COORD_DECIMALS = 6
+
 METRIC_CRS = 3116
 
 for p in (SHP, RANKED):
@@ -116,11 +140,40 @@ def count_vertices(geoseries):
 before = count_vertices(metric)
 simp = metric.simplify(SIMPLIFY_M, preserve_topology=True)
 after = count_vertices(simp)
-print(f"\nSimplify at {SIMPLIFY_M} m (median street width is 6.14 m, so the")
+print(f"\nSimplify at {SIMPLIFY_M} m (median street width is 6.12 m, so the")
 print(f"tolerance stays well below half-width and rectangles survive):")
 print(f"  vertices before: {before:,}")
 print(f"  vertices after:  {after:,}  ({after/before:.1%}, "
       f"{(1-after/before)*100:.0f}% removed)")
+
+
+def polygonal(geom):
+    """Keep only the polygonal part of whatever make_valid returns.
+
+    make_valid resolves a self-intersecting ring by splitting it, and can hand
+    back a GeometryCollection carrying stray LineStrings alongside the polygons.
+    Those are not street footprints and would break the fill layer, so they are
+    discarded and only the areal parts kept.
+    """
+    if geom is None or geom.is_empty:
+        return geom
+    if geom.geom_type in ("Polygon", "MultiPolygon"):
+        return geom
+    if geom.geom_type == "GeometryCollection":
+        parts = [p for p in geom.geoms if p.geom_type in ("Polygon", "MultiPolygon")]
+        if not parts:
+            return None
+        return parts[0] if len(parts) == 1 else unary_union(parts)
+    return None
+
+
+bad = ~simp.is_valid
+print(f"\nRepairing invalid geometry after simplification ...")
+print(f"  invalid before make_valid: {int(bad.sum()):,} of {len(simp):,} "
+      f"({bad.mean():.1%})")
+simp.loc[bad] = simp.loc[bad].apply(lambda g: polygonal(make_valid(g)))
+still = simp.isna() | ~simp.is_valid
+print(f"  invalid after  make_valid: {int(still.sum()):,}")
 
 wgs = simp.to_crs(4326)
 
@@ -152,20 +205,55 @@ def encode(geom, d):
             else {"type": "MultiPolygon", "coordinates": kept})
 
 
-print(f"\nQuantising to {COORD_DECIMALS} dp (~1.1 m) ...")
-geoms, dropped = {}, 0
+_grid_m = 10 ** -COORD_DECIMALS * 111_320 * math.cos(math.radians(4.65))
+print(f"\nQuantising to {COORD_DECIMALS} dp (~{_grid_m:.2f} m at latitude 4.65, "
+      f"~{6.12 / _grid_m:.0f} cells across a median carriageway) ...")
+geoms, dropped_idx = {}, []
 for idx, geom in wgs.items():
     e = encode(geom, COORD_DECIMALS)
     if e is None:
-        dropped += 1
+        dropped_idx.append(idx)
         continue
     geoms[idx] = e
-final_v = sum(len(c["coordinates"]) if c["type"] == "Polygon"
-              else sum(len(p) for p in c["coordinates"]) for c in geoms.values())
-print(f"  {len(geoms):,} polygons, {final_v:,} vertices"
+dropped = len(dropped_idx)
+def encoded_stats(enc):
+    """Vertices and rings in an encoded geometry dict.
+
+    The previous version summed len(c["coordinates"]), which for a Polygon is
+    the number of RINGS, not vertices. It under-reported the shipped geometry
+    by a factor of ten (101,955 rings read as vertices against 1,067,509
+    actual) and made the simplification look far more aggressive than it was.
+    """
+    v = r_ = 0
+    polys = [enc["coordinates"]] if enc["type"] == "Polygon" else enc["coordinates"]
+    for rings in polys:
+        for ring in rings:
+            v += len(ring)
+            r_ += 1
+    return v, r_
+
+
+final_v = final_r = 0
+for c in geoms.values():
+    v, r_ = encoded_stats(c)
+    final_v += v
+    final_r += r_
+print(f"  {len(geoms):,} polygons, {final_v:,} vertices in {final_r:,} rings"
       + (f", {dropped} collapsed and dropped" if dropped else ""))
 print(f"  total reduction from source: {before:,} -> {final_v:,} "
       f"({(1-final_v/before)*100:.0f}% removed)")
+
+# Quantisation can re-introduce self-intersection after make_valid by snapping
+# distinct vertices onto the same cell, so validity is re-checked on what is
+# actually written rather than on the pre-quantisation geometry.
+print("\nValidity of the encoded output ...")
+enc_invalid = {}
+for idx, c in geoms.items():
+    gg = shape(c)
+    if not gg.is_valid:
+        enc_invalid[idx] = explain_validity(gg).split("[")[0].strip()
+print(f"  invalid after quantisation: {len(enc_invalid):,} of {len(geoms):,} "
+      f"({len(enc_invalid)/max(len(geoms),1):.2%})")
 
 # ---------------------------------------------------------------------------
 # 3. Features
@@ -240,6 +328,30 @@ for i, row in enumerate(gdf.to_dict("records")):
 avg = sum(len(f["properties"]) for f in features) / max(len(features), 1)
 print(f"  {len(features):,} features, {avg:.1f} properties each")
 
+# Anything still invalid, or dropped for collapsing, is named. A geometry that
+# vanishes silently takes its crash count out of the map with it, and at this
+# scale nobody would notice a handful going missing.
+codes = {i: str(rec["CodigoCL"]) for i, rec in enumerate(gdf.to_dict("records"))}
+
+
+def _seg_id(code, i):
+    try:
+        return int(code.replace("CL", ""))
+    except ValueError:
+        return i
+
+
+if dropped_idx:
+    print(f"\n  DROPPED (geometry collapsed under quantisation): {len(dropped_idx)}")
+    for i in dropped_idx:
+        print(f"    seg_id {_seg_id(codes[i], i)}  ({codes[i]})")
+if enc_invalid:
+    print(f"\n  STILL INVALID after make_valid + quantisation: {len(enc_invalid)}")
+    for i, why in sorted(enc_invalid.items())[:50]:
+        print(f"    seg_id {_seg_id(codes[i], i)}  ({codes[i]})  {why}")
+    if len(enc_invalid) > 50:
+        print(f"    ... and {len(enc_invalid) - 50} more")
+
 # ---------------------------------------------------------------------------
 # 4. Metadata and write
 # ---------------------------------------------------------------------------
@@ -299,7 +411,11 @@ metadata = {
     ),
     "geometry_note": (
         f"Street footprint polygons simplified at {SIMPLIFY_M} m and quantised "
-        f"to {COORD_DECIMALS} dp: {before:,} vertices reduced to {final_v:,}."
+        f"to {COORD_DECIMALS} dp (~0.11 m at this latitude): {before:,} source "
+        f"vertices reduced to {final_v:,} in {final_r:,} rings. Invalid "
+        f"geometry is repaired with make_valid after simplification; "
+        f"{len(enc_invalid)} polygons remain invalid and are named in the "
+        f"build log."
     ),
     "coordinate_system": "EPSG:4326 (WGS84)",
     "source_crs": "PCS_CarMAGBOG",
