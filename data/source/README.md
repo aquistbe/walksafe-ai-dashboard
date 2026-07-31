@@ -23,6 +23,12 @@ anyone obtain the identical file and verify it.
 | `zat_profile_models_with_age60.csv` | 8 KB | `0296ec3b0bbe4217` | yes | FICK01 `Manuscripts/AI Co-Scientist Boston 2026/` |
 | `Zonas_ZAT.geojson` | 27 MB | `5babcd3cc6cb7a1d` | **no** | Bogotá ZAT (Zonas de Análisis de Transporte) boundaries — see below |
 
+All Bogotá inputs above derive from **City of Bogotá open data, processed by
+Universidad de los Andes under subcontract to the WalkSafe-AI project.** The
+FICK01 paths in the Source column are where the working copies sit, not the
+origin of the data. Because the underlying records are public, redistribution
+is not restricted — see "Artefacts hosted outside the repository" below.
+
 Full checksum for the excluded file:
 
 ```
@@ -37,7 +43,12 @@ shasum -a 256 data/source/Zonas_ZAT.geojson
 
 ## Obtaining `Zonas_ZAT.geojson`
 
-Bogotá transport analysis zone boundaries. The working copy lives at:
+Bogotá transport analysis zone boundaries.
+
+**Source: City of Bogotá open data. Processing by Universidad de los Andes
+under subcontract to the WalkSafe-AI project.**
+
+The working copy lives at:
 
 ```
 FICK01/Manuscripts/AI Co-Scientist Boston 2026/Zonas_ZAT.geojson
@@ -81,3 +92,57 @@ infrastructure count and highest crash burden.
 - The 27 built-environment features derive from the **CANVAS pedestrian
   safety audit instrument**, which also seeded the Gemini scoring taxonomy
   in `scoring/prompts.py`. The two are not independent measurements.
+
+## Bogotá street segments (`Calles_datos`)
+
+Staged for the Bogotá segment layer.
+
+**Source: City of Bogotá open data. Processing by Universidad de los Andes
+under subcontract to the WalkSafe-AI project.** The underlying street,
+crash and built-environment records are public municipal data; Uniandes
+assembled and joined them. The working copy sits at FICK01
+`Data/Bogota/UniAndes/Calles/Calles_datos/`, which is a filesystem path, not
+a statement of origin.
+
+| File | Size | SHA-256 (first 16) | Committed |
+|---|---|---|---|
+| `Calles_datos.shp` | 84 MB | `90bc79d18f6fd89b` | **no** |
+| `Calles_datos.dbf` | 105 MB | `4da485a19f3f4704` | **no** |
+| `Calles_datos.shx` | 788 KB | — | **no** |
+| `Calles_datos.prj` | 419 B | — | yes (records the CRS) |
+| `Calles_datos.cpg` | 5 B | — | yes |
+| `wt_mean_ses_calle_100m.csv` | 12 MB | `1e0e10fe11ec3d34` | **no** |
+
+**100,819 street segments, 66 attribute fields, crash counts already joined.**
+`si_act_pea` is the pedestrian-crash outcome (20,608 crashes; 10,383 segments
+carry at least one, 10.3%). `sini_total` is all crashes.
+
+Built environment: `P_Ancho_Cl` mean carriageway width (m), `sum_carril` /
+`av_carrile` lanes, `velcidad` speed, `semaforo` signal, `A_Calzada` /
+`A_andenes` / `A_separado` areas.
+
+`wt_mean_ses_calle_100m.csv` — 100,669 rows, SES weighted mean per street at a
+100 m buffer, joining on `CodigoCL`. Carries `wt_mean` and `ses_cat`.
+
+### Things that will bite
+
+- **The geometry is POLYGONS, not lines.** 100,816 Polygon + 3 MultiPolygon —
+  street *footprints*, which is why the area fields exist. Any documentation
+  describing this layer as 100,819 LineStrings is wrong, and the size and
+  rendering consequences are large: 5,128,282 vertices, roughly 108 MB of raw
+  coordinates.
+- **CRS is a local projection**, `PCS_CarMAGBOG` (Transverse Mercator on a
+  modified GRS80 spheroid, false easting 92334.879). Reproject to EPSG:4326.
+- **`sent_vial` is 100% null** — zero non-null values across all 100,819 rows.
+  Do not use it for direction.
+- **`MVINUMC` lane counts from the malla vial are unusable** — 1-character DBF
+  field, 18% overflow, anything ≥ 10 unrecoverable. Use `sum_carril` /
+  `av_carrile` here instead.
+- **There is no join key to the malla vial.** `CODIGO_IDE` (e.g. 1000022) and
+  `MVICIV` (e.g. 18006831) do not overlap at all, nor does any other key pair.
+  So the lightweight LineString network in
+  `Data/Bogota/Movilidad/Malla_Vial_Integral_Bogota_D_C` cannot be substituted
+  for the heavy polygons while keeping the crash outcome.
+- **Cloud placeholders.** Many files under FICK01 are OneDrive stubs that read
+  as zero bytes until opened in Finder. These two were materialised before
+  copying; check `ls -l` before trusting any FICK01 path.

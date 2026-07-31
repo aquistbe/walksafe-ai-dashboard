@@ -18,6 +18,11 @@ frontend/public/data/
 pipeline/work/
 pipeline/outputs/
 
+# Served from R2, not from the repo or the site origin: ~55 MB, over
+# Cloudflare Workers' 25 MiB per-asset limit. Rebuild with
+# `make bogota-segments` and publish with `make upload-bogota-segments`.
+data/bogota_segments.geojson
+
 # Production
 frontend/build/
 
@@ -33,6 +38,9 @@ yarn-error.log*
 # Local env files
 .env
 .env*.local
+
+# Wrangler local state
+.wrangler/
 
 # Vercel
 .vercel
@@ -68,6 +76,10 @@ venv/
 # build reproducible from a clean clone. Large raw geometry is not; its
 # provenance and checksum are recorded in data/source/README.md so anyone
 # can obtain and verify the same input.
+# Large source tables. The small analysis CSVs (~470 KB) are committed; this
+# one is 12 MB, so it is treated like the raw geometry — checksummed in
+# data/source/README.md rather than stored.
+data/source/wt_mean_ses_calle_*.csv
 data/source/*.geojson
 data/source/*.zip
 data/source/*.gpkg
