@@ -48,12 +48,73 @@ export interface LayerModeConfig {
   gateField?: string;
 }
 
-export interface DatasetConfig {
+/**
+ * How this dataset's numbers are named and scaled.
+ *
+ * Required on every dataset. `distanceUnit` and `outcomeLabel` used to be
+ * optional, with Philadelphia's values supplied as `?? "KSI"` / `?? "mi"`
+ * defaults at the call sites — so any component that forgot to ask printed
+ * Philadelphia's vocabulary over Bogotá's data. The segment sidebar said
+ * "expected KSI per mile" directly above a legend reading "expected crashes
+ * per km", two units and two outcomes on one screen. Making these required
+ * turns that from a runtime accident into a compile error.
+ */
+export interface MeasureConfig {
+  /** Denominator for rates, in the compact form used beside numbers. */
+  distanceUnit: "mi" | "km";
+  /** The same unit in prose: "mile", "km". */
+  distanceUnitLong: string;
+  /** Sentence form, e.g. "mid-block pedestrian KSI". */
+  outcomeLabel: string;
+  /** Chip and column-heading form, e.g. "KSI", "crashes". */
+  outcomeLabelShort: string;
+  /** Crash years these numbers cover, e.g. "2015–2024". */
+  crashWindow: string;
+}
+
+/**
+ * Feature-property names and scales for a line dataset.
+ *
+ * Philadelphia and Bogotá emit different keys for the same concepts, and the
+ * paint expression read Philadelphia's for both: `mu_per_mile` and
+ * `ped_ksi_seg` do not exist on a Bogotá feature, so the choropleth was
+ * stepping a null and dropping every segment into the first ramp colour while
+ * the legend beside it advertised Bogotá's cut-points. Nothing errored.
+ *
+ * This lives on the LINE arm of the union, so a new line dataset cannot
+ * compile without stating its own field names.
+ */
+export interface SegmentFieldConfig {
+  /** Property holding the modelled rate. */
+  rateField: "mu_per_mile" | "mu_per_km";
+  /** Property holding the observed outcome count. */
+  outcomeField: "ped_ksi_seg" | "ped_crashes_seg";
+  /** Property holding block length. */
+  lengthField: "length_mi" | "length_km";
+  /** SPF ramp cut-points. A different model on a different scale — these are
+   *  not interchangeable between cities. */
+  spfBreaks: number[];
+  /** Observed-count ramp cut-points, from this city's own distribution. */
+  observedBreaks: number[];
+  /** Whether a traffic-volume covariate exists at all. Bogotá has none, so the
+   *  filter chip, the layer mode and the AADT panel rows are all suppressed. */
+  hasTrafficVolume: boolean;
+  /** Why a unit can sit outside the model. The reason differs per city. */
+  outsideModelNote: string;
+  /** Footer line for the hover popup. */
+  popupNote: string;
+  /** Legend footnote, keyed by layer-mode id. */
+  legendNotes: Record<string, string>;
+}
+
+interface DatasetBase {
   id: DatasetId;
   /** Shown on the layer toggle when a city has more than one dataset. */
   label: string;
 
-  unitType: UnitType;
+  /** Outcome name, unit and crash window. Never hardcode these in a component. */
+  measure: MeasureConfig;
+
   /**
    * Feature property holding the unit id. These must stay distinct across
    * datasets: the analysis-unit type guards discriminate on which id key is
@@ -77,11 +138,6 @@ export interface DatasetConfig {
    * development still reads from public/data.
    */
   remoteKey?: string;
-  /** Distance unit the numbers are expressed in. */
-  distanceUnit?: "mi" | "km";
-  /** Label for the crash outcome — these differ per city and are not the same
-   *  quantity, so the UI must not call them all "KSI". */
-  outcomeLabel?: string;
   /** Shown in the legend footer. Required where we republish open data. */
   attribution?: string;
   /** Companion summary file, or null when the collection carries its own. */
@@ -101,6 +157,43 @@ export interface DatasetConfig {
   /** Why this dataset's numbers cannot be compared with a sibling's. */
   notComparableTo?: string;
 }
+
+/**
+ * A dataset, discriminated on its analysis-unit type.
+ *
+ * The union is what makes the field names above enforceable: `segment` is
+ * reachable only after narrowing to `unitType === "line"`, and a fifth line
+ * layer cannot be added without declaring its own property names, ramp breaks
+ * and legend notes. That is the whole point — the previous shape let a new
+ * dataset inherit Philadelphia's silently.
+ */
+export interface PointDatasetConfig extends DatasetBase {
+  unitType: "point";
+}
+export interface PolygonDatasetConfig extends DatasetBase {
+  unitType: "polygon";
+}
+export interface LineDatasetConfig extends DatasetBase {
+  unitType: "line";
+  segment: SegmentFieldConfig;
+  /**
+   * This dataset renders through the LINE path but its geometry is POLYGONS.
+   *
+   * Bogotá's segments are street FOOTPRINTS about 6 m wide. MapLibre draws a
+   * polygon's rings when a line layer reads it, but at z10 one pixel is ~150 m,
+   * so the class-scaled stroke lands at 0.36-0.50 px for most of the network
+   * and antialiases to nothing. When this is set, the builder adds a fill
+   * beneath the outline and gives the outline a zoom-interpolated PIXEL width,
+   * so the network is visible at city scale and the true footprint shows when
+   * zoomed in. Philadelphia's segments are real LineStrings and do not need it.
+   */
+  polygonGeometry?: boolean;
+}
+
+export type DatasetConfig =
+  | PointDatasetConfig
+  | PolygonDatasetConfig
+  | LineDatasetConfig;
 
 export interface CityConfig {
   id: CityId;
@@ -125,10 +218,17 @@ export interface CityConfig {
   defaultDatasetId: DatasetId;
 }
 
-const PHILLY_INTERSECTIONS: DatasetConfig = {
+const PHILLY_INTERSECTIONS: PointDatasetConfig = {
   id: "philadelphia-intersections",
   label: "Intersections",
   unitType: "point",
+  measure: {
+    distanceUnit: "mi",
+    distanceUnitLong: "mile",
+    outcomeLabel: "pedestrian KSI",
+    outcomeLabelShort: "KSI",
+    crashWindow: "2015–2024",
+  },
   idField: "node_id",
   nameField: "int_name",
   unitLabel: "intersection",
@@ -151,10 +251,43 @@ const PHILLY_INTERSECTIONS: DatasetConfig = {
     "crash set, and different covariates.",
 };
 
-const PHILLY_SEGMENTS: DatasetConfig = {
+const PHILLY_SEGMENTS: LineDatasetConfig = {
   id: "philadelphia-segments",
   label: "Segments",
   unitType: "line",
+  measure: {
+    distanceUnit: "mi",
+    distanceUnitLong: "mile",
+    outcomeLabel: "mid-block pedestrian KSI",
+    outcomeLabelShort: "KSI",
+    crashWindow: "2015–2024",
+  },
+  segment: {
+    rateField: "mu_per_mile",
+    outcomeField: "ped_ksi_seg",
+    lengthField: "length_mi",
+    // Quantiles of the fitted mid-block KSI-per-mile distribution.
+    spfBreaks: [0.15, 0.32, 0.8, 1.86, 2.7],
+    observedBreaks: [1, 2, 3, 5],
+    hasTrafficVolume: true,
+    outsideModelNote:
+      "This block lies entirely within the influence zones of the " +
+      "intersections at its ends, so it has no mid-block exposure of its own " +
+      "and is excluded from the model. Its crashes are still counted.",
+    popupNote: "Mid-block only — not comparable with intersection risk.",
+    legendNotes: {
+      spf:
+        "Mid-block only, with length as an offset. NOT comparable with " +
+        "intersection risk — different denominator and a disjoint crash set.",
+      observed:
+        "Killed or suspected serious injury, 2015–2024. Most streets have none " +
+        "in ten years — grey is an absence of crashes, not an absence of risk. " +
+        "Counts, not a rate: long blocks accumulate more.",
+      aadt:
+        "PennDOT assigns a nominal 300 veh/day to local roads. Only genuine " +
+        "counts are coloured — the rest is not a measurement.",
+    },
+  },
   // NOT unit_id — that key means "Bogotá ZAT" to the type guards.
   idField: "seg_id",
   nameField: "unit_name",
@@ -199,10 +332,19 @@ const PHILLY_SEGMENTS: DatasetConfig = {
     "intersection, a disjoint crash set, and no High Injury Network term.",
 };
 
-const BOGOTA_ZATS: DatasetConfig = {
+const BOGOTA_ZATS: PolygonDatasetConfig = {
   id: "bogota-zats",
   label: "Zones",
   unitType: "polygon",
+  measure: {
+    // ZAT results are densities per km², not per road length, but the unit is
+    // still declared so nothing falls back to Philadelphia's mile.
+    distanceUnit: "km",
+    distanceUnitLong: "km",
+    outcomeLabel: "pedestrian casualties",
+    outcomeLabelShort: "casualties",
+    crashWindow: "2015–2019",
+  },
   idField: "unit_id",
   nameField: "unit_name",
   unitLabel: "zone",
@@ -224,20 +366,52 @@ const BOGOTA_ZATS: DatasetConfig = {
     "carry more pedestrians and traffic.",
 };
 
-const BOGOTA_SEGMENTS: DatasetConfig = {
+const BOGOTA_SEGMENTS: LineDatasetConfig = {
   id: "bogota-segments",
   label: "Segments",
   unitType: "line",
+  measure: {
+    distanceUnit: "km",
+    distanceUnitLong: "km",
+    outcomeLabel: "pedestrian-involved crashes",
+    outcomeLabelShort: "crashes",
+    crashWindow: "2015–2019",
+  },
+  segment: {
+    rateField: "mu_per_km",
+    outcomeField: "ped_crashes_seg",
+    lengthField: "length_km",
+    spfBreaks: [0.8, 1.6, 2.7, 7.7, 23.2],
+    // Quantiles of the observed count among the 10,383 segments carrying at
+    // least one crash: p75 = 2, p90 = 4, p99 = 12. Philadelphia's [1,2,3,5]
+    // would put a fifth of Bogotá's crash-carrying network in the top bucket.
+    observedBreaks: [1, 2, 4, 12],
+    // Calles_datos carries width, lanes and speed but no traffic count.
+    hasTrafficVolume: false,
+    outsideModelNote:
+      "This segment has no usable derived length or no socioeconomic stratum " +
+      "joined, so it is excluded from the model. Its crashes are still counted.",
+    popupNote:
+      "Pedestrian-involved, not KSI — not comparable with the Philadelphia layers.",
+    legendNotes: {
+      spf:
+        "Length as an offset, per km. NOT comparable with Philadelphia segment " +
+        "risk or with the ZAT layer — different crash definition, exposure and model.",
+      observed:
+        "Pedestrian-INVOLVED crashes, not killed-or-seriously-injured. A " +
+        "different outcome from the Philadelphia layer — the two numbers are " +
+        "not comparable.",
+    },
+  },
   idField: "seg_id",
   nameField: "unit_name",
   unitLabel: "street segment",
   unitLabelPlural: "street segments",
+  polygonGeometry: true,
   // ~55 MB, over Cloudflare Workers' 25 MiB per-asset cap, so it is served
   // from R2. The relative path is the local-development fallback.
   dataUrl: "/data/bogota_segments.geojson",
   remoteKey: "bogota_segments.geojson",
-  distanceUnit: "km",
-  outcomeLabel: "pedestrian crashes",
   attribution:
     "Source: City of Bogotá open data; processing by Universidad de los Andes.",
   summaryUrl: null,

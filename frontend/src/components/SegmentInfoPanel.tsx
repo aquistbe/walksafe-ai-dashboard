@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import type { SegmentFeature, SegmentCollection } from "@/lib/types";
+import type { LineDatasetConfig } from "@/lib/cities";
 import { bboxCentre } from "@/lib/geo";
 import { RISK_TIER_COLORS } from "@/lib/constants";
 import { Section, StatCard, DetailRow, Tag, downloadCsv } from "./panel/primitives";
@@ -10,11 +11,13 @@ interface SegmentInfoPanelProps {
   feature: SegmentFeature | null;
   metadata: SegmentCollection["metadata"] | null;
   onClose: () => void;
-  /** "mi" for Philadelphia, "km" for Bogotá. */
-  distanceUnit?: "mi" | "km";
-  /** Philadelphia counts KSI; Bogotá counts all pedestrian-involved crashes.
-   *  Calling both "KSI" would assert an equivalence that does not hold. */
-  outcomeLabel?: string;
+  /**
+   * The dataset itself. Unit, outcome name, crash window, property names and
+   * the "outside the model" explanation all come from here — this panel used
+   * to take two optional labels and default them to Philadelphia's, then read
+   * `p.length_mi` and render PennDOT's nominal-AADT note regardless of city.
+   */
+  dataset: LineDatasetConfig;
   attribution?: string;
 }
 
@@ -31,15 +34,11 @@ export default function SegmentInfoPanel({
   feature,
   metadata,
   onClose,
-  distanceUnit = "mi",
-  outcomeLabel = "Ped KSI",
+  dataset,
   attribution,
 }: SegmentInfoPanelProps) {
-  const U = distanceUnit;
-  const dist = (p: SegmentFeature["properties"]) =>
-    U === "km" ? p.length_km : p.length_mi;
-  const perDist = (p: SegmentFeature["properties"]) =>
-    U === "km" ? p.mu_per_km : p.mu_per_mile;
+  const { distanceUnit: U, outcomeLabel, outcomeLabelShort } = dataset.measure;
+  const { rateField, outcomeField, lengthField, hasTrafficVolume } = dataset.segment;
   const [shareLabel, setShareLabel] = useState("Share");
 
   const handleExport = useCallback(() => {
@@ -61,20 +60,23 @@ export default function SegmentInfoPanel({
 
   const handleShare = useCallback(() => {
     if (!feature) return;
-    const url = `${window.location.origin}${window.location.pathname}?layer=philadelphia-segments&site=${feature.properties.seg_id}`;
+    // The layer id came from the dataset, not a literal: this used to hardcode
+    // `philadelphia-segments`, so sharing a Bogotá segment produced a link that
+    // reopened Philadelphia and resolved the Bogotá seg_id against it.
+    const url =
+      `${window.location.origin}${window.location.pathname}` +
+      `?layer=${dataset.id}&site=${feature.properties.seg_id}`;
     navigator.clipboard?.writeText(url).then(() => {
       setShareLabel("Copied!");
       setTimeout(() => setShareLabel("Share"), 2000);
     });
-  }, [feature]);
+  }, [feature, dataset.id]);
 
   if (!feature) return null;
   const p = feature.properties;
-  // Philadelphia emits ped_ksi_seg (KSI); Bogotá emits ped_crashes_seg (all
-  // pedestrian-involved). Different quantities, hence the label prop.
-  const outcome = p.ped_ksi_seg ?? p.ped_crashes_seg ?? 0;
-  const len = dist(p);
-  const perU = perDist(p);
+  const outcome = p[outcomeField] ?? 0;
+  const len = p[lengthField];
+  const perU = p[rateField];
 
   return (
     <div className="absolute right-4 top-4 bottom-4 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden z-20">
@@ -127,9 +129,9 @@ export default function SegmentInfoPanel({
           </p>
         </div>
 
-        <Section title="Observed crashes">
+        <Section title={`Observed crashes, ${dataset.measure.crashWindow}`}>
           <div className="grid grid-cols-2 gap-2 mb-2">
-            <StatCard label={outcomeLabel} value={n0(outcome)} />
+            <StatCard label={outcomeLabelShort} value={n0(outcome)} />
             <StatCard
               label={`Per ${U}`}
               value={len && len > 0 ? (outcome / len).toFixed(2) : "—"}
@@ -148,7 +150,7 @@ export default function SegmentInfoPanel({
           {p.ksi_corridor !== undefined && (
             <DetailRow
               label="On this corridor"
-              value={`${n0(p.ksi_corridor)} KSI`}
+              value={`${n0(p.ksi_corridor)} ${outcomeLabelShort}`}
               sublabel={`${n0(p.corridor_n)} segments`}
             />
           )}
@@ -195,37 +197,65 @@ export default function SegmentInfoPanel({
             </>
           ) : (
             <p className="text-xs text-gray-500">
-              This block lies entirely within the influence zones of the
-              intersections at its ends, so it has no mid-block exposure of its
-              own and is excluded from the model. Its crashes are still counted.
+              {dataset.segment.outsideModelNote}
             </p>
           )}
         </Section>
 
+        {/* Every row below is conditional on the field actually being emitted.
+            These are Philadelphia's covariates — HIN, AADT, population, schools
+            and parks are not in the Bogotá extract — and rendering them
+            unconditionally printed a column of em-dashes plus PennDOT's
+            nominal-AADT note over a Colombian street. */}
         <Section title="Road context">
           <DetailRow label="Class" value={CLASS_LABEL[p.class] ?? String(p.class)} />
-          <DetailRow label="Block length" value={`${n2(p.length_mi)} mi`} />
+          <DetailRow label="Block length" value={`${n2(len)} ${U}`} />
           <DetailRow label="One-way" value={p.oneway ? "Yes" : "No"} />
-          <DetailRow label="Divided carriageway" value={p.divided ? "Yes" : "No"} />
-          <DetailRow
-            label="On High Injury Network"
-            value={`${Math.round((p.hin_frac ?? 0) * 100)}% of length`}
-          />
-          {p.has_aadt ? (
-            <DetailRow label="Traffic (AADT)" value={n0(p.aadt)} sublabel="measured" />
-          ) : (
-            <DetailRow label="Traffic (AADT)" value="Not measured" sublabel="nominal" />
+          {p.divided !== undefined && (
+            <DetailRow label="Divided carriageway" value={p.divided ? "Yes" : "No"} />
           )}
-          {!p.has_aadt && (
-            <p className="text-[10px] text-gray-400 mt-1 leading-snug">
-              PennDOT assigns a nominal 300 veh/day to local roads. The model
-              estimates a volume effect only where a genuine count exists, so
-              this segment&rsquo;s estimate rests on road class instead.
-            </p>
+          {p.width_m !== undefined && (
+            <DetailRow label="Carriageway width" value={`${n2(p.width_m)} m`} />
           )}
-          <DetailRow label="Population within 800 m" value={n0(p.pop_800m)} />
-          <DetailRow label="Schools within 200 m" value={n0(p.schools_200m ?? 0)} />
-          <DetailRow label="Parks within 200 m" value={n0(p.parks_200m ?? 0)} />
+          {p.lanes !== undefined && <DetailRow label="Lanes" value={n0(p.lanes)} />}
+          {p.speed !== undefined && (
+            <DetailRow label="Speed limit" value={`${n0(p.speed)} km/h`} />
+          )}
+          {p.has_signal !== undefined && (
+            <DetailRow label="Signalised" value={p.has_signal ? "Yes" : "No"} />
+          )}
+          {p.hin_frac !== undefined && (
+            <DetailRow
+              label="On High Injury Network"
+              value={`${Math.round(p.hin_frac * 100)}% of length`}
+            />
+          )}
+          {hasTrafficVolume && (
+            <>
+              {p.has_aadt ? (
+                <DetailRow label="Traffic (AADT)" value={n0(p.aadt)} sublabel="measured" />
+              ) : (
+                <>
+                  <DetailRow label="Traffic (AADT)" value="Not measured" sublabel="nominal" />
+                  <p className="text-[10px] text-gray-400 mt-1 leading-snug">
+                    PennDOT assigns a nominal 300 veh/day to local roads. The
+                    model estimates a volume effect only where a genuine count
+                    exists, so this segment&rsquo;s estimate rests on road class
+                    instead.
+                  </p>
+                </>
+              )}
+            </>
+          )}
+          {p.pop_800m !== undefined && (
+            <DetailRow label="Population within 800 m" value={n0(p.pop_800m)} />
+          )}
+          {p.schools_200m !== undefined && (
+            <DetailRow label="Schools within 200 m" value={n0(p.schools_200m)} />
+          )}
+          {p.parks_200m !== undefined && (
+            <DetailRow label="Parks within 200 m" value={n0(p.parks_200m)} />
+          )}
         </Section>
       </div>
 

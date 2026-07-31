@@ -10,7 +10,7 @@
  * builder a properly typed value.
  */
 
-import type { DatasetConfig } from "@/lib/cities";
+import type { DatasetConfig, LineDatasetConfig } from "@/lib/cities";
 import type { UnitFeature } from "@/lib/types";
 import { assertNever, isIntersectionFeature, isSegmentFeature, isZatFeature } from "@/lib/types";
 import { RISK_TIER_COLORS, CLUSTER_COLORS, CLUSTER_LABELS } from "@/lib/constants";
@@ -29,7 +29,14 @@ export function buildPopupHtml(feature: UnitFeature, dataset: DatasetConfig): st
   // intersection branch would render a panel of undefined fields rather than
   // failing, and nobody would notice.
   if (isZatFeature(feature)) return zatPopup(feature);
-  if (isSegmentFeature(feature)) return segmentPopup(feature);
+  if (isSegmentFeature(feature)) {
+    // The dataset was already a parameter here but was never threaded down, so
+    // the segment popup read Philadelphia's property names for both cities and
+    // showed Bogotá "Mid-block KSI: 0 / Expected KSI/mi: 0.00 / 0.00 mi" on
+    // every hover. Guard rather than assume: only a line dataset has `segment`.
+    if (dataset.unitType !== "line") return "";
+    return segmentPopup(feature, dataset);
+  }
   if (isIntersectionFeature(feature)) return intersectionPopup(feature);
   return assertNever(feature, "popup feature");
 }
@@ -38,15 +45,22 @@ const CLASS_LABEL: Record<number, string> = {
   2: "Arterial", 3: "Collector", 4: "Local", 5: "Minor local",
 };
 
-function segmentPopup(feature: UnitFeature): string {
+function segmentPopup(feature: UnitFeature, dataset: LineDatasetConfig): string {
   if (!isSegmentFeature(feature)) return "";
   const p = feature.properties;
-  const ksi = p.ped_ksi_seg ?? 0;
+  const { outcomeLabel, outcomeLabelShort, distanceUnit } = dataset.measure;
+  const { rateField, outcomeField, lengthField } = dataset.segment;
+
+  const outcome = p[outcomeField] ?? 0;
+  const rate = p[rateField] ?? 0;
+  // Philadelphia subtracts the intersection influence zone from block length,
+  // so exposure and length differ there. Bogotá's exposure IS its length.
+  const exposure = p.exposure_mi ?? p[lengthField] ?? 0;
 
   const model = p.has_model
-    ? `<span style="color: #6B7280;">Expected KSI/mi:</span>
-       <span style="font-weight: 600;">${esc((p.mu_per_mile ?? 0).toFixed(2))}</span>`
-    : `<span style="color: #9CA3AF; grid-column: 1 / -1;">Outside the model (no exposure beyond the intersections)</span>`;
+    ? `<span style="color: #6B7280;">Expected ${esc(outcomeLabelShort)}/${esc(distanceUnit)}:</span>
+       <span style="font-weight: 600;">${esc(rate.toFixed(2))}</span>`
+    : `<span style="color: #9CA3AF; grid-column: 1 / -1;">Outside the model</span>`;
 
   return `
     <div style="font-family: ${FONT}; font-size: 12px; line-height: 1.5; color: #2D2D2D;">
@@ -55,15 +69,18 @@ function segmentPopup(feature: UnitFeature): string {
         ${esc(CLASS_LABEL[p.class] ?? p.class)}${p.oneway ? " · one-way" : ""}${p.divided ? " · divided" : ""}
       </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px 12px; font-size: 11px;">
-        <span style="color: #6B7280;">Mid-block KSI:</span>
-        <span style="font-weight: 600;">${ksi}</span>
+        <span style="color: #6B7280;">Observed ${esc(outcomeLabelShort)}:</span>
+        <span style="font-weight: 600;">${esc(outcome)}</span>
         ${model}
         <span style="color: #6B7280;">Exposure:</span>
-        <span style="font-weight: 600;">${esc((p.exposure_mi ?? 0).toFixed(2))} mi</span>
+        <span style="font-weight: 600;">${esc(exposure.toFixed(2))} ${esc(distanceUnit)}</span>
         ${p.has_aadt ? `<span style="color: #6B7280;">AADT:</span><span style="font-weight: 600;">${esc((p.aadt ?? 0).toLocaleString())}</span>` : ""}
       </div>
       <div style="margin-top: 6px; padding-top: 5px; border-top: 1px solid #E5E7EB; color: #9CA3AF; font-size: 10px;">
-        Mid-block only — not comparable with intersection risk.
+        ${esc(dataset.segment.popupNote)}
+      </div>
+      <div style="color: #C9C5BD; font-size: 9px; margin-top: 2px;">
+        ${esc(outcomeLabel)}, ${esc(dataset.measure.crashWindow)}
       </div>
     </div>
   `;

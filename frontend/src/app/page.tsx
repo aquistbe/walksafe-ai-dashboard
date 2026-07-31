@@ -197,19 +197,23 @@ export default function HomePage() {
   return (
     <div className="h-[calc(100vh-3.5rem)] flex overflow-hidden">
       {filters.kind === "philadelphia-segment" ? (
-        <SegmentSidebar
-          filters={filters}
-          onFiltersChange={setFilters}
-          totalCount={features.length}
-          filteredCount={filteredFeatures.length}
-          topSegments={topUnits as SegmentFeature[]}
-          onSelectUnit={handleSelect}
-          showAadtFilter={dataset.id !== "bogota-segments"}
-          outcomeLabel={dataset.outcomeLabel ?? "KSI"}
-          caveat={segMetadata?.caveat ?? dataset.mapCaveat}
-          collapsed={sidebarCollapsed}
-          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
-        />
+        // filterKind "philadelphia-segment" is declared only on line datasets,
+        // so this narrowing never fails in practice — it is here because
+        // `dataset.segment` is reachable only on the line arm of the union.
+        dataset.unitType === "line" ? (
+          <SegmentSidebar
+            filters={filters}
+            onFiltersChange={setFilters}
+            totalCount={features.length}
+            filteredCount={filteredFeatures.length}
+            topSegments={topUnits as SegmentFeature[]}
+            onSelectUnit={handleSelect}
+            dataset={dataset}
+            caveat={segMetadata?.caveat ?? dataset.mapCaveat}
+            collapsed={sidebarCollapsed}
+            onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+          />
+        ) : null
       ) : filters.kind === "bogota-zat" ? (
         <ZatSidebar
           filters={filters}
@@ -260,16 +264,17 @@ export default function HomePage() {
             onClose={() => handleSelect(null)}
           />
         )}
-        {selectedFeature && isSegmentFeature(selectedFeature) && (
-          <SegmentInfoPanel
-            feature={selectedFeature}
-            metadata={segMetadata}
-            onClose={() => handleSelect(null)}
-            distanceUnit={dataset.distanceUnit ?? "mi"}
-            outcomeLabel={dataset.outcomeLabel ?? "Ped KSI"}
-            attribution={dataset.attribution}
-          />
-        )}
+        {selectedFeature &&
+          isSegmentFeature(selectedFeature) &&
+          dataset.unitType === "line" && (
+            <SegmentInfoPanel
+              feature={selectedFeature}
+              metadata={segMetadata}
+              onClose={() => handleSelect(null)}
+              dataset={dataset}
+              attribution={dataset.attribution}
+            />
+          )}
         {selectedFeature && isIntersectionFeature(selectedFeature) && (
           <InfoPanel
             feature={selectedFeature}
@@ -303,7 +308,9 @@ export default function HomePage() {
                     <>
                       <Divider />
                       <div>
-                        <span className="text-gray-500">Mid-block KSI:</span>{" "}
+                        <span className="text-gray-500">
+                          Mid-block {dataset.measure.outcomeLabelShort}:
+                        </span>{" "}
                         <span className="font-semibold text-walksafe-red">
                           {segMetadata.crash_accounting.segment_on_walkable_network.toLocaleString()}
                         </span>
@@ -344,10 +351,12 @@ export default function HomePage() {
                   )}
                   <Divider />
                   <div className="text-gray-400">
-                    Crashes {segMetadata.crash_window}
-                    {segMetadata.crash_accounting
-                      ? ` | mid-block only, split from the ${segMetadata.crash_accounting.intersection_layer} at intersections`
-                      : " | pedestrian-involved, not KSI"}
+                    {/* Window and outcome from the dataset, not inferred from
+                        which optional metadata block happens to be present. */}
+                    Crashes {dataset.measure.crashWindow} |{" "}
+                    {dataset.measure.outcomeLabel}
+                    {segMetadata.crash_accounting &&
+                      `, split from the ${segMetadata.crash_accounting.intersection_layer} at intersections`}
                   </div>
                 </>
               ) : zatMetadata ? (
@@ -368,8 +377,8 @@ export default function HomePage() {
                   </div>
                   <Divider />
                   <div className="text-gray-400">
-                    Crashes {zatMetadata.crash_window} | DINO/STRIDE extraction,
-                    ~312,000 Street View points
+                    Crashes {dataset.measure.crashWindow} | DINO/STRIDE
+                    extraction, ~312,000 Street View points
                   </div>
                 </>
               ) : summary ? (

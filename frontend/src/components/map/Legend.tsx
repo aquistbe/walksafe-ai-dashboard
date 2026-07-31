@@ -1,6 +1,11 @@
 "use client";
 
-import type { DatasetConfig } from "@/lib/cities";
+import type {
+  DatasetConfig,
+  LineDatasetConfig,
+  PointDatasetConfig,
+  PolygonDatasetConfig,
+} from "@/lib/cities";
 import type { RiskTier, ZatCluster } from "@/lib/types";
 import {
   RISK_TIER_COLORS,
@@ -14,11 +19,10 @@ import {
   CASUALTY_DENSITY_RAMP,
   PCT60_BREAKS,
   PCT60_RAMP,
-  BOG_SPF_BREAKS,
 } from "@/lib/constants";
 import {
-  SEG_SPF_BREAKS, SEG_SPF_RAMP,
-  SEG_OBSERVED_BREAKS, SEG_OBSERVED_RAMP,
+  SEG_SPF_RAMP,
+  SEG_OBSERVED_RAMP,
   SEG_AADT_BREAKS, SEG_AADT_RAMP,
 } from "./layers";
 
@@ -39,15 +43,12 @@ export default function Legend({
   counts,
   attribution,
 }: LegendProps) {
-  const isBogotaSegments = dataset.id === "bogota-segments";
   return (
     <div className="absolute bottom-14 left-3 z-10 bg-white/95 backdrop-blur-sm rounded-lg shadow-md border border-gray-200 p-3 min-w-[190px] max-w-[250px]">
-      {dataset.unitType === "polygon" && renderZatLegend(layerMode, counts)}
-      {dataset.unitType === "line" &&
-        (isBogotaSegments
-          ? renderBogotaSegmentLegend(layerMode, counts)
-          : renderSegmentLegend(layerMode, counts))}
-      {dataset.unitType === "point" && renderIntersectionLegend(layerMode, counts)}
+      {dataset.unitType === "polygon" && renderZatLegend(dataset, layerMode, counts)}
+      {dataset.unitType === "line" && renderSegmentLegend(dataset, layerMode, counts)}
+      {dataset.unitType === "point" &&
+        renderIntersectionLegend(dataset, layerMode, counts)}
       {attribution && (
         <p className="text-[9px] text-gray-400 mt-2 pt-2 border-t border-gray-100 leading-snug">
           {attribution}
@@ -58,60 +59,37 @@ export default function Legend({
 }
 
 // ---------------------------------------------------------------------------
-// Bogota — street segments
+// Street segments — one renderer, both cities
+//
+// This used to be two functions picked by `dataset.id === "bogota-segments"`,
+// which meant a fifth line layer would silently render Philadelphia's titles,
+// cut-points and footnotes over its own data. Titles are composed from
+// `measure`, breaks and notes come from `segment`, so a new dataset has to
+// state its own or it does not compile.
 // ---------------------------------------------------------------------------
 
-function renderBogotaSegmentLegend(layerMode: string, counts: LegendCounts) {
+function renderSegmentLegend(
+  dataset: LineDatasetConfig,
+  layerMode: string,
+  counts: LegendCounts
+) {
   const total = counts.total ?? 0;
-  if (layerMode === "observed") {
-    return (
-      <>
-        <Title>Pedestrian crashes</Title>
-        <Ramp ramp={SEG_OBSERVED_RAMP} breaks={SEG_OBSERVED_BREAKS} />
-        <Coverage have={counts.hasCrashes ?? 0} total={total} what="a recorded crash" />
-        <NoDataRow label="None recorded" count={counts.noCrashes} />
-        <Foot>
-          Pedestrian-INVOLVED crashes, not killed-or-seriously-injured. A
-          different outcome from the Philadelphia layer &mdash; the two numbers
-          are not comparable.
-        </Foot>
-      </>
-    );
-  }
-  return (
-    <>
-      <Title>Expected crashes per km</Title>
-      <Ramp ramp={SEG_SPF_RAMP} breaks={BOG_SPF_BREAKS} />
-      <Coverage have={counts.hasModel ?? 0} total={total} what="a model estimate" />
-      <NoDataRow label="Outside the model" count={counts.noModel} />
-      <Foot>
-        Length as an offset, per km. NOT comparable with Philadelphia segment
-        risk or with the ZAT layer &mdash; different crash definition, exposure
-        and model.
-      </Foot>
-    </>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Philadelphia — street segments
-// ---------------------------------------------------------------------------
-
-function renderSegmentLegend(layerMode: string, counts: LegendCounts) {
-  const total = counts.total ?? 0;
+  const { outcomeLabel, outcomeLabelShort, distanceUnitLong } = dataset.measure;
+  const notes = dataset.segment.legendNotes;
 
   if (layerMode === "observed") {
     return (
       <>
-        <Title>Observed mid-block KSI</Title>
-        <Ramp ramp={SEG_OBSERVED_RAMP} breaks={SEG_OBSERVED_BREAKS} />
-        <Coverage have={counts.hasCrashes ?? 0} total={total} what="observed crashes" />
+        <Title>Observed {outcomeLabel}</Title>
+        <Ramp ramp={SEG_OBSERVED_RAMP} breaks={dataset.segment.observedBreaks} />
+        <Coverage
+          have={counts.hasCrashes ?? 0}
+          total={total}
+          what="a recorded crash"
+          unitLabelPlural={dataset.unitLabelPlural}
+        />
         <NoDataRow label="None recorded" count={counts.noCrashes} />
-        <Foot>
-          Killed or suspected serious injury, 2015&ndash;2024. Most streets have
-          none in ten years &mdash; grey is an absence of crashes, not an
-          absence of risk. Counts, not a rate: long blocks accumulate more.
-        </Foot>
+        <Foot>{notes.observed}</Foot>
       </>
     );
   }
@@ -120,26 +98,31 @@ function renderSegmentLegend(layerMode: string, counts: LegendCounts) {
       <>
         <Title>Traffic volume (AADT)</Title>
         <Ramp ramp={SEG_AADT_RAMP} breaks={SEG_AADT_BREAKS} />
-        <Coverage have={counts.hasAadt ?? 0} total={total} what="a genuine traffic count" />
+        <Coverage
+          have={counts.hasAadt ?? 0}
+          total={total}
+          what="a genuine traffic count"
+          unitLabelPlural={dataset.unitLabelPlural}
+        />
         <NoDataRow label="Nominal placeholder" count={counts.noAadt} />
-        <Foot>
-          PennDOT assigns a nominal 300 veh/day to local roads. Only genuine
-          counts are coloured &mdash; the rest is not a measurement.
-        </Foot>
+        <Foot>{notes.aadt}</Foot>
       </>
     );
   }
   return (
     <>
-      <Title>Expected KSI per mile</Title>
-      <Ramp ramp={SEG_SPF_RAMP} breaks={SEG_SPF_BREAKS} />
-      <Coverage have={counts.hasModel ?? 0} total={total} what="a model estimate" />
+      <Title>
+        Expected {outcomeLabelShort} per {distanceUnitLong}
+      </Title>
+      <Ramp ramp={SEG_SPF_RAMP} breaks={dataset.segment.spfBreaks} />
+      <Coverage
+        have={counts.hasModel ?? 0}
+        total={total}
+        what="a model estimate"
+        unitLabelPlural={dataset.unitLabelPlural}
+      />
       <NoDataRow label="Outside the model" count={counts.noModel} />
-      <Foot>
-        Mid-block only, with length as an offset. NOT comparable with
-        intersection risk &mdash; different denominator and a disjoint crash
-        set.
-      </Foot>
+      <Foot>{notes.spf}</Foot>
     </>
   );
 }
@@ -149,18 +132,20 @@ function Coverage({
   have,
   total,
   what,
+  unitLabelPlural,
 }: {
   have: number;
   total: number;
   what: string;
+  unitLabelPlural: string;
 }) {
   if (!total) return null;
   const pct = (have / total) * 100;
   return (
     <p className="text-[10px] text-walksafe-text mt-1.5 leading-snug">
       <span className="font-semibold tabular-nums">{have.toLocaleString()}</span>{" "}
-      of <span className="tabular-nums">{total.toLocaleString()}</span> segments
-      ({pct.toFixed(1)}%) have {what}.
+      of <span className="tabular-nums">{total.toLocaleString()}</span>{" "}
+      {unitLabelPlural} ({pct.toFixed(1)}%) have {what}.
     </p>
   );
 }
@@ -169,7 +154,11 @@ function Coverage({
 // Bogotá
 // ---------------------------------------------------------------------------
 
-function renderZatLegend(layerMode: string, counts: LegendCounts) {
+function renderZatLegend(
+  dataset: PolygonDatasetConfig,
+  layerMode: string,
+  counts: LegendCounts
+) {
   if (layerMode === "casualties") {
     return (
       <>
@@ -177,8 +166,8 @@ function renderZatLegend(layerMode: string, counts: LegendCounts) {
         <Ramp ramp={CASUALTY_DENSITY_RAMP} breaks={CASUALTY_DENSITY_BREAKS} />
         <NoDataRow label="No crash data" count={counts.none} />
         <Foot>
-          Injury + death, 2015–2019. Per km², because raw counts are not
-          comparable across zones of very different size.
+          Injury + death, {dataset.measure.crashWindow}. Per km², because raw
+          counts are not comparable across zones of very different size.
         </Foot>
       </>
     );
@@ -237,7 +226,11 @@ function renderZatLegend(layerMode: string, counts: LegendCounts) {
 // Philadelphia — unchanged content
 // ---------------------------------------------------------------------------
 
-function renderIntersectionLegend(layerMode: string, counts: LegendCounts) {
+function renderIntersectionLegend(
+  dataset: PointDatasetConfig,
+  layerMode: string,
+  counts: LegendCounts
+) {
   if (layerMode === "imagery") {
     return (
       <>
@@ -290,7 +283,7 @@ function renderIntersectionLegend(layerMode: string, counts: LegendCounts) {
       {layerMode === "crashes" && (
         <div className="mt-3 pt-2 border-t border-gray-100">
           <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
-            Circle Size = KSI Count
+            Circle Size = {dataset.measure.outcomeLabelShort} Count
           </div>
           <div className="flex items-end gap-2 px-1">
             {[3, 5, 8, 12].map((r, i) => (

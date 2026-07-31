@@ -2,6 +2,7 @@
 
 import { useCallback } from "react";
 import type { SegmentFilterState, SegmentFeature, RiskTier } from "@/lib/types";
+import type { LineDatasetConfig } from "@/lib/cities";
 import {
   DEFAULT_SEGMENT_FILTERS,
   SEGMENT_CLASSES,
@@ -18,9 +19,13 @@ interface SegmentSidebarProps {
   topSegments: SegmentFeature[];
   onSelectUnit: (id: number) => void;
   caveat: string | null;
-  /** Bogotá has no traffic-volume attribute, so the chip is hidden there. */
-  showAadtFilter?: boolean;
-  outcomeLabel?: string;
+  /**
+   * The whole dataset, not loose label props with Philadelphia defaults. The
+   * previous shape took `outcomeLabel = "KSI"` and left the unit implicit, so
+   * the risk-tier helper below read "expected KSI per mile" over Bogotá data
+   * while the legend beside it said "expected crashes per km".
+   */
+  dataset: LineDatasetConfig;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
 }
@@ -33,11 +38,12 @@ export default function SegmentSidebar({
   topSegments,
   onSelectUnit,
   caveat,
-  showAadtFilter = true,
-  outcomeLabel = "KSI",
+  dataset,
   collapsed = false,
   onToggleCollapse,
 }: SegmentSidebarProps) {
+  const { outcomeLabel, outcomeLabelShort, distanceUnitLong } = dataset.measure;
+  const { hasTrafficVolume, outcomeField } = dataset.segment;
   const update = useCallback(
     <K extends keyof SegmentFilterState>(key: K, value: SegmentFilterState[K]) => {
       onFiltersChange({ ...filters, [key]: value });
@@ -150,8 +156,9 @@ export default function SegmentSidebar({
             ))}
           </div>
           <p className="text-[10px] text-gray-400 mt-2 leading-snug">
-            Quantiles of expected KSI per mile. These are the segment
-            model&rsquo;s own cut-points, not the intersection tiers.
+            Quantiles of expected {outcomeLabelShort} per {distanceUnitLong}.
+            These are this segment model&rsquo;s own cut-points, not another
+            layer&rsquo;s.
           </p>
         </div>
 
@@ -170,7 +177,7 @@ export default function SegmentSidebar({
               active={filters.withCrashesOnly}
               onClick={() => update("withCrashesOnly", !filters.withCrashesOnly)}
             />
-            {showAadtFilter && (
+            {hasTrafficVolume && (
               <FilterChip
                 label="Measured traffic"
                 active={filters.measuredAadtOnly}
@@ -178,7 +185,7 @@ export default function SegmentSidebar({
               />
             )}
           </div>
-          {showAadtFilter && (
+          {hasTrafficVolume && (
             <p className="text-[10px] text-gray-400 mt-2 leading-snug">
               Only a third of segments carry a genuine traffic count — the rest
               hold PennDOT&rsquo;s nominal 300 veh/day placeholder.
@@ -188,7 +195,7 @@ export default function SegmentSidebar({
 
         <div className="px-4 py-3">
           <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-            Most {outcomeLabel}
+            Most {outcomeLabelShort}
           </h3>
           {topSegments.length === 0 ? (
             <p className="text-[11px] text-gray-400">No segments match the filters.</p>
@@ -209,7 +216,7 @@ export default function SegmentSidebar({
                       {p.unit_name}
                     </span>
                     <span className="text-[10px] text-walksafe-red font-semibold tabular-nums shrink-0">
-                      {p.ped_ksi_seg ?? p.ped_crashes_seg ?? 0}
+                      {p[outcomeField] ?? 0}
                     </span>
                   </button>
                 );
@@ -217,7 +224,7 @@ export default function SegmentSidebar({
             </div>
           )}
           <p className="text-[10px] text-gray-400 mt-2 leading-snug">
-            Observed {outcomeLabel}.
+            Observed {outcomeLabel}, {dataset.measure.crashWindow}.
           </p>
         </div>
       </div>

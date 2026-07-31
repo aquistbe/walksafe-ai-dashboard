@@ -213,12 +213,11 @@ export const SES_CATEGORIES: SesCategory[] = [1, 2, 3, 4, 5, 6];
  */
 export const SES_LABEL = "Estrato";
 
-/**
- * Bogotá segment SPF, expected pedestrian-involved crashes per km. Breaks are
- * the fitted distribution's quantiles (p75 2.73, p95 7.73, p99 23.21), NOT the
- * Philadelphia segment cut-points — different outcome and different unit.
- */
-export const BOG_SPF_BREAKS = [0.8, 1.6, 2.7, 7.7, 23.2];
+// Segment SPF and observed-count cut-points now live on each dataset, in
+// `SegmentFieldConfig` — see lib/cities.ts. Keeping them here as free constants
+// let the legend read one city's scale while the paint expression used
+// another's. Bogotá's quantiles (p75 2.73, p95 7.73, p99 23.21) are recorded in
+// that config alongside the field names they belong to.
 
 // ---------------------------------------------------------------------------
 // Trend icons

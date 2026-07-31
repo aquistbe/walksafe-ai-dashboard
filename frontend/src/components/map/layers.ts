@@ -11,7 +11,7 @@
  */
 
 import type maplibregl from "maplibre-gl";
-import type { DatasetConfig } from "@/lib/cities";
+import type { DatasetConfig, SegmentFieldConfig } from "@/lib/cities";
 import {
   RISK_TIER_COLORS,
   RISK_TIER_RADIUS,
@@ -45,6 +45,9 @@ export const SELECTED_OUTLINE_LAYER_ID = "units-selected-outline";
 
 // Line stack
 export const LINE_LAYER_ID = "units-lines";
+/** Fill beneath the outline, for line-rendered datasets whose geometry is
+ *  actually polygons. See DatasetConfig.polygonGeometry. */
+export const LINE_FILL_LAYER_ID = "units-lines-fill";
 /** Invisible wide line that exists only to be clickable — see addLineLayers. */
 export const LINE_HIT_LAYER_ID = "units-lines-hit";
 export const LINE_HOVER_LAYER_ID = "units-lines-hover";
@@ -67,6 +70,7 @@ const ALL_LAYER_IDS = [
   LINE_HIT_LAYER_ID,
   LINE_HOVER_LAYER_ID,
   LINE_LAYER_ID,
+  LINE_FILL_LAYER_ID,
 ];
 
 /** The layer that receives hover and click handlers, per unit type. */
@@ -102,7 +106,8 @@ export function selectionLayerIds(ds: DatasetConfig): string[] {
  * stay visible but cannot be clicked. See interactionFilter.
  */
 export function filterableLayerIds(): string[] {
-  return [CIRCLE_LAYER_ID, FILL_LAYER_ID, OUTLINE_LAYER_ID, LINE_LAYER_ID];
+  return [CIRCLE_LAYER_ID, FILL_LAYER_ID, OUTLINE_LAYER_ID, LINE_LAYER_ID,
+          LINE_FILL_LAYER_ID];
 }
 
 /**
@@ -300,12 +305,20 @@ export function polygonFillOpacity(
 // Philadelphia — segment (line) paint
 // ---------------------------------------------------------------------------
 
-/** Expected mid-block KSI per mile. Quantiles of the fitted distribution. */
-export const SEG_SPF_BREAKS = [0.15, 0.32, 0.8, 1.86, 2.7];
+/**
+ * Segment ramps. The RAMPS are shared; the BREAKS are not — they come from the
+ * dataset, because each city's SPF is a different model on a different scale.
+ *
+ * The break arrays used to be module constants applied to every line dataset,
+ * alongside hardcoded `mu_per_mile` and `ped_ksi_seg` property reads. Bogotá
+ * emits `mu_per_km` and `ped_crashes_seg`, so its choropleth was stepping a
+ * missing property and collapsing the whole network into the first ramp
+ * colour, while the legend beside it advertised Bogotá's cut-points. Nothing
+ * threw. Field names and breaks now both arrive from SegmentFieldConfig.
+ */
 export const SEG_SPF_RAMP = [
   "#FEF0D9", "#FDD49E", "#FDBB84", "#FC8D59", "#E34A33", "#B30000",
 ];
-export const SEG_OBSERVED_BREAKS = [1, 2, 3, 5];
 export const SEG_OBSERVED_RAMP = [
   "#FEE5D9", "#FCAE91", "#FB6A4A", "#DE2D26", "#A50F15",
 ];
@@ -316,13 +329,14 @@ export const SEG_AADT_RAMP = [
 
 export function lineColorExpr(
   layerMode: string,
-  basemap: BasemapMode
+  basemap: BasemapMode,
+  seg: SegmentFieldConfig
 ): maplibregl.ExpressionSpecification {
   const grey = basemap === "dark" ? "#4B5563" : "#C9C5BD";
 
   if (layerMode === "observed") {
     return ["case", ["!", ["get", "has_crashes"]], grey,
-      stepExpr("ped_ksi_seg", SEG_OBSERVED_BREAKS, SEG_OBSERVED_RAMP),
+      stepExpr(seg.outcomeField, seg.observedBreaks, SEG_OBSERVED_RAMP),
     ] as maplibregl.ExpressionSpecification;
   }
   if (layerMode === "aadt") {
@@ -334,7 +348,7 @@ export function lineColorExpr(
     ] as maplibregl.ExpressionSpecification;
   }
   return ["case", ["!", ["get", "has_model"]], grey,
-    stepExpr("mu_per_mile", SEG_SPF_BREAKS, SEG_SPF_RAMP),
+    stepExpr(seg.rateField, seg.spfBreaks, SEG_SPF_RAMP),
   ] as maplibregl.ExpressionSpecification;
 }
 
@@ -365,6 +379,28 @@ export function lineWidthExpr(bump = 0): maplibregl.ExpressionSpecification {
     14, classWidth(1.0, bump),
     17, classWidth(2.2, bump),
   ] as unknown as maplibregl.ExpressionSpecification;
+}
+
+/**
+ * Outline width for a polygon-geometry dataset, in PIXELS and independent of
+ * road class.
+ *
+ * The class-scaled width above is right for a LineString network, where the
+ * stroke IS the street and its thickness encodes hierarchy. Here the polygon
+ * already carries the true width, so the stroke's only job is to keep the
+ * network visible when the footprint goes sub-pixel — which at ~6 m wide it
+ * does below roughly z15. A flat ramp guarantees that: nothing falls under
+ * 0.75 px at city zoom, regardless of class.
+ */
+export function polygonOutlineWidthExpr(
+  bump = 0
+): maplibregl.ExpressionSpecification {
+  return [
+    "interpolate", ["linear"], ["zoom"],
+    10, 0.75 + bump,
+    13, 1.5 + bump,
+    16, 3 + bump,
+  ] as maplibregl.ExpressionSpecification;
 }
 
 // ---------------------------------------------------------------------------
@@ -402,11 +438,15 @@ export function addUnitLayers(map: maplibregl.Map, o: UnitLayerOptions): void {
     promoteId: o.dataset.idField,
   });
 
-  switch (o.dataset.unitType) {
+  // Read the discriminant into a local first. DatasetConfig is a union now, so
+  // switching on `o.dataset.unitType` narrows `o.dataset` itself to `never` in
+  // the default arm and the exhaustiveness check no longer compiles.
+  const kind = o.dataset.unitType;
+  switch (kind) {
     case "polygon": addPolygonLayers(map, o); return;
     case "line": addLineLayers(map, o); return;
     case "point": addPointLayers(map, o); return;
-    default: assertNever(o.dataset.unitType, "unit type");
+    default: assertNever(kind, "unit type");
   }
 }
 
@@ -552,6 +592,32 @@ function addLineLayers(map: maplibregl.Map, o: UnitLayerOptions): void {
   const sel = selectedId !== null
     ? matchId(dataset.idField, selectedId)
     : matchNothing(dataset.idField);
+  // addLineLayers is only reached for unitType "line", but the narrowing has to
+  // be explicit for `dataset.segment` to be reachable.
+  if (dataset.unitType !== "line") return;
+  const poly = !!dataset.polygonGeometry;
+  const colour = lineColorExpr(layerMode, basemap, dataset.segment);
+  const width = poly ? polygonOutlineWidthExpr : lineWidthExpr;
+
+  // Fill first, so the outline draws on top of it. Only for datasets whose
+  // geometry is polygons: a fill layer over LineString data renders nothing,
+  // so Philadelphia does not get one. At city zoom the footprint is sub-pixel
+  // and contributes nothing; from about z15 it carries the true street shape.
+  if (poly) {
+    map.addLayer({
+      id: LINE_FILL_LAYER_ID,
+      type: "fill",
+      source: SOURCE_ID,
+      paint: {
+        "fill-color": colour,
+        "fill-opacity": gateField
+          ? (["case", ["!", ["get", gateField]], 0.25, 0.75] as maplibregl.ExpressionSpecification)
+          : 0.75,
+        "fill-antialias": true,
+      },
+      filter: mapFilter,
+    });
+  }
 
   map.addLayer({
     id: LINE_LAYER_ID,
@@ -559,8 +625,8 @@ function addLineLayers(map: maplibregl.Map, o: UnitLayerOptions): void {
     source: SOURCE_ID,
     layout: { "line-cap": "round", "line-join": "round" },
     paint: {
-      "line-color": lineColorExpr(layerMode, basemap),
-      "line-width": lineWidthExpr(),
+      "line-color": colour,
+      "line-width": width(),
       // Segments outside the active variable are drawn faint as well as grey:
       // "absent" needs its own visual grammar, not the palest value on a ramp.
       "line-opacity": gateField
@@ -588,7 +654,7 @@ function addLineLayers(map: maplibregl.Map, o: UnitLayerOptions): void {
     layout: { "line-cap": "round", "line-join": "round" },
     paint: {
       "line-color": basemap === "dark" ? "#ffffff" : "#1B6B4A",
-      "line-width": lineWidthExpr(2.5),
+      "line-width": width(2.5),
       "line-opacity": 0.55,
     },
     filter: matchNothing(dataset.idField),
@@ -608,7 +674,7 @@ function addLineLayers(map: maplibregl.Map, o: UnitLayerOptions): void {
     type: "line",
     source: SOURCE_ID,
     layout: { "line-cap": "round", "line-join": "round" },
-    paint: { "line-color": ring, "line-width": lineWidthExpr(1.5), "line-opacity": 1 },
+    paint: { "line-color": ring, "line-width": width(1.5), "line-opacity": 1 },
     filter: sel,
   });
 }
@@ -623,8 +689,15 @@ export function applyLayerMode(map: maplibregl.Map, o: UnitLayerOptions): void {
   }
   if (o.dataset.unitType === "line") {
     if (!map.getLayer(LINE_LAYER_ID)) return;
-    map.setPaintProperty(LINE_LAYER_ID, "line-color",
-                         lineColorExpr(o.layerMode, o.basemap));
+    const colour = lineColorExpr(o.layerMode, o.basemap, o.dataset.segment);
+    map.setPaintProperty(LINE_LAYER_ID, "line-color", colour);
+    if (map.getLayer(LINE_FILL_LAYER_ID)) {
+      map.setPaintProperty(LINE_FILL_LAYER_ID, "fill-color", colour);
+      map.setPaintProperty(LINE_FILL_LAYER_ID, "fill-opacity",
+        o.gateField
+          ? (["case", ["!", ["get", o.gateField]], 0.25, 0.75] as maplibregl.ExpressionSpecification)
+          : 0.75);
+    }
     map.setPaintProperty(LINE_LAYER_ID, "line-opacity",
       o.gateField
         ? (["case", ["!", ["get", o.gateField]], 0.28, 0.9] as maplibregl.ExpressionSpecification)
