@@ -13,6 +13,17 @@
   // Local deploy (optional):  npm run build:static && npx wrangler deploy
   "name": "walksafe-ai-dashboard",
   "compatibility_date": "2026-07-30",
+
+  // Serve on <name>.<subdomain>.workers.dev. Set to false once a custom
+  // domain is attached, so there is a single canonical URL rather than two
+  // addresses serving identical content.
+  "workers_dev": true,
+
+  // A unique URL per deployment, useful for checking a build before it
+  // becomes the live version. These URLs are public, so set to false if
+  // unreleased states should not be reachable.
+  "preview_urls": true,
+
   "assets": {
     // Next.js static export output, produced by `npm run build:static`.
     "directory": "./out",
