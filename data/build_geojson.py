@@ -21,24 +21,24 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 # Paths
 #
-# Resolved relative to this file so the script runs anywhere. Layout assumed:
+# Resolved relative to this file so the script runs anywhere. The ranking
+# pipeline now lives IN this repository:
 #
-#   <parent>/walksafe-ai-dashboard/data/build_geojson.py   <- this file
-#   <parent>/WALKSAFE_site_selection/outputs/              <- ranking outputs
+#   <repo>/data/build_geojson.py       <- this file
+#   <repo>/pipeline/                   <- the 11 numbered analysis scripts
+#   <repo>/pipeline/outputs/           <- what they produce, and what this reads
 #
-# Override either location if your checkout differs:
-#   WALKSAFE_RANKING_DIR=/path/to/outputs python build_geojson.py
+# `make philly-pipeline` regenerates those outputs. Override if yours are
+# elsewhere:
+#   WALKSAFE_RANKING_DIR=/path/to/outputs python data/build_geojson.py
 # ---------------------------------------------------------------------------
 import os
 import sys
 
 HERE = Path(__file__).resolve().parent          # .../walksafe-ai-dashboard/data
 REPO = HERE.parent                              # .../walksafe-ai-dashboard
-BASE = REPO.parent                              # parent holding both projects
 
-SRC = Path(
-    os.getenv("WALKSAFE_RANKING_DIR", BASE / "WALKSAFE_site_selection" / "outputs")
-)
+SRC = Path(os.getenv("WALKSAFE_RANKING_DIR", REPO / "pipeline" / "outputs"))
 OUT = Path(os.getenv("WALKSAFE_DATA_DIR", HERE))
 
 ALL_CSV       = SRC / "all_intersections_ranked.csv"
@@ -48,11 +48,11 @@ SHORTLIST_CSV = SRC / "narrowed_shortlist_full.csv"
 if not SRC.exists():
     sys.exit(
         f"Ranking outputs not found at:\n    {SRC}\n\n"
-        "This script reads the intersection ranking pipeline's outputs, which\n"
-        "live outside this repository (see README, 'Related Projects').\n"
-        "Set the location explicitly if it is elsewhere:\n"
-        "    WALKSAFE_RANKING_DIR=/path/to/WALKSAFE_site_selection/outputs \\\n"
-        "        python data/build_geojson.py"
+        "Run the analysis pipeline first:\n"
+        "    make philly-pipeline\n\n"
+        "It needs the raw PennDOT and GIS data; see pipeline/README.md for the\n"
+        "WALKSAFE_DATA_ROOT setting. Or point at existing outputs:\n"
+        "    WALKSAFE_RANKING_DIR=/path/to/outputs python data/build_geojson.py"
     )
 
 missing = [p.name for p in (ALL_CSV, TOP50_CSV, SHORTLIST_CSV) if not p.exists()]

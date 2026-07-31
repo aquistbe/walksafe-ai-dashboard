@@ -1,0 +1,18 @@
+# WalkSafe-AI Philadelphia pipeline.
+#
+# geopandas >= 1.0 is required, not optional: the scripts use sjoin_nearest,
+# union_all() and groupby.apply(include_groups=False), which are 1.0/pandas-2.2
+# APIs. The original analysis ran on geopandas 1.1.4.
+#
+# Do not create a venv inside this repo — it sits on OneDrive and would sync
+# thousands of files. Use uv:
+#   make philly-pipeline
+# which runs `uv run --with ... python`.
+
+pandas>=2.2
+numpy>=1.26
+geopandas>=1.0
+shapely>=2.0
+pyarrow>=15
+statsmodels>=0.14
+folium>=0.15
