@@ -264,10 +264,13 @@ export default function ResearchPage() {
               title="Phase 0 methodology"
             >
               <P>
-                The current risk layer ranks every controlled intersection in
+                The current risk layers rank every controlled intersection in
                 Philadelphia by expected pedestrian killed-or-seriously-injured
-                (KSI) crashes. The pipeline runs as eleven ordered Python
-                scripts, each writing its own quality-control log.
+                (KSI) crashes, and every street segment on the walkable network
+                by expected mid-block KSI per mile. Together they account for
+                the whole crash record rather than the intersection half of it.
+                The pipeline runs as fourteen ordered Python scripts, each
+                writing its own quality-control log.
               </P>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -281,12 +284,30 @@ export default function ResearchPage() {
                   <strong className="text-walksafe-text">
                     Reconciling these with the map.
                   </strong>{" "}
-                  The figures above are citywide totals across all crash
-                  locations. The map reports 932 pedestrian KSI crashes and 262
-                  deaths because it counts only those assigned to one of the
-                  16,984 ranked intersections. The difference is mostly
-                  mid-block crashes, which fall outside an intersection-based
-                  ranking by design.
+                  Every geocoded pedestrian KSI crash is now accounted for, in
+                  exactly one of the two map layers. Of 1,494 geocoded crashes
+                  2015&ndash;2024:
+                </p>
+                <ul className="mt-2 space-y-1 text-xs text-walksafe-text-muted">
+                  <li>
+                    <strong className="text-walksafe-text">767</strong> are coded
+                    at an intersection &mdash; 756 within 25 m of a street node
+                    and ranked, 11 too far from any node to place.
+                  </li>
+                  <li>
+                    <strong className="text-walksafe-text">727</strong> are coded
+                    mid-block &mdash; 724 assigned to a street segment (657 on
+                    the walkable network, 67 on expressways, ramps and private
+                    roads) and 3 with no segment within 25 m.
+                  </li>
+                </ul>
+                <p className="text-xs text-walksafe-text-muted leading-relaxed mt-2">
+                  The intersection layer reports 728 KSI at 609 intersections
+                  rather than the 932 it once did. 269 mid-block-coded crashes
+                  that happened to fall within 25 m of a node used to be counted
+                  there; they are mid-block events and now sit in the segment
+                  layer instead. The two layers sum to the citywide burden and
+                  must never be added together as risk.
                 </p>
               </Card>
 
@@ -742,8 +763,24 @@ export default function ResearchPage() {
                       "No dataset counts how many people walk through each intersection. Vehicle traffic and nearby residential population stand in for exposure, which means places with heavy foot traffic but modest vehicle volume are probably under-ranked. This is the single largest caveat.",
                     ],
                     [
-                      "Roughly half of pedestrian KSI is mid-block",
-                      "An intersection-based ranking excludes it by design. A low-risk intersection does not imply a safe street.",
+                      "Mid-block and intersection risk are measured separately and are not comparable",
+                      "Roughly half of pedestrian KSI is mid-block, and it now has its own layer rather than being excluded. But the two measures have different denominators (per intersection versus per mile), disjoint crash sets, and different covariates — the segment model omits the High Injury Network. They cannot be ranked against each other or summed. A low-risk intersection still does not imply a safe street; now you can check the street.",
+                    ],
+                    [
+                      "The segment estimate is almost entirely model, not data",
+                      "Pedestrian KSI averages 0.018 per segment over ten years, so empirical Bayes shrinks each estimate onto the model prediction. Across the segments that actually carry crashes, observed data supplies about 17 percent of the estimate; at the corridor scale it reaches 56 percent. Rank corridors, and read a segment colour as what the model expects of a street of that type, not as what happened there.",
+                    ],
+                    [
+                      "Segment traffic volume is mostly imputed",
+                      "PennDOT assigns a nominal 300 vehicles per day to local roads. Only 33 percent of segments carry a genuine count — 98 percent of arterials but 9 percent of minor local streets. The model therefore estimates a volume effect only where the count is real and leans on road class elsewhere. The intersection layer hid this problem by taking the maximum volume within 30 metres, so any node near an arterial inherited a real number.",
+                    ],
+                    [
+                      "The centerline carries no lane count, width, median or speed limit",
+                      "Several of the strongest known segment-level pedestrian risk factors are simply absent from the city street file. This bounds what the segment model can claim regardless of how it is fitted.",
+                    ],
+                    [
+                      "The High Injury Network is endogenous",
+                      "The 2020 HIN was itself derived from crash data over a period overlapping this outcome window, so conditioning on it approaches conditioning on the outcome. It carries the largest coefficient in the intersection model and is deliberately excluded from the segment model — one reason the two are not comparable.",
                     ],
                     [
                       "Traffic volumes are current, applied retrospectively",
@@ -759,7 +796,7 @@ export default function ResearchPage() {
                     ],
                     [
                       "Divided arterials are split across nodes",
-                      "Roosevelt Boulevard and similar roads appear as multiple nodes, dividing one functional intersection between carriageways. These sites are likely under-ranked.",
+                      "Roosevelt Boulevard and similar roads appear as multiple nodes, dividing one functional intersection between carriageways. These sites are likely under-ranked. The segment layer is less exposed to this: both carriageways share a street code, so corridor-level estimates treat the boulevard as one facility even though the individual blocks stay separate.",
                     ],
                     [
                       "Context layers are incomplete",
@@ -803,12 +840,17 @@ export default function ResearchPage() {
                     Reproducibility
                   </h3>
                   <p className="text-xs text-walksafe-text-muted leading-relaxed">
-                    Eleven ordered Python scripts, no notebook state, each
+                    Fourteen ordered Python scripts, no notebook state, each
                     emitting a quality-control log recording every row dropped
                     and why. No stochastic steps, so no random seeds are
                     required — the overdispersion parameter is estimated by
-                    likelihood profiling over a fixed grid. Built with Python
-                    3.10, geopandas, and statsmodels.
+                    likelihood profiling over a fixed grid. The pipeline now
+                    lives in this repository under <code>pipeline/</code> with a
+                    pinned <code>requirements.txt</code>; every path resolves
+                    relative to the repository or through an environment
+                    variable, so it runs from a clean clone. Raw crash and GIS
+                    data stay outside it. Built with Python 3.10, geopandas and
+                    statsmodels.
                   </p>
                 </Card>
                 <Card>

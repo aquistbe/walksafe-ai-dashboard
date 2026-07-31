@@ -3,22 +3,21 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import type { UnitCollection, UnitFeature, SummaryData } from "@/lib/types";
 import { API_BASE_URL, BASE_PATH } from "@/lib/constants";
-import { CITY_CONFIGS, type CityId } from "@/lib/cities";
+import type { DatasetConfig } from "@/lib/cities";
 
 interface UseUnitDataReturn {
   collection: UnitCollection | null;
-  /** Philadelphia only. Null for Bogotá, whose stats live in collection.metadata. */
+  /** Only where the dataset has a companion summary file; else null. */
   summary: SummaryData | null;
   loading: boolean;
   error: string | null;
-  /** O(1) lookup, keyed by the city's own id field. */
+  /** O(1) lookup, keyed by the dataset's own id field. */
   getFeature: (id: number) => UnitFeature | undefined;
   featureIndex: ReadonlyMap<number, UnitFeature>;
   reload: () => void;
 }
 
-export function useUnitData(cityId: CityId): UseUnitDataReturn {
-  const city = CITY_CONFIGS[cityId];
+export function useUnitData(dataset: DatasetConfig): UseUnitDataReturn {
 
   const [collection, setCollection] = useState<UnitCollection | null>(null);
   const [summary, setSummary] = useState<SummaryData | null>(null);
@@ -39,8 +38,8 @@ export function useUnitData(cityId: CityId): UseUnitDataReturn {
     const controller = new AbortController();
 
     // Clear synchronously, BEFORE the first await. Otherwise React renders one
-    // frame where city is Bogotá and the collection is still Philadelphia
-    // points, and the polygon path receives Point geometry.
+    // frame where the dataset is Segments and the collection is still the
+    // intersection points, and the line path receives Point geometry.
     setCollection(null);
     setSummary(null);
     setError(null);
@@ -52,8 +51,9 @@ export function useUnitData(cityId: CityId): UseUnitDataReturn {
           apiPath: string | null,
           staticPath: string
         ) => {
-          // Skip the API probe when this city has no route — Bogotá has none,
-          // and an unguarded call would 404-then-fall-back on every load.
+          // Skip the API probe when this dataset has no route — only the
+          // intersection layer has one, and an unguarded call would
+          // 404-then-fall-back on every load.
           if (API_BASE_URL && apiPath) {
             try {
               const res = await fetch(`${API_BASE_URL}${apiPath}`, {
@@ -68,22 +68,22 @@ export function useUnitData(cityId: CityId): UseUnitDataReturn {
         };
 
         const geoRes = await fetchWithFallback(
-          city.apiPath,
-          `${BASE_PATH}${city.dataUrl}`
+          dataset.apiPath,
+          `${BASE_PATH}${dataset.dataUrl}`
         );
         if (!geoRes.ok) {
           throw new Error(
-            `Failed to load ${city.label} data: ${geoRes.status}`
+            `Failed to load ${dataset.label} data: ${geoRes.status}`
           );
         }
         const geoData: UnitCollection = await geoRes.json();
         if (seq !== seqRef.current) return;
         setCollection(geoData);
 
-        if (city.summaryUrl) {
+        if (dataset.summaryUrl) {
           const summRes = await fetchWithFallback(
             "/api/summary",
-            `${BASE_PATH}${city.summaryUrl}`
+            `${BASE_PATH}${dataset.summaryUrl}`
           );
           if (seq !== seqRef.current) return;
           if (summRes.ok) setSummary((await summRes.json()) as SummaryData);
@@ -100,19 +100,19 @@ export function useUnitData(cityId: CityId): UseUnitDataReturn {
 
     run();
     return () => controller.abort();
-  }, [city, nonce]);
+  }, [dataset, nonce]);
 
   const featureIndex = useMemo(() => {
     const index = new Map<number, UnitFeature>();
     if (collection) {
-      const key = city.idField;
+      const key = dataset.idField;
       for (const f of collection.features as UnitFeature[]) {
         const id = (f.properties as unknown as Record<string, unknown>)[key];
         if (typeof id === "number") index.set(id, f);
       }
     }
     return index;
-  }, [collection, city.idField]);
+  }, [collection, dataset.idField]);
 
   const getFeature = useCallback(
     (id: number) => featureIndex.get(id),

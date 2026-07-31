@@ -16,8 +16,8 @@ import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import type { UnitCollection, UnitFeature, FilterState } from "@/lib/types";
-import { isZatFeature } from "@/lib/types";
-import type { CityConfig } from "@/lib/cities";
+import { isSegmentFeature, isZatFeature } from "@/lib/types";
+import type { CityConfig, DatasetConfig } from "@/lib/cities";
 import { MAP_STYLE_URL } from "@/lib/constants";
 import { buildMapFilter, searchMatchIds } from "@/lib/filters";
 import { featureBounds } from "@/lib/geo";
@@ -28,7 +28,9 @@ import {
   SOURCE_ID,
   CIRCLE_LAYER_ID,
   FILL_LAYER_ID,
-  OUTLINE_LAYER_ID,
+  LINE_HIT_LAYER_ID,
+  filterableLayerIds,
+  interactionFilter,
   hoverLayerId,
   interactiveLayerId,
   selectionLayerIds,
@@ -45,6 +47,8 @@ const STYLE_LIGHT = MAP_STYLE_URL;
 
 interface MapExplorerProps {
   city: CityConfig;
+  dataset: DatasetConfig;
+  onSelectDataset: (id: string) => void;
   /** FULL, unfiltered collection. Filtering is GPU-side via setFilter. */
   collection: UnitCollection | null;
   featureIndex: ReadonlyMap<number, UnitFeature>;
@@ -57,6 +61,8 @@ interface MapExplorerProps {
 
 export default function MapExplorer({
   city,
+  dataset,
+  onSelectDataset,
   collection,
   featureIndex,
   filters,
@@ -72,12 +78,12 @@ export default function MapExplorer({
 
   const [mapVersion, setMapVersion] = useState(0);
   const mapReady = mapVersion > 0;
-  const [layerMode, setLayerMode] = useState<string>(city.defaultLayerMode);
+  const [layerMode, setLayerMode] = useState<string>(dataset.defaultLayerMode);
   const [basemap, setBasemap] = useState<BasemapMode>("light");
 
   const gateField = useMemo(
-    () => city.layerModes.find((m) => m.id === layerMode)?.gateField,
-    [city, layerMode]
+    () => dataset.layerModes.find((m) => m.id === layerMode)?.gateField,
+    [dataset, layerMode]
   );
 
   const searchIds = useMemo(
@@ -108,9 +114,9 @@ export default function MapExplorer({
    * every value the handlers need goes through a ref instead.
    */
   const optsRef = useRef<UnitLayerOptions>({
-    city, data, basemap, layerMode, gateField, mapFilter, selectedId,
+    dataset, data, basemap, layerMode, gateField, mapFilter, selectedId,
   });
-  optsRef.current = { city, data, basemap, layerMode, gateField, mapFilter, selectedId };
+  optsRef.current = { dataset, data, basemap, layerMode, gateField, mapFilter, selectedId };
 
   const onSelectRef = useRef(onSelectUnit);
   onSelectRef.current = onSelectUnit;
@@ -118,12 +124,13 @@ export default function MapExplorer({
   const featureIndexRef = useRef(featureIndex);
   featureIndexRef.current = featureIndex;
 
-  /** Which city's layer stack is currently installed on the map. */
+  /** Which dataset's layer stack is currently installed on the map. */
+  const installedDatasetRef = useRef<string | null>(null);
   const installedCityRef = useRef<string | null>(null);
 
   const install = useCallback((map: maplibregl.Map) => {
     addUnitLayers(map, optsRef.current);
-    installedCityRef.current = optsRef.current.city.id;
+    installedDatasetRef.current = optsRef.current.dataset.id;
   }, []);
 
   // ------------------------------------------------------------------
@@ -132,7 +139,7 @@ export default function MapExplorer({
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
-    const startCity = optsRef.current.city;
+    const startCity = city;
 
     const map = new maplibregl.Map({
       container: containerRef.current,
@@ -163,15 +170,16 @@ export default function MapExplorer({
     // id changes with the unit type, and a listener bound to "units-circles"
     // would go deaf the moment the city switches to polygons.
     const hitLayers = () =>
-      [CIRCLE_LAYER_ID, FILL_LAYER_ID].filter((id) => map.getLayer(id));
+      [CIRCLE_LAYER_ID, FILL_LAYER_ID, LINE_HIT_LAYER_ID]
+        .filter((id) => map.getLayer(id));
 
     const clearHover = () => {
       if (hoveredIdRef.current === null) return;
       hoveredIdRef.current = null;
       map.getCanvas().style.cursor = "";
-      const hid = hoverLayerId(optsRef.current.city);
+      const hid = hoverLayerId(optsRef.current.dataset);
       if (map.getLayer(hid)) {
-        map.setFilter(hid, matchNothing(optsRef.current.city.idField));
+        map.setFilter(hid, matchNothing(optsRef.current.dataset.idField));
       }
       popupRef.current?.remove();
     };
@@ -185,7 +193,7 @@ export default function MapExplorer({
         return;
       }
 
-      const cfg = optsRef.current.city;
+      const cfg = optsRef.current.dataset;
       const id = Number(hits[0].properties?.[cfg.idField]);
       if (!Number.isFinite(id)) return;
 
@@ -207,9 +215,12 @@ export default function MapExplorer({
         popupRef.current?.setHTML(buildPopupHtml(feat, cfg));
       }
 
-      const anchor: [number, number] = isZatFeature(feat)
-        ? [e.lngLat.lng, e.lngLat.lat]
-        : (feat.geometry.coordinates.slice() as [number, number]);
+      // Areas and lines anchor under the cursor; a line's first vertex could be
+      // far off-screen.
+      const anchor: [number, number] =
+        isZatFeature(feat) || isSegmentFeature(feat)
+          ? [e.lngLat.lng, e.lngLat.lat]
+          : (feat.geometry.coordinates.slice() as [number, number]);
 
       popupRef.current?.setLngLat(anchor).addTo(map);
     });
@@ -223,7 +234,7 @@ export default function MapExplorer({
         onSelectRef.current(null);
         return;
       }
-      const id = Number(hits[0].properties?.[optsRef.current.city.idField]);
+      const id = Number(hits[0].properties?.[optsRef.current.dataset.idField]);
       onSelectRef.current(Number.isFinite(id) ? id : null);
     });
 
@@ -233,6 +244,7 @@ export default function MapExplorer({
       popupRef.current?.remove();
       map.remove();
       mapRef.current = null;
+      installedDatasetRef.current = null;
       installedCityRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -246,6 +258,7 @@ export default function MapExplorer({
     const map = mapRef.current;
     if (!map || !mapReady) return;
     if (installedCityRef.current === city.id) return;
+    installedCityRef.current = city.id;
 
     // Order matters. Applying the new clamp while the camera still sits over
     // the old city makes MapLibre clamp mid-move, and with disjoint bounds the
@@ -253,21 +266,30 @@ export default function MapExplorer({
     map.setMaxBounds(null);
     map.jumpTo({ center: city.center, zoom: city.zoom });
     map.setMaxBounds(city.maxBounds);
+  }, [city, mapVersion, mapReady]);
 
+  /**
+   * Dataset change rebuilds the layer stack. The camera does NOT move — same
+   * city, same bounds — so switching Intersections/Segments keeps the view.
+   */
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+    if (installedDatasetRef.current === dataset.id) return;
     popupRef.current?.remove();
     hoveredIdRef.current = null;
     install(map);
-  }, [city, mapVersion, mapReady, install]);
+  }, [dataset, mapVersion, mapReady, install]);
 
   /**
-   * A layer mode the new city does not offer would paint every unit the
+   * A layer mode the new dataset does not offer would paint every unit the
    * fallback colour — indistinguishable from a failed load.
    */
   useEffect(() => {
-    if (!city.layerModes.some((m) => m.id === layerMode)) {
-      setLayerMode(city.defaultLayerMode);
+    if (!dataset.layerModes.some((m) => m.id === layerMode)) {
+      setLayerMode(dataset.defaultLayerMode);
     }
-  }, [city, layerMode]);
+  }, [dataset, layerMode]);
 
   // ------------------------------------------------------------------
   // Sync data / filter / selection / paint
@@ -283,18 +305,24 @@ export default function MapExplorer({
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapReady) return;
-    for (const id of [CIRCLE_LAYER_ID, FILL_LAYER_ID, OUTLINE_LAYER_ID]) {
+    for (const id of filterableLayerIds()) {
       if (map.getLayer(id)) map.setFilter(id, mapFilter);
     }
-  }, [mapFilter, mapVersion, mapReady]);
+    // The click target is narrower than the visible layer: units with no value
+    // for the active mode render muted but are not selectable.
+    if (map.getLayer(LINE_HIT_LAYER_ID)) {
+      map.setFilter(LINE_HIT_LAYER_ID, interactionFilter(mapFilter, gateField));
+    }
+  }, [mapFilter, gateField, mapVersion, mapReady]);
 
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapReady) return;
 
-    const ids = selectionLayerIds(city);
-    const expr =
-      selectedId !== null ? matchId(city.idField, selectedId) : matchNothing(city.idField);
+    const ids = selectionLayerIds(dataset);
+    const expr = selectedId !== null
+      ? matchId(dataset.idField, selectedId)
+      : matchNothing(dataset.idField);
     for (const id of ids) {
       if (map.getLayer(id)) map.setFilter(id, expr);
     }
@@ -303,7 +331,7 @@ export default function MapExplorer({
     const feat = featureIndex.get(selectedId);
     if (!feat) return;
 
-    if (isZatFeature(feat)) {
+    if (isZatFeature(feat) || isSegmentFeature(feat)) {
       map.fitBounds(featureBounds(feat), {
         // Clear the 384px (w-96) InfoPanel plus its 16px inset on the right.
         padding: { top: 60, bottom: 90, left: 60, right: 420 },
@@ -318,7 +346,7 @@ export default function MapExplorer({
         duration: 800,
       });
     }
-  }, [selectedId, mapVersion, mapReady, city, featureIndex]);
+  }, [selectedId, mapVersion, mapReady, dataset, featureIndex]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -365,7 +393,28 @@ export default function MapExplorer({
 
       {/* Toolbar */}
       <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 bg-white/95 backdrop-blur-sm rounded-lg shadow-md border border-gray-200 p-1">
-        {city.layerModes.map((m) => (
+        {/* Dataset toggle. Deliberately EXCLUSIVE rather than a pair of
+            simultaneous layers: intersection and segment risk are not on the
+            same scale, and stacking two ramps invites exactly the cross-reading
+            that is wrong. Only rendered when the city has more than one. */}
+        {city.datasets.length > 1 && (
+          <>
+            {city.datasets.map((d) => (
+              <ToolbarButton
+                key={d.id}
+                active={dataset.id === d.id}
+                onClick={() => onSelectDataset(d.id)}
+                title={d.measureLabel}
+              >
+                <ModeIcon icon={d.unitType === "line" ? "road" : "rings"} />
+                <span>{d.label}</span>
+              </ToolbarButton>
+            ))}
+            <div className="w-px h-5 bg-gray-200 mx-0.5" />
+          </>
+        )}
+
+        {dataset.layerModes.map((m) => (
           <ToolbarButton
             key={m.id}
             active={layerMode === m.id}
@@ -406,16 +455,16 @@ export default function MapExplorer({
           {city.label} · {city.maturityLabel}
         </span>
 
-        {city.mapCaveat && (
+        {dataset.mapCaveat && (
           <div className="bg-amber-50/95 backdrop-blur-sm border border-amber-200 rounded-lg px-3 py-2 shadow-sm">
             <p className="text-[11px] text-amber-900 leading-snug text-center">
-              {city.mapCaveat}
+              {dataset.mapCaveat}
             </p>
           </div>
         )}
       </div>
 
-      <Legend city={city} layerMode={layerMode} counts={legendCounts} />
+      <Legend dataset={dataset} layerMode={layerMode} counts={legendCounts} />
     </div>
   );
 }
@@ -458,6 +507,14 @@ function ModeIcon({ icon }: { icon: string }) {
           <rect x="14" y="3" width="7" height="7" rx="1" />
           <rect x="3" y="14" width="7" height="7" rx="1" />
           <rect x="14" y="14" width="7" height="7" rx="1" />
+        </svg>
+      );
+    case "road":
+      return (
+        <svg {...common}>
+          <path d="M4 21 L9 3" />
+          <path d="M20 21 L15 3" />
+          <path d="M12 5v3M12 11v3M12 17v3" />
         </svg>
       );
     case "people":

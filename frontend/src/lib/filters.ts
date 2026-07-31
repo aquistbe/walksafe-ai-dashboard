@@ -23,10 +23,17 @@ import type {
   UnitFeature,
   ZatFilterState,
   CrashFilterState,
+  SegmentFilterState,
   IntersectionFeature,
+  SegmentFeature,
   ZatFeature,
 } from "./types";
-import { isZatFeature } from "./types";
+import {
+  assertNever,
+  isIntersectionFeature,
+  isSegmentFeature,
+  isZatFeature,
+} from "./types";
 
 /** The single "match nothing" sentinel. Both id fields are strictly positive. */
 export function matchNothing(idField: string): maplibregl.FilterSpecification {
@@ -176,7 +183,70 @@ function zatPredicate(
 }
 
 // ---------------------------------------------------------------------------
+// Philadelphia — street segments
+// ---------------------------------------------------------------------------
+
+function buildSegmentFilter(
+  filters: SegmentFilterState,
+  gateField: string | undefined,
+  searchIds: number[] | null
+): maplibregl.FilterSpecification {
+  const conds: unknown[] = ["all"];
+
+  if (filters.classes.length > 0 && filters.classes.length < 4) {
+    conds.push(["in", ["get", "class"], ["literal", filters.classes]]);
+  }
+  if (filters.tiers.length > 0 && filters.tiers.length < 4) {
+    conds.push(["in", ["get", "tier"], ["literal", filters.tiers]]);
+  }
+  // Booleans are the only reliable gate — zero/null values are omitted from the
+  // payload entirely, so `has`/`to-number` cannot distinguish absent from 0.
+  if (filters.onewayOnly) conds.push(["==", ["get", "oneway"], true]);
+  if (filters.measuredAadtOnly) conds.push(["==", ["get", "has_aadt"], true]);
+  if (filters.withCrashesOnly) conds.push(["==", ["get", "has_crashes"], true]);
+  // Deliberately NOT gated on the active layer mode's gateField. The paint
+  // expression already draws units outside that variable in grey at low
+  // opacity, and the legend counts them — filtering them out as well would
+  // contradict a legend entry that promises they are on the map. The user
+  // narrows explicitly through the chips above instead.
+
+  if (searchIds !== null) {
+    conds.push(["in", ["get", "seg_id"], ["literal", searchIds]]);
+  }
+  return conds as maplibregl.FilterSpecification;
+}
+
+function segmentPredicate(
+  p: SegmentFeature["properties"],
+  f: SegmentFilterState
+): boolean {
+  if (f.classes.length > 0 && !f.classes.includes(p.class)) return false;
+  // Mirror buildSegmentFilter's `< 4` guard exactly. Without it the two forms
+  // disagree: the GPU filter skips the clause when every tier is selected and
+  // shows all 39,761 segments, while this predicate drops the 10,343 that have
+  // no tier at all (outside the model), so the sidebar count contradicts the
+  // map. Segments outside the model are meant to render, greyed.
+  if (f.tiers.length > 0 && f.tiers.length < 4) {
+    if (!p.tier || !f.tiers.includes(p.tier)) return false;
+  }
+  if (f.onewayOnly && !p.oneway) return false;
+  if (f.measuredAadtOnly && !p.has_aadt) return false;
+  if (f.withCrashesOnly && !p.has_crashes) return false;
+  // No gateField clause — see buildSegmentFilter.
+  if (f.searchQuery) {
+    const q = f.searchQuery.trim().toLowerCase();
+    if (!p.unit_name?.toLowerCase().includes(q) && String(p.seg_id) !== q) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// ---------------------------------------------------------------------------
 // Entry points
+//
+// Both dispatch exhaustively on `filters.kind` and end in assertNever, so a new
+// analysis unit is a compile error rather than a silently-empty map.
 // ---------------------------------------------------------------------------
 
 export function buildMapFilter(
@@ -184,9 +254,16 @@ export function buildMapFilter(
   searchIds: number[] | null,
   gateField?: string
 ): maplibregl.FilterSpecification {
-  return filters.kind === "bogota-zat"
-    ? buildZatFilter(filters, gateField, searchIds)
-    : buildCrashFilter(filters, searchIds);
+  switch (filters.kind) {
+    case "philadelphia-crash":
+      return buildCrashFilter(filters, searchIds);
+    case "philadelphia-segment":
+      return buildSegmentFilter(filters, gateField, searchIds);
+    case "bogota-zat":
+      return buildZatFilter(filters, gateField, searchIds);
+    default:
+      return assertNever(filters, "filter kind");
+  }
 }
 
 export function matchesFilters(
@@ -194,14 +271,25 @@ export function matchesFilters(
   filters: FilterState,
   gateField?: string
 ): boolean {
-  if (filters.kind === "bogota-zat") {
-    return isZatFeature(feature)
-      ? zatPredicate(feature.properties, filters, gateField)
-      : false;
+  switch (filters.kind) {
+    case "philadelphia-crash":
+      // Guard, never cast. A cast would accept a segment here and read
+      // risk_tier/eb_ksi off it as undefined — every comparison false, so the
+      // sidebar would silently report zero matches instead of failing.
+      return isIntersectionFeature(feature)
+        ? crashPredicate(feature.properties, filters)
+        : false;
+    case "philadelphia-segment":
+      return isSegmentFeature(feature)
+        ? segmentPredicate(feature.properties, filters)
+        : false;
+    case "bogota-zat":
+      return isZatFeature(feature)
+        ? zatPredicate(feature.properties, filters, gateField)
+        : false;
+    default:
+      return assertNever(filters, "filter kind");
   }
-  return isZatFeature(feature)
-    ? false
-    : crashPredicate((feature as IntersectionFeature).properties, filters);
 }
 
 /**
@@ -221,8 +309,13 @@ export function searchMatchIds(
       if (p.unit_name?.toLowerCase().includes(q) || String(p.unit_id) === q) {
         ids.push(p.unit_id);
       }
-    } else {
-      const p = (f as IntersectionFeature).properties;
+    } else if (isSegmentFeature(f)) {
+      const p = f.properties;
+      if (p.unit_name?.toLowerCase().includes(q) || String(p.seg_id) === q) {
+        ids.push(p.seg_id);
+      }
+    } else if (isIntersectionFeature(f)) {
+      const p = f.properties;
       if (p.int_name?.toLowerCase().includes(q)) ids.push(p.node_id);
     }
   }

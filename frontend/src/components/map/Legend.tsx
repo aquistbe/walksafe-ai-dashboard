@@ -1,6 +1,6 @@
 "use client";
 
-import type { CityConfig } from "@/lib/cities";
+import type { DatasetConfig } from "@/lib/cities";
 import type { RiskTier, ZatCluster } from "@/lib/types";
 import {
   RISK_TIER_COLORS,
@@ -15,22 +15,99 @@ import {
   PCT60_BREAKS,
   PCT60_RAMP,
 } from "@/lib/constants";
+import {
+  SEG_SPF_BREAKS, SEG_SPF_RAMP,
+  SEG_OBSERVED_BREAKS, SEG_OBSERVED_RAMP,
+  SEG_AADT_BREAKS, SEG_AADT_RAMP,
+} from "./layers";
 
 export type LegendCounts = Record<string, number>;
 
 interface LegendProps {
-  city: CityConfig;
+  dataset: DatasetConfig;
   layerMode: string;
   counts: LegendCounts;
 }
 
-export default function Legend({ city, layerMode, counts }: LegendProps) {
+export default function Legend({ dataset, layerMode, counts }: LegendProps) {
   return (
-    <div className="absolute bottom-14 left-3 z-10 bg-white/95 backdrop-blur-sm rounded-lg shadow-md border border-gray-200 p-3 min-w-[190px] max-w-[240px]">
-      {city.unitType === "polygon"
-        ? renderZatLegend(layerMode, counts)
-        : renderIntersectionLegend(layerMode, counts)}
+    <div className="absolute bottom-14 left-3 z-10 bg-white/95 backdrop-blur-sm rounded-lg shadow-md border border-gray-200 p-3 min-w-[190px] max-w-[250px]">
+      {dataset.unitType === "polygon" && renderZatLegend(layerMode, counts)}
+      {dataset.unitType === "line" && renderSegmentLegend(layerMode, counts)}
+      {dataset.unitType === "point" && renderIntersectionLegend(layerMode, counts)}
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Philadelphia — street segments
+// ---------------------------------------------------------------------------
+
+function renderSegmentLegend(layerMode: string, counts: LegendCounts) {
+  const total = counts.total ?? 0;
+
+  if (layerMode === "observed") {
+    return (
+      <>
+        <Title>Observed mid-block KSI</Title>
+        <Ramp ramp={SEG_OBSERVED_RAMP} breaks={SEG_OBSERVED_BREAKS} />
+        <Coverage have={counts.hasCrashes ?? 0} total={total} what="observed crashes" />
+        <NoDataRow label="None recorded" count={counts.noCrashes} />
+        <Foot>
+          Killed or suspected serious injury, 2015&ndash;2024. Most streets have
+          none in ten years &mdash; grey is an absence of crashes, not an
+          absence of risk. Counts, not a rate: long blocks accumulate more.
+        </Foot>
+      </>
+    );
+  }
+  if (layerMode === "aadt") {
+    return (
+      <>
+        <Title>Traffic volume (AADT)</Title>
+        <Ramp ramp={SEG_AADT_RAMP} breaks={SEG_AADT_BREAKS} />
+        <Coverage have={counts.hasAadt ?? 0} total={total} what="a genuine traffic count" />
+        <NoDataRow label="Nominal placeholder" count={counts.noAadt} />
+        <Foot>
+          PennDOT assigns a nominal 300 veh/day to local roads. Only genuine
+          counts are coloured &mdash; the rest is not a measurement.
+        </Foot>
+      </>
+    );
+  }
+  return (
+    <>
+      <Title>Expected KSI per mile</Title>
+      <Ramp ramp={SEG_SPF_RAMP} breaks={SEG_SPF_BREAKS} />
+      <Coverage have={counts.hasModel ?? 0} total={total} what="a model estimate" />
+      <NoDataRow label="Outside the model" count={counts.noModel} />
+      <Foot>
+        Mid-block only, with length as an offset. NOT comparable with
+        intersection risk &mdash; different denominator and a disjoint crash
+        set.
+      </Foot>
+    </>
+  );
+}
+
+/** Coverage stated positively, and as a share, so grey cannot read as broken. */
+function Coverage({
+  have,
+  total,
+  what,
+}: {
+  have: number;
+  total: number;
+  what: string;
+}) {
+  if (!total) return null;
+  const pct = (have / total) * 100;
+  return (
+    <p className="text-[10px] text-walksafe-text mt-1.5 leading-snug">
+      <span className="font-semibold tabular-nums">{have.toLocaleString()}</span>{" "}
+      of <span className="tabular-nums">{total.toLocaleString()}</span> segments
+      ({pct.toFixed(1)}%) have {what}.
+    </p>
   );
 }
 

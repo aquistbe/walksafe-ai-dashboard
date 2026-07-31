@@ -337,25 +337,156 @@ export interface ZatCollection {
 }
 
 // ===========================================================================
+// Philadelphia — street segments (mid-block)
+// ===========================================================================
+
+export type SegmentRiskTier = RiskTier;
+
+/**
+ * Zero and null values are OMITTED from the GeoJSON to keep 39,761 features
+ * under a sane payload, so every optional field must be read with `?? 0`. The
+ * four gate flags are the exception: always present, always boolean.
+ */
+export interface SegmentProperties {
+  /** NOT `unit_id` — that key means "Bogotá ZAT" to the guards below. */
+  seg_id: number;
+  unit_name: string;
+  corridor_id?: number;
+  corridor_n?: number;
+
+  /** Street_Centerline CLASS: 2 arterial, 3 collector, 4 local, 5 minor local. */
+  class: number;
+  oneway?: boolean;
+  divided?: boolean;
+  length_mi?: number;
+  /** Length outside the 25 m intersection influence zone. The SPF offset. */
+  exposure_mi?: number;
+
+  ped_ksi_seg?: number;
+  ped_any_seg?: number;
+  ped_deaths_seg?: number;
+  ksi_corridor?: number;
+
+  /** Expected mid-block KSI per mile. The honest thing to map. */
+  mu_per_mile?: number;
+  eb_ksi_seg?: number;
+  eb_weight_seg?: number;
+  rank_seg_spf?: number;
+  tier?: SegmentRiskTier;
+
+  /** Corridor estimates, where empirical Bayes carries real weight. */
+  eb_ksi_corr?: number;
+  eb_weight_corr?: number;
+  rank_corr_spf?: number;
+
+  aadt?: number;
+  hin_frac?: number;
+  pop_800m?: number;
+  schools_200m?: number;
+  parks_200m?: number;
+
+  /** Always present, always boolean — the only thing MapLibre can gate on. */
+  has_model: boolean;
+  /** True only where AADT is a genuine count, not PennDOT's nominal 300. */
+  has_aadt: boolean;
+  has_crashes: boolean;
+  in_ranking: boolean;
+}
+
+export type LineGeometry =
+  | { type: "LineString"; coordinates: [number, number][] }
+  | { type: "MultiLineString"; coordinates: [number, number][][] };
+
+export interface SegmentFeature {
+  type: "Feature";
+  geometry: LineGeometry;
+  properties: SegmentProperties;
+}
+
+export interface SegmentCollection {
+  type: "FeatureCollection";
+  metadata: {
+    name: string;
+    city: string;
+    unit_type: "line";
+    unit_label: string;
+    description: string;
+    caveat: string;
+    not_comparable_to: Record<string, string>;
+    crash_window: string;
+    crash_accounting: {
+      geocoded_ped_ksi: number;
+      intersection_layer: number;
+      intersection_within_25m: number;
+      intersection_snap_failures: number;
+      segment_layer: number;
+      segment_assigned: number;
+      segment_unplaced: number;
+      segment_on_walkable_network: number;
+      segment_on_expressway_ramp_private: number;
+      rule: string;
+    };
+    exposure: {
+      definition: string;
+      network_mi: number;
+      exposure_mi: number;
+      zero_exposure_segments: number;
+    };
+    spf: Record<string, string>;
+    coordinate_system: string;
+    coordinate_decimals: number;
+    generated: string;
+  };
+  features: SegmentFeature[];
+}
+
+// ===========================================================================
 // The analysis-unit union
 // ===========================================================================
 
-export type UnitFeature = IntersectionFeature | ZatFeature;
-export type UnitCollection = IntersectionCollection | ZatCollection;
+export type UnitFeature = IntersectionFeature | SegmentFeature | ZatFeature;
+export type UnitCollection =
+  | IntersectionCollection
+  | SegmentCollection
+  | ZatCollection;
 
 /**
  * TypeScript does not narrow a union on a NESTED discriminant, so testing
  * `f.geometry.type === "Point"` will not narrow UnitFeature. These guards test
  * a top-level key on `properties`, which does narrow.
+ *
+ * They stay mutually exclusive only because the three id fields are distinct:
+ * node_id, seg_id, unit_id. Reusing one across datasets would silently route a
+ * feature to the wrong panel and the wrong filter set.
  */
 export function isIntersectionFeature(f: UnitFeature): f is IntersectionFeature {
   return "node_id" in f.properties;
+}
+export function isSegmentFeature(f: UnitFeature): f is SegmentFeature {
+  return "seg_id" in f.properties;
 }
 export function isZatFeature(f: UnitFeature): f is ZatFeature {
   return "unit_id" in f.properties;
 }
 export function isZatCollection(c: UnitCollection): c is ZatCollection {
   return "unit_type" in c.metadata && c.metadata.unit_type === "polygon";
+}
+export function isSegmentCollection(c: UnitCollection): c is SegmentCollection {
+  return "unit_type" in c.metadata && c.metadata.unit_type === "line";
+}
+
+/**
+ * Compile-time exhaustiveness. Every place that branches over the analysis-unit
+ * union ends in this, so adding a fourth unit type becomes a build error rather
+ * than a silently-wrong render. Two-way ternaries were the real hazard here:
+ * `isZatFeature(f) ? zat : intersection` accepts a segment and reads
+ * intersection fields off it as undefined, which compares false everywhere and
+ * shows an empty panel rather than throwing.
+ */
+export function assertNever(x: never, context = "analysis unit"): never {
+  throw new Error(
+    `Unhandled ${context} variant: ${JSON.stringify((x as { properties?: unknown })?.properties ?? x)}`
+  );
 }
 
 /**
@@ -396,6 +527,20 @@ export interface CrashFilterState {
   searchQuery: string;
 }
 
+/** Philadelphia street segments. */
+export interface SegmentFilterState {
+  kind: "philadelphia-segment";
+  /** Street_Centerline CLASS values. [] = all. */
+  classes: number[];
+  tiers: SegmentRiskTier[];
+  onewayOnly: boolean;
+  /** Restrict to segments with a genuine AADT count, not the nominal 300. */
+  measuredAadtOnly: boolean;
+  /** Restrict to segments with at least one observed mid-block KSI. */
+  withCrashesOnly: boolean;
+  searchQuery: string;
+}
+
 /** Bogotá. */
 export interface ZatFilterState {
   kind: "bogota-zat";
@@ -409,4 +554,7 @@ export interface ZatFilterState {
   searchQuery: string;
 }
 
-export type FilterState = CrashFilterState | ZatFilterState;
+export type FilterState =
+  | CrashFilterState
+  | SegmentFilterState
+  | ZatFilterState;

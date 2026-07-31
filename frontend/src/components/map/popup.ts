@@ -10,9 +10,9 @@
  * builder a properly typed value.
  */
 
-import type { CityConfig } from "@/lib/cities";
+import type { DatasetConfig } from "@/lib/cities";
 import type { UnitFeature } from "@/lib/types";
-import { isZatFeature } from "@/lib/types";
+import { assertNever, isIntersectionFeature, isSegmentFeature, isZatFeature } from "@/lib/types";
 import { RISK_TIER_COLORS, CLUSTER_COLORS, CLUSTER_LABELS } from "@/lib/constants";
 import type { RiskTier } from "@/lib/types";
 
@@ -24,8 +24,49 @@ function esc(v: unknown): string {
   );
 }
 
-export function buildPopupHtml(feature: UnitFeature, city: CityConfig): string {
-  return isZatFeature(feature) ? zatPopup(feature) : intersectionPopup(feature);
+export function buildPopupHtml(feature: UnitFeature, dataset: DatasetConfig): string {
+  // Exhaustive, not a two-way ternary: a segment falling through to the
+  // intersection branch would render a panel of undefined fields rather than
+  // failing, and nobody would notice.
+  if (isZatFeature(feature)) return zatPopup(feature);
+  if (isSegmentFeature(feature)) return segmentPopup(feature);
+  if (isIntersectionFeature(feature)) return intersectionPopup(feature);
+  return assertNever(feature, "popup feature");
+}
+
+const CLASS_LABEL: Record<number, string> = {
+  2: "Arterial", 3: "Collector", 4: "Local", 5: "Minor local",
+};
+
+function segmentPopup(feature: UnitFeature): string {
+  if (!isSegmentFeature(feature)) return "";
+  const p = feature.properties;
+  const ksi = p.ped_ksi_seg ?? 0;
+
+  const model = p.has_model
+    ? `<span style="color: #6B7280;">Expected KSI/mi:</span>
+       <span style="font-weight: 600;">${esc((p.mu_per_mile ?? 0).toFixed(2))}</span>`
+    : `<span style="color: #9CA3AF; grid-column: 1 / -1;">Outside the model (no exposure beyond the intersections)</span>`;
+
+  return `
+    <div style="font-family: ${FONT}; font-size: 12px; line-height: 1.5; color: #2D2D2D;">
+      <div style="font-weight: 700; font-size: 13px; margin-bottom: 2px;">${esc(p.unit_name)}</div>
+      <div style="color: #6B7280; font-size: 10px; margin-bottom: 6px;">
+        ${esc(CLASS_LABEL[p.class] ?? p.class)}${p.oneway ? " · one-way" : ""}${p.divided ? " · divided" : ""}
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2px 12px; font-size: 11px;">
+        <span style="color: #6B7280;">Mid-block KSI:</span>
+        <span style="font-weight: 600;">${ksi}</span>
+        ${model}
+        <span style="color: #6B7280;">Exposure:</span>
+        <span style="font-weight: 600;">${esc((p.exposure_mi ?? 0).toFixed(2))} mi</span>
+        ${p.has_aadt ? `<span style="color: #6B7280;">AADT:</span><span style="font-weight: 600;">${esc((p.aadt ?? 0).toLocaleString())}</span>` : ""}
+      </div>
+      <div style="margin-top: 6px; padding-top: 5px; border-top: 1px solid #E5E7EB; color: #9CA3AF; font-size: 10px;">
+        Mid-block only — not comparable with intersection risk.
+      </div>
+    </div>
+  `;
 }
 
 function intersectionPopup(feature: UnitFeature): string {

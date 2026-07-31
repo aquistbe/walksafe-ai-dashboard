@@ -1,11 +1,12 @@
 import type {
   RiskTier,
   CrashFilterState,
+  SegmentFilterState,
   ZatFilterState,
   ZatCluster,
   SesCategory,
 } from "./types";
-import type { CityConfig } from "./cities";
+import type { DatasetConfig } from "./cities";
 
 /** API base URL — falls back to relative path for same-origin deployment. */
 export const API_BASE_URL =
@@ -92,9 +93,31 @@ export const DEFAULT_ZAT_FILTERS: ZatFilterState = {
   searchQuery: "",
 };
 
-export function defaultFiltersFor(city: CityConfig) {
-  return city.unitType === "polygon" ? DEFAULT_ZAT_FILTERS : DEFAULT_CRASH_FILTERS;
+export const DEFAULT_SEGMENT_FILTERS: SegmentFilterState = {
+  kind: "philadelphia-segment",
+  classes: [],
+  tiers: ["Critical", "High", "Moderate", "Low"],
+  onewayOnly: false,
+  measuredAadtOnly: false,
+  withCrashesOnly: false,
+  searchQuery: "",
+};
+
+export function defaultFiltersFor(dataset: DatasetConfig) {
+  switch (dataset.filterKind) {
+    case "bogota-zat": return DEFAULT_ZAT_FILTERS;
+    case "philadelphia-segment": return DEFAULT_SEGMENT_FILTERS;
+    default: return DEFAULT_CRASH_FILTERS;
+  }
 }
+
+/** Street_Centerline CLASS values in the walkable network. */
+export const SEGMENT_CLASSES: { value: number; label: string }[] = [
+  { value: 2, label: "Arterial" },
+  { value: 3, label: "Collector" },
+  { value: 4, label: "Local" },
+  { value: 5, label: "Minor local" },
+];
 
 // ---------------------------------------------------------------------------
 // Navigation
