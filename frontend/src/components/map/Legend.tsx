@@ -15,6 +15,7 @@ import {
   CLUSTER_LABELS,
   CLUSTER_ORDER,
   NO_DATA_FILL,
+  NO_DATA_LINE,
   CASUALTY_DENSITY_BREAKS,
   CASUALTY_DENSITY_RAMP,
   PCT60_BREAKS,
@@ -88,7 +89,12 @@ function renderSegmentLegend(
           what="a recorded crash"
           unitLabelPlural={dataset.unitLabelPlural}
         />
-        <NoDataRow label="None recorded" count={counts.noCrashes} />
+        <NoDataRow
+          label="None recorded"
+          count={counts.noCrashes}
+          color={NO_DATA_LINE}
+          dimmed={false}
+        />
         <Foot>{notes.observed}</Foot>
       </>
     );
@@ -104,7 +110,12 @@ function renderSegmentLegend(
           what="a genuine traffic count"
           unitLabelPlural={dataset.unitLabelPlural}
         />
-        <NoDataRow label="Nominal placeholder" count={counts.noAadt} />
+        <NoDataRow
+          label="Nominal placeholder"
+          count={counts.noAadt}
+          color={NO_DATA_LINE}
+          dimmed={false}
+        />
         <Foot>{notes.aadt}</Foot>
       </>
     );
@@ -121,7 +132,12 @@ function renderSegmentLegend(
         what="a model estimate"
         unitLabelPlural={dataset.unitLabelPlural}
       />
-      <NoDataRow label="Outside the model" count={counts.noModel} />
+      <NoDataRow
+        label="Outside the model"
+        count={counts.noModel}
+        color={NO_DATA_LINE}
+        dimmed={false}
+      />
       <Foot>{notes.spf}</Foot>
     </>
   );
@@ -347,13 +363,28 @@ function Ramp({
   );
 }
 
-function NoDataRow({ label, count }: { label: string; count?: number }) {
+/**
+ * The swatch must match what the map actually draws. Line datasets use a
+ * darker no-data colour at full opacity; zone fills use the lighter one and
+ * are drawn semi-transparent, so the swatch is dimmed to match.
+ */
+function NoDataRow({
+  label,
+  count,
+  color = NO_DATA_FILL,
+  dimmed = true,
+}: {
+  label: string;
+  count?: number;
+  color?: string;
+  dimmed?: boolean;
+}) {
   return (
     <div className="flex items-center justify-between gap-3 mt-2 pt-2 border-t border-gray-100">
       <div className="flex items-center gap-2">
         <span
-          className="w-3 h-3 rounded-sm shrink-0 border border-black/10 opacity-60"
-          style={{ backgroundColor: NO_DATA_FILL }}
+          className={`w-3 h-3 rounded-sm shrink-0 border border-black/10${dimmed ? " opacity-60" : ""}`}
+          style={{ backgroundColor: color }}
         />
         <span className="text-[11px] text-walksafe-text-muted">{label}</span>
       </div>

@@ -18,6 +18,8 @@ import {
   CLUSTER_COLORS,
   NO_DATA_FILL,
   NO_DATA_FILL_DARK,
+  NO_DATA_LINE,
+  NO_DATA_LINE_DARK,
   CASUALTY_DENSITY_BREAKS,
   CASUALTY_DENSITY_RAMP,
   PCT60_BREAKS,
@@ -316,6 +318,10 @@ export function polygonFillOpacity(
  * colour, while the legend beside it advertised Bogotá's cut-points. Nothing
  * threw. Field names and breaks now both arrive from SegmentFieldConfig.
  */
+/** Layer opacity for line datasets. Constant across the gate — see NO_DATA_LINE. */
+export const LINE_OPACITY = 0.9;
+export const LINE_FILL_OPACITY = 0.75;
+
 export const SEG_SPF_RAMP = [
   "#FEF0D9", "#FDD49E", "#FDBB84", "#FC8D59", "#E34A33", "#B30000",
 ];
@@ -332,7 +338,11 @@ export function lineColorExpr(
   basemap: BasemapMode,
   seg: SegmentFieldConfig
 ): maplibregl.ExpressionSpecification {
-  const grey = basemap === "dark" ? "#4B5563" : "#C9C5BD";
+  // Full-opacity no-data colour. See NO_DATA_LINE: the gated-out features used
+  // to be dimmed to 0.28 as well as greyed, which put them at 1.13:1 against
+  // the basemap and made a mode where 98.5% of segments have no value look
+  // like a failed render.
+  const grey = basemap === "dark" ? NO_DATA_LINE_DARK : NO_DATA_LINE;
 
   if (layerMode === "observed") {
     return ["case", ["!", ["get", "has_crashes"]], grey,
@@ -609,10 +619,10 @@ function addLineLayers(map: maplibregl.Map, o: UnitLayerOptions): void {
       type: "fill",
       source: SOURCE_ID,
       paint: {
+        // Constant. The gate is expressed in the COLOUR, not in opacity —
+        // dimming a no-data feature on top of greying it made it invisible.
         "fill-color": colour,
-        "fill-opacity": gateField
-          ? (["case", ["!", ["get", gateField]], 0.25, 0.75] as maplibregl.ExpressionSpecification)
-          : 0.75,
+        "fill-opacity": LINE_FILL_OPACITY,
         "fill-antialias": true,
       },
       filter: mapFilter,
@@ -627,11 +637,9 @@ function addLineLayers(map: maplibregl.Map, o: UnitLayerOptions): void {
     paint: {
       "line-color": colour,
       "line-width": width(),
-      // Segments outside the active variable are drawn faint as well as grey:
-      // "absent" needs its own visual grammar, not the palest value on a ramp.
-      "line-opacity": gateField
-        ? (["case", ["!", ["get", gateField]], 0.28, 0.9] as maplibregl.ExpressionSpecification)
-        : 0.9,
+      // Constant, for the reason above: "absent" needs its own visual grammar,
+      // and that grammar is a distinct colour, not a fade.
+      "line-opacity": LINE_OPACITY,
     },
     filter: mapFilter,
   });
@@ -693,15 +701,11 @@ export function applyLayerMode(map: maplibregl.Map, o: UnitLayerOptions): void {
     map.setPaintProperty(LINE_LAYER_ID, "line-color", colour);
     if (map.getLayer(LINE_FILL_LAYER_ID)) {
       map.setPaintProperty(LINE_FILL_LAYER_ID, "fill-color", colour);
-      map.setPaintProperty(LINE_FILL_LAYER_ID, "fill-opacity",
-        o.gateField
-          ? (["case", ["!", ["get", o.gateField]], 0.25, 0.75] as maplibregl.ExpressionSpecification)
-          : 0.75);
+      map.setPaintProperty(LINE_FILL_LAYER_ID, "fill-opacity", LINE_FILL_OPACITY);
     }
-    map.setPaintProperty(LINE_LAYER_ID, "line-opacity",
-      o.gateField
-        ? (["case", ["!", ["get", o.gateField]], 0.28, 0.9] as maplibregl.ExpressionSpecification)
-        : 0.9);
+    // Opacity no longer varies with the gate — the colour carries it. Both are
+    // still reset here so a mode change cannot leave a stale expression behind.
+    map.setPaintProperty(LINE_LAYER_ID, "line-opacity", LINE_OPACITY);
     // The gate changes with the mode, so what is clickable changes too.
     if (map.getLayer(LINE_HIT_LAYER_ID)) {
       map.setFilter(LINE_HIT_LAYER_ID, interactionFilter(o.mapFilter, o.gateField));

@@ -191,6 +191,27 @@ export const NO_DATA_FILL = "#D8D5CE";
 export const NO_DATA_FILL_DARK = "#4B5563";
 
 /**
+ * No-data colour for LINE datasets, darker than the polygon equivalent.
+ *
+ * A line one to three pixels wide needs far more contrast than a zone-sized
+ * fill to read at all. The segment layers used to draw gated-out features in
+ * #C9C5BD at 0.28 opacity, which composites to rgb(235,233,229) over the
+ * light basemap — a contrast ratio of 1.13:1, against a WCAG non-text
+ * minimum of 3:1. On the Observed mode, where only 1.5% of Philadelphia
+ * segments and 10.3% of Bogotá's carry a crash, that made the map look
+ * empty and the toggle look broken.
+ *
+ * These are drawn at full layer opacity, so the colour alone carries the
+ * distinction, as it already does for unscored intersections on the Imagery
+ * layer. 2.4:1 on light and 2.9:1 on dark: clearly present as network
+ * structure, still obviously inert. Neutral rather than warm on purpose —
+ * the data ramps are all orange-to-red, so hue separates no-data from a low
+ * value even where luminance is similar.
+ */
+export const NO_DATA_LINE = "#A8A197";
+export const NO_DATA_LINE_DARK = "#6B7280";
+
+/**
  * Step breaks from the empirical distributions in bogota_zats.geojson
  * (n = 783 for casualties, 851 for the 60+ share).
  */
