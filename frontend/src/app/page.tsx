@@ -216,14 +216,18 @@ export default function HomePage() {
     collection && isSegmentCollection(collection) ? collection.metadata : null;
 
   /**
-   * The caveat, resolved once and passed to everything that shows it.
+   * The layer caveat: resolved once here, rendered once in the sidebar.
    *
-   * The data file wins: metadata.caveat is rebuilt with the numbers it
-   * qualifies, so it cannot drift from them. dataset.mapCaveat is the fallback
-   * for a dataset whose file carries none. These used to be resolved
-   * separately — the sidebar took `metadata.caveat ?? mapCaveat` while
-   * MapExplorer always read `mapCaveat` — so both rendered, in two different
-   * wordings of the same point, free to diverge.
+   * The data file wins. metadata.caveat is rebuilt alongside the numbers it
+   * qualifies, so it cannot drift from them; dataset.mapCaveat is the fallback
+   * for a dataset whose file carries none. Never read dataset.mapCaveat at a
+   * call site — that is the fallback, not the answer.
+   *
+   * It used to render TWICE from this one value: in full in the sidebar, and
+   * again as a one-line clamped callout pinned to the map. Two copies of the
+   * same sentence, one of them truncated mid-clause, competing for the reader's
+   * attention directly above the toolbar. The map callout is gone; the sidebar
+   * has room for the whole thing.
    */
   const caveat = segMetadata?.caveat ?? zatMetadata?.caveat ?? dataset.mapCaveat;
 
@@ -285,7 +289,6 @@ export default function HomePage() {
           onSelectUnit={handleSelect}
           loading={loading}
           legendCounts={legendCounts}
-          caveat={caveat}
         />
 
         {/* Exhaustive on the unit type. A two-way ternary here would hand a

@@ -57,11 +57,6 @@ interface MapExplorerProps {
   onSelectUnit: (id: number | null) => void;
   loading?: boolean;
   legendCounts: LegendCounts;
-  /** Resolved once in page.tsx: the data file's caveat, falling back to
-   *  dataset.mapCaveat. Rendered here clamped to one line, in full in the
-   *  sidebar. Never read dataset.mapCaveat directly — that is the fallback,
-   *  not the answer. */
-  caveat: string | null;
 }
 
 export default function MapExplorer({
@@ -75,7 +70,6 @@ export default function MapExplorer({
   onSelectUnit,
   loading = false,
   legendCounts,
-  caveat,
 }: MapExplorerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -449,19 +443,27 @@ export default function MapExplorer({
         </ToolbarButton>
       </div>
 
-      {/* Maturity + the ecological caveat. Pinned to the map, non-dismissable:
-          a notice that can be dismissed fails the moment someone dismisses it
-          and screenshots the map.
+      {/* Research maturity. Pinned to the map and non-dismissable: a notice
+          that can be dismissed fails the moment someone dismisses it and
+          screenshots the map.
+
+          The layer caveat used to sit under this chip as a second, clamped
+          copy of the string the sidebar already renders in full. One caveat,
+          one place: it is resolved once in page.tsx (the data file's
+          metadata.caveat, falling back to dataset.mapCaveat) and rendered once,
+          in the sidebar, where there is room for the whole sentence rather than
+          a truncated line ending in an ellipsis.
 
           The WRAPPER is pointer-events-none. It is a centred flex column with
           no background of its own, so its box spans the full 560px max-width
-          and stands 79px tall while the visible chip and callout inside it are
-          far narrower — an invisible rectangle sitting directly over the
-          right-hand half of the toolbar. It swallowed clicks on Observed,
-          Traffic and Dark on the Philadelphia segment layer. Bogotá escaped
-          only because its toolbar is shorter, so its buttons stop before the
-          wrapper's left edge. Pointer events are re-enabled on the two painted
-          children, which is what the user actually aims at. */}
+          while the visible chip inside it is far narrower — an invisible
+          rectangle sitting over the right-hand half of the toolbar. It
+          swallowed clicks on Observed, Traffic and Dark on the Philadelphia
+          segment layer. Bogotá escaped only because its toolbar is shorter, so
+          its buttons stop before the wrapper's left edge. Dropping the caveat
+          shortens the column but does NOT narrow it — the max-width is on the
+          wrapper, not the content — so pointer-events-none here and
+          pointer-events-auto on the chip both still matter. */}
       <div className="pointer-events-none absolute top-3 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1.5 max-w-[min(560px,calc(100%-2rem))]">
         <span
           className={`pointer-events-auto px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider shadow-sm border ${
@@ -473,22 +475,6 @@ export default function MapExplorer({
         >
           {city.label} · {city.maturityLabel}
         </span>
-
-        {caveat && (
-          <div
-            className="pointer-events-auto bg-amber-50/95 backdrop-blur-sm border border-amber-200 rounded-full px-3 py-1 shadow-sm max-w-full"
-            title={caveat}
-          >
-            {/* One line, clamped. The same resolved string the sidebar shows in
-                full — clamping rather than authoring a separate short version
-                means there is no second copy to drift. Splitting on the first
-                sentence was tried and rejected: the ZAT caveat opens with the
-                single word "ECOLOGICAL." */}
-            <p className="text-[11px] text-amber-900 leading-snug text-center truncate">
-              {caveat}
-            </p>
-          </div>
-        )}
       </div>
 
       <Legend
