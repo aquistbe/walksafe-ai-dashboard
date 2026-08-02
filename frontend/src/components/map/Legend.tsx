@@ -175,12 +175,28 @@ function renderZatLegend(
   layerMode: string,
   counts: LegendCounts
 ) {
+  /**
+   * No-data count for the ACTIVE mode.
+   *
+   * Every branch below used to read `counts.none`, which page.tsx fills with
+   * the number of zones lacking a CLUSTER. That is right for the zone-profile
+   * mode and wrong for the other two: Casualties and Age 60+ both printed 39
+   * where the real answers are 96 zones with no crash data and 28 with no
+   * population. Coverage differs per variable — that is the whole reason
+   * LayerModeConfig carries a gateField — so the count has to come from the
+   * mode's own gate.
+   */
+  const noData = (): number | undefined => {
+    const gate = dataset.layerModes.find((m) => m.id === layerMode)?.gateField;
+    return gate ? counts[`no_${gate}`] : counts.none;
+  };
+
   if (layerMode === "casualties") {
     return (
       <>
         <Title>Casualties per km²</Title>
         <Ramp ramp={CASUALTY_DENSITY_RAMP} breaks={CASUALTY_DENSITY_BREAKS} />
-        <NoDataRow label="No crash data" count={counts.none} />
+        <NoDataRow label="No crash data" count={noData()} />
         <Foot>
           Injury + death, {dataset.measure.crashWindow}. Per km², because raw
           counts are not comparable across zones of very different size.
@@ -194,7 +210,7 @@ function renderZatLegend(
       <>
         <Title>Population aged 60+</Title>
         <Ramp ramp={PCT60_RAMP} breaks={PCT60_BREAKS} suffix="%" />
-        <NoDataRow label="No population data" count={counts.none} />
+        <NoDataRow label="No population data" count={noData()} />
         <Foot>2018 census, ZAT level.</Foot>
       </>
     );
@@ -228,7 +244,7 @@ function renderZatLegend(
           </div>
         ))}
       </div>
-      <NoDataRow label="No profile" count={counts.none} />
+      <NoDataRow label="No profile" count={noData()} />
       <Foot>
         Ordered by built-environment intensity. Profile 4 is the model&rsquo;s
         reference category — it carries the most infrastructure and the most
@@ -352,10 +368,16 @@ function Ramp({
           <div key={c} className="flex-1" style={{ backgroundColor: c }} />
         ))}
       </div>
+      {/* `suffix` was accepted as a prop and never rendered, so the Bogotá 60+
+          ramp printed bare numbers where it meant percentages — 10, 14, 18
+          reading as counts rather than shares of the population. */}
       <div className="flex justify-between text-[9px] text-gray-400 tabular-nums mb-1">
-        <span>0</span>
+        <span>0{suffix}</span>
         {breaks.map((b) => (
-          <span key={b}>{b}</span>
+          <span key={b}>
+            {b}
+            {suffix}
+          </span>
         ))}
         <span />
       </div>

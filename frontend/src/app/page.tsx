@@ -96,8 +96,29 @@ export default function HomePage() {
     } else if (dataset.unitType === "polygon") {
       counts["1"] = 0; counts["2"] = 0; counts["3"] = 0; counts["4"] = 0;
       counts.none = 0;
+      // Tallied per GATE FIELD, for every mode at once — not just the active
+      // one, and not just the default.
+      //
+      // `gateField` below is derived from the dataset's DEFAULT layer mode, so
+      // a single `none` counter reported the default mode's coverage whatever
+      // ramp was on screen. On Bogotá that meant Casualties and Age 60+ both
+      // printed 39 — the count of zones with no cluster profile — where the
+      // true figures are 96 zones with no crash data and 28 with no
+      // population. The line branch above never had this because it keeps
+      // three independent counters; this is the polygon equivalent.
+      for (const m of dataset.layerModes) {
+        if (!m.gateField) continue;
+        counts[`has_${m.gateField}`] = 0;
+        counts[`no_${m.gateField}`] = 0;
+      }
       for (const f of filteredFeatures) {
         if (!isZatFeature(f)) continue;
+        const props = f.properties as unknown as Record<string, boolean>;
+        for (const m of dataset.layerModes) {
+          if (!m.gateField) continue;
+          if (props[m.gateField]) counts[`has_${m.gateField}`]++;
+          else counts[`no_${m.gateField}`]++;
+        }
         const c = f.properties.clus;
         if (c) counts[String(c)]++;
         else counts.none++;
@@ -111,7 +132,7 @@ export default function HomePage() {
       }
     }
     return counts;
-  }, [filteredFeatures, dataset.unitType]);
+  }, [filteredFeatures, dataset.unitType, dataset.layerModes]);
 
   /** Priority list, per analysis unit. */
   const topUnits = useMemo(() => {
