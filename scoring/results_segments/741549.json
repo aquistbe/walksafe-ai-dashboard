@@ -2,8 +2,8 @@
   "seg_id": 741549,
   "node_id": 741549,
   "int_name": "OXFORD CIR 0-block",
-  "status": "NO_SCORES",
-  "run_ts": "2026-08-02T05:43:11.715508+00:00",
+  "status": "OK",
+  "run_ts": "2026-08-02T17:11:12.138289+00:00",
   "model": "gemini-3-flash-preview",
   "prompt_version": "blind-seg-v1",
   "mode": "blind",
@@ -65,50 +65,1182 @@
       "point_index": 0,
       "offset": 0,
       "heading": 153,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 35,
+        "confidence": 85,
+        "summary": "The environment is dominated by wide, multi-lane roadways with high-speed geometry and minimal pedestrian infrastructure. While a sidewalk exists, it lacks a physical buffer from traffic, and there are no visible marked crosswalks at this complex junction.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "not_visible",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "yes",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "4_or_more",
+          "crossing_distance": "over_60ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "none",
+          "frontage_type": "setback_with_parking"
+        },
+        "hazards": [
+          {
+            "name": "Wide Turning Radius",
+            "severity": "High",
+            "description": "The large painted gore area and wide lane geometry encourage high-speed vehicle turns immediately adjacent to the sidewalk.",
+            "location_in_image": "Right foreground where the road curves"
+          },
+          {
+            "name": "Lack of Marked Crosswalks",
+            "severity": "High",
+            "description": "No visible marked crossings at a complex, multi-lane intersection, leaving pedestrians without a designated path.",
+            "location_in_image": "Intersection area in the background"
+          },
+          {
+            "name": "Excessive Crossing Distance",
+            "severity": "High",
+            "description": "The extreme width of the roadway requires pedestrians to be exposed to traffic for a significant duration without physical refuge.",
+            "location_in_image": "Across the main roadway"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions to tighten the turning radius and reduce the crossing distance for pedestrians.",
+            "impact": "High"
+          },
+          {
+            "title": "High-Visibility Crosswalks",
+            "description": "Paint continental-style crosswalks to clearly define pedestrian right-of-way and improve driver awareness.",
+            "impact": "High"
+          },
+          {
+            "title": "Pedestrian Refuge Island",
+            "description": "Construct a raised refuge island in the center of the wide roadway to allow for safer two-stage crossing.",
+            "impact": "High"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 849,
+        "thinking_tokens": 2371,
+        "total_tokens": 4751
+      }
     },
     {
       "point_index": 0,
       "offset": 90,
       "heading": 243,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 55,
+        "confidence": 90,
+        "summary": "The image shows a wide pedestrian walkway on a bridge over a highway, featuring a marked but faded midblock crosswalk. While the walkway itself is spacious and separated from the drop by fencing, the crossing lacks active traffic control or signage to protect pedestrians from vehicles.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "yes",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "residential",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "over_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "open_or_vacant"
+        },
+        "hazards": [
+          {
+            "name": "Uncontrolled midblock crossing",
+            "severity": "Medium",
+            "description": "Pedestrians must cross a wide roadway without the protection of a signal or stop sign.",
+            "location_in_image": "Foreground crosswalk"
+          },
+          {
+            "name": "Faded crosswalk markings",
+            "severity": "Low",
+            "description": "The paint for the crosswalk is significantly worn, reducing its visibility to approaching motorists.",
+            "location_in_image": "Foreground roadway"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "High-Visibility Crosswalk",
+            "description": "Replace the faded transverse markings with high-visibility continental or ladder-style markings.",
+            "impact": "Medium"
+          },
+          {
+            "title": "Rectangular Rapid Flashing Beacons (RRFB)",
+            "description": "Install pedestrian-activated flashing lights to alert drivers to the presence of people in the crosswalk.",
+            "impact": "High"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Extend the sidewalk into the roadway at the crossing to shorten the distance pedestrians must travel and improve sight lines.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 774,
+        "thinking_tokens": 1837,
+        "total_tokens": 4142
+      }
     },
     {
       "point_index": 0,
       "offset": 180,
       "heading": 333,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 35,
+        "confidence": 90,
+        "summary": "The environment is dominated by wide vehicle travel lanes and a large intersection, creating long crossing distances for pedestrians. While a marked crosswalk is visible on the left, the lack of continuous sidewalks on both sides and the absence of visible pedestrian signals create a hostile environment for walking.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "yes",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "not_visible",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "yes",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "4_or_more",
+          "crossing_distance": "over_60ft",
+          "land_use": "institutional",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "none",
+          "frontage_type": "open_or_vacant"
+        },
+        "hazards": [
+          {
+            "name": "Long crossing distance",
+            "severity": "High",
+            "description": "The multi-lane roadway requires pedestrians to cross a significant distance without a refuge island, increasing exposure to traffic.",
+            "location_in_image": "Center foreground across the entire roadway width"
+          },
+          {
+            "name": "Discontinuous sidewalk network",
+            "severity": "Medium",
+            "description": "The sidewalk on the right side of the image is absent, forcing pedestrians into the grass or roadway.",
+            "location_in_image": "Right side of the roadway"
+          },
+          {
+            "name": "Lack of pedestrian signals",
+            "severity": "High",
+            "description": "No pedestrian-specific signal heads are visible at this signalized intersection to manage safe crossing intervals.",
+            "location_in_image": "Intersection signal mast arms"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Pedestrian Refuge Island",
+            "description": "Install a raised median island to allow pedestrians to cross the wide roadway in two stages.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Extend the sidewalk into the parking or turn lane area to shorten the crossing distance and improve visibility.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Pedestrian Countdown Signals",
+            "description": "Install dedicated pedestrian signals with countdown timers to provide clear crossing information.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 907,
+        "thinking_tokens": 1131,
+        "total_tokens": 3569
+      }
     },
     {
       "point_index": 0,
       "offset": 270,
       "heading": 63,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 20,
+        "confidence": 90,
+        "summary": "The image depicts a high-speed arterial environment dominated by multi-lane vehicle infrastructure. There is no dedicated sidewalk or protected pedestrian space, only a narrow paved shoulder adjacent to a concrete barrier and chain-link fence.",
+        "features": {
+          "sidewalk_present": "no",
+          "sidewalk_obstruction": "not_visible",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "yes",
+          "curb_present": "no",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "3",
+          "crossing_distance": "over_60ft",
+          "land_use": "not_clear",
+          "sidewalk_condition": "absent",
+          "sidewalk_width": "absent",
+          "parking_configuration": "none",
+          "frontage_type": "open_or_vacant"
+        },
+        "hazards": [
+          {
+            "name": "Lack of Pedestrian Separation",
+            "severity": "High",
+            "description": "There is no physical curb or barrier separating the narrow paved shoulder from high-speed travel lanes.",
+            "location_in_image": "Foreground along the concrete barrier"
+          },
+          {
+            "name": "High-Speed Roadway Geometry",
+            "severity": "High",
+            "description": "Wide lanes and large turning radii suggest high vehicle speeds, which are lethal to pedestrians.",
+            "location_in_image": "Entire roadway surface"
+          },
+          {
+            "name": "Blank Infrastructure Frontage",
+            "severity": "Medium",
+            "description": "The long concrete barrier and fence create a hostile environment with no refuge or 'eyes on the street'.",
+            "location_in_image": "Center of image, along the overpass edge"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Construct Protected Sidewalk",
+            "description": "Install a raised, ADA-compliant sidewalk with a protective curb and buffer zone to separate pedestrians from traffic.",
+            "impact": "High"
+          },
+          {
+            "title": "Pedestrian-Scale Lighting",
+            "description": "Add lighting specifically for the walkway to improve visibility and safety during night hours.",
+            "impact": "Medium"
+          },
+          {
+            "title": "Lane Narrowing",
+            "description": "Reduce lane widths to encourage slower vehicle speeds and provide space for pedestrian infrastructure.",
+            "impact": "High"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 828,
+        "thinking_tokens": 1129,
+        "total_tokens": 3488
+      }
     },
     {
       "point_index": 1,
       "offset": 0,
       "heading": 140,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 35,
+        "confidence": 85,
+        "summary": "The image shows a large, multi-lane intersection with a high-speed design that is hostile to pedestrians. The environment is characterized by long crossing distances, a channelized right-turn slip lane, and a lack of prominent pedestrian-specific infrastructure like refuge islands or high-visibility markings.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "not_visible",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "yes",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "4_or_more",
+          "crossing_distance": "over_60ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "none",
+          "frontage_type": "setback_with_parking"
+        },
+        "hazards": [
+          {
+            "name": "Excessive Crossing Distance",
+            "severity": "High",
+            "description": "Pedestrians must cross multiple lanes of traffic over a very wide intersection without a refuge island.",
+            "location_in_image": "Center and right foreground across the main roadway"
+          },
+          {
+            "name": "High-Speed Slip Lane",
+            "severity": "High",
+            "description": "A channelized right-turn lane allows vehicles to maintain higher speeds while crossing the pedestrian path.",
+            "location_in_image": "Right side of the intersection"
+          },
+          {
+            "name": "Faded Pavement Markings",
+            "severity": "Medium",
+            "description": "The crosswalk markings are worn and lack high visibility, reducing driver awareness of the crossing zone.",
+            "location_in_image": "Right foreground across the slip lane"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Pedestrian Refuge Island",
+            "description": "Install a raised island in the center of the roadway to allow pedestrians to cross in stages.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "High-Visibility Crosswalks",
+            "description": "Replace faded transverse lines with continental or ladder-style markings to increase visibility.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Install bulb-outs to reduce the crossing distance and slow turning vehicles.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 916,
+        "thinking_tokens": 833,
+        "total_tokens": 3280
+      }
     },
     {
       "point_index": 1,
       "offset": 90,
       "heading": 230,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 45,
+        "confidence": 90,
+        "summary": "The image depicts a wide, marked midblock crosswalk on a bridge overpass. The pedestrian environment is characterized by a long crossing distance across multiple lanes of traffic with no median refuge, adjacent to high-speed highway infrastructure.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "yes",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "4_or_more",
+          "crossing_distance": "over_60ft",
+          "land_use": "not_clear",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "over_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "open_or_vacant"
+        },
+        "hazards": [
+          {
+            "name": "Excessive Crossing Distance",
+            "severity": "High",
+            "description": "The marked crosswalk spans a very wide roadway without any intermediate refuge, exposing pedestrians to traffic for a long duration.",
+            "location_in_image": "Foreground crosswalk"
+          },
+          {
+            "name": "Lack of Traffic Control",
+            "severity": "Medium",
+            "description": "There are no visible signals or signs to stop or slow traffic for the pedestrian crossing in a high-speed environment.",
+            "location_in_image": "Intersection of crosswalk and roadway"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Pedestrian Refuge Island",
+            "description": "Install a raised median island in the center of the roadway to allow pedestrians to cross in two stages.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Extend the sidewalk into the roadway at the crossing to shorten the crossing distance and improve visibility.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Rectangular Rapid Flashing Beacons (RRFB)",
+            "description": "Install pedestrian-activated flashing lights to alert drivers to the presence of people in the crosswalk.",
+            "impact": "Medium",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 810,
+        "thinking_tokens": 1951,
+        "total_tokens": 4292
+      }
     },
     {
       "point_index": 1,
       "offset": 180,
       "heading": 320,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 35,
+        "confidence": 85,
+        "summary": "The image depicts a wide, multi-lane roadway with complex junction geometry and long pedestrian crossing distances. While sidewalks and some pavement markings are present, the environment is heavily car-oriented with high-speed turning radii and minimal protection for people walking.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "not_visible",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "yes",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "4_or_more",
+          "crossing_distance": "over_60ft",
+          "land_use": "institutional",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "none",
+          "frontage_type": "open_or_vacant"
+        },
+        "hazards": [
+          {
+            "name": "Excessive Crossing Distance",
+            "severity": "High",
+            "description": "The marked crossing area on the left is extremely wide, exposing pedestrians to traffic for a prolonged duration without a refuge.",
+            "location_in_image": "Left foreground, diagonal pavement markings"
+          },
+          {
+            "name": "High-Speed Geometry",
+            "severity": "High",
+            "description": "The wide, sweeping curves of the roadway and slip lane encourage high vehicle speeds through the junction.",
+            "location_in_image": "Roadway curvature on the left and center"
+          },
+          {
+            "name": "Complex Conflict Points",
+            "severity": "Medium",
+            "description": "The multi-lane layout and channelized turns create multiple points where vehicle paths intersect with potential pedestrian paths.",
+            "location_in_image": "Entire intersection area"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Pedestrian Refuge Island",
+            "description": "Install a raised refuge island in the middle of the wide crossing to allow pedestrians to cross in stages.",
+            "impact": "High"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Extend the curb at the crossing points to narrow the roadway, reduce crossing distance, and improve visibility.",
+            "impact": "High"
+          },
+          {
+            "title": "Tighten Corner Radii",
+            "description": "Redesign the intersection corners with smaller radii to force vehicles to slow down when turning.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 849,
+        "thinking_tokens": 1323,
+        "total_tokens": 3703
+      }
     },
     {
       "point_index": 1,
       "offset": 270,
       "heading": 50,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 25,
+        "confidence": 90,
+        "summary": "The environment is highly car-oriented, characterized by wide multi-lane roadways and a lack of dedicated pedestrian infrastructure. While a narrow paved strip exists along the perimeter fence, it lacks sufficient width, buffering, and clear continuity for safe pedestrian travel.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "yes",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "4_or_more",
+          "crossing_distance": "over_60ft",
+          "land_use": "not_clear",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "under_4ft",
+          "parking_configuration": "none",
+          "frontage_type": "open_or_vacant"
+        },
+        "hazards": [
+          {
+            "name": "Excessive Crossing Distance",
+            "severity": "High",
+            "description": "The roadway is extremely wide with multiple lanes, requiring pedestrians to cross a large expanse of asphalt without any refuge.",
+            "location_in_image": "Foreground and center roadway"
+          },
+          {
+            "name": "Lack of Pedestrian Separation",
+            "severity": "High",
+            "description": "The narrow walkway is directly adjacent to high-speed travel lanes with no physical buffer or protection.",
+            "location_in_image": "Left and center along the fence line"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Pedestrian Refuge Island",
+            "description": "Install a raised median or refuge island to break up the crossing distance and provide a safe waiting area.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Sidewalk Widening and Buffering",
+            "description": "Widen the existing walkway and add a furniture zone or planting strip to separate pedestrians from moving traffic.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "High-Visibility Crosswalk and Signalization",
+            "description": "Upgrade the existing markings to high-visibility continental style and add pedestrian-actuated signals.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 853,
+        "thinking_tokens": 1132,
+        "total_tokens": 3516
+      }
     }
   ],
-  "aggregate": {}
+  "aggregate": {
+    "safety_score_mean": 35.6,
+    "safety_score_sd": 10.84,
+    "safety_score_sd_within_point": 11.26,
+    "safety_score_sd_between_points": 0.88,
+    "safety_score_min": 20,
+    "safety_score_max": 55,
+    "confidence_mean": 88.1,
+    "n_views_scored": 8,
+    "n_points_scored": 2,
+    "features": {
+      "sidewalk_present": {
+        "any": true,
+        "proportion": 0.875,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": true
+      },
+      "sidewalk_obstruction": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 7,
+        "n_views": 8,
+        "mixed": false
+      },
+      "crosswalk_marked": {
+        "any": true,
+        "proportion": 0.75,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": true
+      },
+      "curb_ramp": {
+        "any": true,
+        "proportion": 0.333,
+        "n_visible": 3,
+        "n_views": 8,
+        "mixed": true
+      },
+      "refuge_island": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "median_present": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "pedestrian_signal": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 4,
+        "n_views": 8,
+        "mixed": false
+      },
+      "traffic_light": {
+        "any": true,
+        "proportion": 0.625,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": true
+      },
+      "stop_sign": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "crossing_sign": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "lane_markings": {
+        "any": true,
+        "proportion": 1.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "street_lighting": {
+        "any": true,
+        "proportion": 1.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "bike_lane": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "trees": {
+        "any": true,
+        "proportion": 1.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "bus_stop": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "slip_lane": {
+        "any": true,
+        "proportion": 0.375,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": true
+      },
+      "visual_obstruction": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "poor_pavement": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "sidewalk_buffer": {
+        "any": true,
+        "proportion": 0.375,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": true
+      },
+      "sidewalk_gap": {
+        "any": true,
+        "proportion": 0.375,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": true
+      },
+      "curb_present": {
+        "any": true,
+        "proportion": 0.875,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": true
+      },
+      "on_street_parking": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "driveway_curb_cut": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "midblock_crossing": {
+        "any": true,
+        "proportion": 0.25,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": true
+      },
+      "traffic_calming": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "blank_frontage": {
+        "any": true,
+        "proportion": 1.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "loading_activity": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 8,
+        "n_views": 8,
+        "mixed": false
+      },
+      "through_lanes": {
+        "modal": "4_or_more",
+        "values": [
+          "4_or_more",
+          "2",
+          "4_or_more",
+          "3",
+          "4_or_more",
+          "4_or_more",
+          "4_or_more",
+          "4_or_more"
+        ],
+        "agreement": 0.75
+      },
+      "crossing_distance": {
+        "modal": "over_60ft",
+        "values": [
+          "over_60ft",
+          "24_to_40ft",
+          "over_60ft",
+          "over_60ft",
+          "over_60ft",
+          "over_60ft",
+          "over_60ft",
+          "over_60ft"
+        ],
+        "agreement": 0.875
+      },
+      "land_use": {
+        "modal": "institutional",
+        "values": [
+          "commercial",
+          "residential",
+          "institutional",
+          "not_clear",
+          "commercial",
+          "not_clear",
+          "institutional",
+          "not_clear"
+        ],
+        "agreement": 0.4
+      },
+      "sidewalk_condition": {
+        "modal": "fair",
+        "values": [
+          "fair",
+          "good",
+          "fair",
+          "absent",
+          "fair",
+          "good",
+          "fair",
+          "fair"
+        ],
+        "agreement": 0.625
+      },
+      "sidewalk_width": {
+        "modal": "4_to_6ft",
+        "values": [
+          "4_to_6ft",
+          "over_10ft",
+          "4_to_6ft",
+          "absent",
+          "4_to_6ft",
+          "over_10ft",
+          "4_to_6ft",
+          "under_4ft"
+        ],
+        "agreement": 0.5
+      },
+      "parking_configuration": {
+        "modal": "none",
+        "values": [
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none",
+          "none"
+        ],
+        "agreement": 1.0
+      },
+      "frontage_type": {
+        "modal": "open_or_vacant",
+        "values": [
+          "setback_with_parking",
+          "open_or_vacant",
+          "open_or_vacant",
+          "open_or_vacant",
+          "setback_with_parking",
+          "open_or_vacant",
+          "open_or_vacant",
+          "open_or_vacant"
+        ],
+        "agreement": 0.75
+      }
+    },
+    "hazards": [
+      {
+        "name": "Wide Turning Radius",
+        "severity": "High",
+        "description": "The large painted gore area and wide lane geometry encourage high-speed vehicle turns immediately adjacent to the sidewalk.",
+        "location_in_image": "Right foreground where the road curves"
+      },
+      {
+        "name": "Lack of Marked Crosswalks",
+        "severity": "High",
+        "description": "No visible marked crossings at a complex, multi-lane intersection, leaving pedestrians without a designated path.",
+        "location_in_image": "Intersection area in the background"
+      },
+      {
+        "name": "Excessive Crossing Distance",
+        "severity": "High",
+        "description": "The extreme width of the roadway requires pedestrians to be exposed to traffic for a significant duration without physical refuge.",
+        "location_in_image": "Across the main roadway"
+      },
+      {
+        "name": "Uncontrolled midblock crossing",
+        "severity": "Medium",
+        "description": "Pedestrians must cross a wide roadway without the protection of a signal or stop sign.",
+        "location_in_image": "Foreground crosswalk"
+      },
+      {
+        "name": "Faded crosswalk markings",
+        "severity": "Low",
+        "description": "The paint for the crosswalk is significantly worn, reducing its visibility to approaching motorists.",
+        "location_in_image": "Foreground roadway"
+      },
+      {
+        "name": "Long crossing distance",
+        "severity": "High",
+        "description": "The multi-lane roadway requires pedestrians to cross a significant distance without a refuge island, increasing exposure to traffic.",
+        "location_in_image": "Center foreground across the entire roadway width"
+      },
+      {
+        "name": "Discontinuous sidewalk network",
+        "severity": "Medium",
+        "description": "The sidewalk on the right side of the image is absent, forcing pedestrians into the grass or roadway.",
+        "location_in_image": "Right side of the roadway"
+      },
+      {
+        "name": "Lack of pedestrian signals",
+        "severity": "High",
+        "description": "No pedestrian-specific signal heads are visible at this signalized intersection to manage safe crossing intervals.",
+        "location_in_image": "Intersection signal mast arms"
+      },
+      {
+        "name": "Lack of Pedestrian Separation",
+        "severity": "High",
+        "description": "There is no physical curb or barrier separating the narrow paved shoulder from high-speed travel lanes.",
+        "location_in_image": "Foreground along the concrete barrier"
+      },
+      {
+        "name": "High-Speed Roadway Geometry",
+        "severity": "High",
+        "description": "Wide lanes and large turning radii suggest high vehicle speeds, which are lethal to pedestrians.",
+        "location_in_image": "Entire roadway surface"
+      },
+      {
+        "name": "Blank Infrastructure Frontage",
+        "severity": "Medium",
+        "description": "The long concrete barrier and fence create a hostile environment with no refuge or 'eyes on the street'.",
+        "location_in_image": "Center of image, along the overpass edge"
+      },
+      {
+        "name": "High-Speed Slip Lane",
+        "severity": "High",
+        "description": "A channelized right-turn lane allows vehicles to maintain higher speeds while crossing the pedestrian path.",
+        "location_in_image": "Right side of the intersection"
+      },
+      {
+        "name": "Faded Pavement Markings",
+        "severity": "Medium",
+        "description": "The crosswalk markings are worn and lack high visibility, reducing driver awareness of the crossing zone.",
+        "location_in_image": "Right foreground across the slip lane"
+      },
+      {
+        "name": "Lack of Traffic Control",
+        "severity": "Medium",
+        "description": "There are no visible signals or signs to stop or slow traffic for the pedestrian crossing in a high-speed environment.",
+        "location_in_image": "Intersection of crosswalk and roadway"
+      },
+      {
+        "name": "High-Speed Geometry",
+        "severity": "High",
+        "description": "The wide, sweeping curves of the roadway and slip lane encourage high vehicle speeds through the junction.",
+        "location_in_image": "Roadway curvature on the left and center"
+      },
+      {
+        "name": "Complex Conflict Points",
+        "severity": "Medium",
+        "description": "The multi-lane layout and channelized turns create multiple points where vehicle paths intersect with potential pedestrian paths.",
+        "location_in_image": "Entire intersection area"
+      }
+    ],
+    "interventions": [
+      {
+        "title": "Curb Extensions",
+        "description": "Install curb extensions to tighten the turning radius and reduce the crossing distance for pedestrians.",
+        "impact": "High"
+      },
+      {
+        "title": "High-Visibility Crosswalks",
+        "description": "Paint continental-style crosswalks to clearly define pedestrian right-of-way and improve driver awareness.",
+        "impact": "High"
+      },
+      {
+        "title": "Pedestrian Refuge Island",
+        "description": "Construct a raised refuge island in the center of the wide roadway to allow for safer two-stage crossing.",
+        "impact": "High"
+      },
+      {
+        "title": "High-Visibility Crosswalk",
+        "description": "Replace the faded transverse markings with high-visibility continental or ladder-style markings.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Rectangular Rapid Flashing Beacons (RRFB)",
+        "description": "Install pedestrian-activated flashing lights to alert drivers to the presence of people in the crosswalk.",
+        "impact": "High"
+      },
+      {
+        "title": "Pedestrian Countdown Signals",
+        "description": "Install dedicated pedestrian signals with countdown timers to provide clear crossing information.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Construct Protected Sidewalk",
+        "description": "Install a raised, ADA-compliant sidewalk with a protective curb and buffer zone to separate pedestrians from traffic.",
+        "impact": "High"
+      },
+      {
+        "title": "Pedestrian-Scale Lighting",
+        "description": "Add lighting specifically for the walkway to improve visibility and safety during night hours.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Lane Narrowing",
+        "description": "Reduce lane widths to encourage slower vehicle speeds and provide space for pedestrian infrastructure.",
+        "impact": "High"
+      },
+      {
+        "title": "Tighten Corner Radii",
+        "description": "Redesign the intersection corners with smaller radii to force vehicles to slow down when turning.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Sidewalk Widening and Buffering",
+        "description": "Widen the existing walkway and add a furniture zone or planting strip to separate pedestrians from moving traffic.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "High-Visibility Crosswalk and Signalization",
+        "description": "Upgrade the existing markings to high-visibility continental style and add pedestrian-actuated signals.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      }
+    ]
+  }
 }

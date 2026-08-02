@@ -2,8 +2,8 @@
   "seg_id": 321438,
   "node_id": 321438,
   "int_name": "REED ST 2200-block",
-  "status": "NO_SCORES",
-  "run_ts": "2026-08-02T05:43:11.715508+00:00",
+  "status": "OK",
+  "run_ts": "2026-08-02T19:52:52.766559+00:00",
   "model": "gemini-3-flash-preview",
   "prompt_version": "blind-seg-v1",
   "mode": "blind",
@@ -101,122 +101,2344 @@
       "point_index": 0,
       "offset": 0,
       "heading": 280,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 70,
+        "summary": "This is a narrow residential street with textured pavement that likely encourages low vehicle speeds. While sidewalks are present, they are narrow and partially obstructed by trash cans, and the continuous line of parked cars creates potential visibility issues for pedestrians crossing mid-block.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "yes",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "1",
+          "crossing_distance": "under_24ft",
+          "land_use": "residential",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Visual Obstruction from Parked Cars",
+            "severity": "Medium",
+            "description": "Continuous parallel parking on both sides of the narrow street can obscure pedestrians, particularly children, from the view of approaching drivers.",
+            "location_in_image": "Along both curbs of the street."
+          },
+          {
+            "name": "Sidewalk Obstructions",
+            "severity": "Low",
+            "description": "Trash cans placed on the sidewalk reduce the effective width for pedestrians.",
+            "location_in_image": "Left sidewalk near the residential buildings."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Daylighting",
+            "description": "Remove parking spaces near potential crossing points to improve sightlines between drivers and pedestrians.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions at intersections or mid-block to shorten crossing distances and prevent parking too close to crossings.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 764,
+        "thinking_tokens": 1820,
+        "total_tokens": 4115
+      }
     },
     {
       "point_index": 0,
       "offset": 90,
       "heading": 10,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 45,
+        "confidence": 40,
+        "summary": "The image shows a residential mid-block environment with a narrow sidewalk directly adjacent to the building frontage. A large parked vehicle and significant image blurring on the left side create substantial visual obstructions, limiting the assessment of the broader street context.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "not_visible",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "1",
+          "crossing_distance": "not_visible",
+          "land_use": "residential",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Visual Obstruction",
+            "severity": "High",
+            "description": "A large parked SUV and significant lens blurring on the left side of the frame block sightlines between pedestrians on the sidewalk and any approaching traffic.",
+            "location_in_image": "Foreground and left side of the image"
+          },
+          {
+            "name": "Lack of Pedestrian Buffer",
+            "severity": "Medium",
+            "description": "There is no physical buffer or planting strip between the narrow sidewalk and the roadway/parking lane.",
+            "location_in_image": "Along the curb line behind the parked car"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions at the nearest intersections to improve visibility and reduce crossing distances.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Street Trees and Furniture Zone",
+            "description": "Introduce a planting strip or furniture zone to provide a physical and psychological buffer between pedestrians and vehicles.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Daylighting",
+            "description": "Remove parking spaces closest to intersections or potential crossing points to improve sightlines.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 836,
+        "thinking_tokens": 1032,
+        "total_tokens": 3399
+      }
     },
     {
       "point_index": 0,
       "offset": 180,
       "heading": 100,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 85,
+        "summary": "The street provides basic pedestrian infrastructure including continuous sidewalks and a signalized intersection with marked crosswalks. Safety is limited by the lack of physical buffers from traffic and potential sightline obstructions from parked vehicles near the crossing.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "yes",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "yes",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "mixed",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Intersection Sightline Obstruction",
+            "severity": "Medium",
+            "description": "Parked cars near the intersection crosswalk can hide pedestrians from approaching drivers.",
+            "location_in_image": "Right side of the street near the intersection"
+          },
+          {
+            "name": "Lack of Pedestrian Buffer",
+            "severity": "Low",
+            "description": "The sidewalk is directly adjacent to the curb with no planting strip or physical barrier to separate pedestrians from moving traffic.",
+            "location_in_image": "Along both sides of the street"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Curb Extensions (Bulb-outs)",
+            "description": "Extend the sidewalk at the intersection to reduce crossing distance and improve visibility between pedestrians and drivers.",
+            "impact": "High"
+          },
+          {
+            "title": "Intersection Daylighting",
+            "description": "Remove parking spaces immediately adjacent to the crosswalk to ensure clear sightlines.",
+            "impact": "High"
+          },
+          {
+            "title": "Street Trees and Greenery",
+            "description": "Install street trees or planters to create a vertical buffer and improve the walking environment.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 766,
+        "thinking_tokens": 2857,
+        "total_tokens": 5154
+      }
     },
     {
       "point_index": 0,
       "offset": 270,
       "heading": 190,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 55,
+        "confidence": 45,
+        "summary": "The image shows a narrow urban sidewalk adjacent to a residential building with a garage. A large parked truck significantly obstructs the view of the pedestrian environment and creates a visual barrier between the sidewalk and the roadway.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "not_visible",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "not_visible",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "yes",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "not_visible",
+          "crossing_distance": "not_visible",
+          "land_use": "residential",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Visual Obstruction",
+            "severity": "Medium",
+            "description": "A large pickup truck parked along the curb blocks sightlines between the sidewalk and the roadway.",
+            "location_in_image": "Foreground, center and left"
+          },
+          {
+            "name": "Driveway Conflict Point",
+            "severity": "Low",
+            "description": "A garage door indicates a location where vehicles must cross the sidewalk to enter or exit the property.",
+            "location_in_image": "Right side of the building"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Daylighting",
+            "description": "Removing parking spaces immediately adjacent to the garage entrance to improve visibility for both drivers and pedestrians.",
+            "impact": "Medium"
+          },
+          {
+            "title": "Street Trees",
+            "description": "Adding street trees would provide a physical and psychological buffer between the narrow sidewalk and moving traffic.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 705,
+        "thinking_tokens": 1391,
+        "total_tokens": 3627
+      }
     },
     {
       "point_index": 1,
       "offset": 0,
       "heading": 280,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 90,
+        "summary": "A narrow residential street with continuous sidewalks and mature trees providing a buffer between pedestrians and the roadway. The environment lacks formal crossing infrastructure, and parked vehicles create potential sightline obstructions for mid-block crossings.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "1",
+          "crossing_distance": "under_24ft",
+          "land_use": "residential",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Visual Obstructions",
+            "severity": "Medium",
+            "description": "Parked cars along the curb obscure pedestrians from the view of oncoming drivers.",
+            "location_in_image": "Both sides of the street where cars are parked."
+          },
+          {
+            "name": "Degraded Pavement",
+            "severity": "Low",
+            "description": "The roadway surface is uneven and cracked, creating potential trip hazards.",
+            "location_in_image": "Main travel lane in the foreground."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Curb Extensions",
+            "description": "Extend the sidewalk into the parking lane at crossing points to improve visibility and shorten crossing distance.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "High-Visibility Crosswalks",
+            "description": "Install marked crossings to designate safe areas for pedestrians to cross the street.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Speed Humps",
+            "description": "Implement speed humps to further reinforce low vehicle speeds on this residential street.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 810,
+        "thinking_tokens": 3001,
+        "total_tokens": 5342
+      }
     },
     {
       "point_index": 1,
       "offset": 90,
       "heading": 10,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 75,
+        "summary": "The image shows a narrow residential street with continuous sidewalks and multi-story row houses. A large SUV is parked parallel to the curb, which may obstruct sightlines between pedestrians and moving traffic.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "not_visible",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "not_visible",
+          "crossing_distance": "not_visible",
+          "land_use": "residential",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Visual Obstruction from Parked Vehicle",
+            "severity": "Medium",
+            "description": "The large white SUV parked at the curb obscures the view of the roadway for pedestrians and makes it harder for drivers to see anyone stepping into the street.",
+            "location_in_image": "Foreground, parked along the curb."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions at the nearest intersection to improve visibility and shorten crossing distances.",
+            "impact": "High"
+          },
+          {
+            "title": "Street Trees and Planting Strips",
+            "description": "Add a furniture zone or planting strip between the sidewalk and the curb to provide a physical buffer from traffic.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 435,
+        "thinking_tokens": 1803,
+        "total_tokens": 3769
+      }
     },
     {
       "point_index": 1,
       "offset": 180,
       "heading": 100,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 70,
+        "summary": "This narrow residential street features continuous sidewalks and row-house frontages, with parallel parking on both sides providing a buffer from traffic. However, the pedestrian environment is constrained by narrow walkways and visual obstructions from parked vehicles, and significant portions of the image are obscured by blurring.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "1",
+          "crossing_distance": "under_24ft",
+          "land_use": "residential",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Visual Obstructions",
+            "severity": "Medium",
+            "description": "Parked cars along both sides of the narrow street create significant blind spots for drivers and pedestrians.",
+            "location_in_image": "Along both curbs throughout the visible street"
+          },
+          {
+            "name": "Sidewalk Obstructions",
+            "severity": "Low",
+            "description": "Trash bags and furniture placed on the sidewalk narrow the usable path for pedestrians.",
+            "location_in_image": "Right-hand sidewalk in front of the red brick building"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Daylighting",
+            "description": "Remove parking spaces near intersections or potential crossing points to improve visibility between drivers and pedestrians.",
+            "impact": "High",
+            "source": "NACTO",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions at intersections to shorten crossing distances and prevent cars from parking too close to corners.",
+            "impact": "High",
+            "source": "NACTO",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 502,
+        "thinking_tokens": 3109,
+        "total_tokens": 5142
+      }
     },
     {
       "point_index": 1,
       "offset": 270,
       "heading": 190,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 70,
+        "confidence": 95,
+        "summary": "The image shows a narrow urban residential street with row houses built directly to the sidewalk edge. The pedestrian environment consists of a continuous concrete sidewalk in good condition, though it lacks a physical buffer from the roadway and contains minor debris.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "not_visible",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "1",
+          "crossing_distance": "under_24ft",
+          "land_use": "residential",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Sidewalk Debris",
+            "severity": "Low",
+            "description": "A large white bag is left on the sidewalk, creating a minor trip hazard and narrowing the clear walking path.",
+            "location_in_image": "Center foreground on the sidewalk"
+          },
+          {
+            "name": "Lack of Pedestrian Buffer",
+            "severity": "Low",
+            "description": "There is no physical separation or buffer zone between the sidewalk and the active travel lane.",
+            "location_in_image": "Along the curb line"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Street Trees and Planters",
+            "description": "Install street trees or planters to provide a physical and psychological buffer between pedestrians and vehicles while improving the streetscape.",
+            "impact": "Medium"
+          },
+          {
+            "title": "Waste Management Infrastructure",
+            "description": "Provide designated trash receptacles to prevent debris from being left on the pedestrian walkway.",
+            "impact": "Low"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 716,
+        "thinking_tokens": 1900,
+        "total_tokens": 4147
+      }
     },
     {
       "point_index": 2,
       "offset": 0,
       "heading": 280,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 70,
+        "confidence": 90,
+        "summary": "A narrow residential street with row houses and mature trees. Pedestrians have continuous but narrow sidewalks on both sides, buffered from the single travel lane by parallel parking.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "1",
+          "crossing_distance": "under_24ft",
+          "land_use": "residential",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Narrow and obstructed sidewalks",
+            "severity": "Low",
+            "description": "The sidewalks are narrow and partially obstructed by trash bins and steps, which may hinder those with mobility aids.",
+            "location_in_image": "Left and right sidewalks throughout the block"
+          },
+          {
+            "name": "Degraded roadway surface",
+            "severity": "Low",
+            "description": "The street surface appears milled or worn, creating an uneven surface for pedestrians who may need to cross.",
+            "location_in_image": "Center roadway"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Roadway Resurfacing",
+            "description": "Repave the street to provide a smooth, even surface for all users.",
+            "impact": "Low",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Sidewalk Clear Zone Management",
+            "description": "Establish clear zones for trash collection to prevent bins from obstructing the narrow pedestrian path.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 591,
+        "thinking_tokens": 9136,
+        "total_tokens": 11258
+      }
     },
     {
       "point_index": 2,
       "offset": 90,
       "heading": 10,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 60,
+        "confidence": 85,
+        "summary": "This is a dense residential street characterized by row houses and a narrow sidewalk. The pedestrian environment is functional but constrained by on-street parking and sidewalk obstructions like trash bins, which reduce the effective walking width.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "not_visible",
+          "street_lighting": "not_visible",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "not_visible",
+          "crossing_distance": "not_visible",
+          "land_use": "residential",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Sidewalk Obstructions",
+            "severity": "Medium",
+            "description": "Trash and recycling bins are placed directly in the narrow walking path, forcing pedestrians to maneuver around them.",
+            "location_in_image": "Center foreground on the sidewalk"
+          },
+          {
+            "name": "Visual Obstructions",
+            "severity": "Low",
+            "description": "Parked vehicles, particularly high-profile SUVs, block sightlines between the sidewalk and the roadway for pedestrians and drivers.",
+            "location_in_image": "Left and right foreground along the curb"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Dedicated Bin Storage",
+            "description": "Provide designated areas for trash and recycling bins that do not encroach on the clear walking path of the sidewalk.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Sidewalk Widening",
+            "description": "Increase the width of the pedestrian zone to provide a consistent clear path even when street furniture or bins are present.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 769,
+        "thinking_tokens": 1896,
+        "total_tokens": 4196
+      }
     },
     {
       "point_index": 2,
       "offset": 180,
       "heading": 100,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 80,
+        "summary": "The image depicts a narrow residential street with row houses and continuous sidewalks. Parallel parking on both sides narrows the travel lane, likely slowing traffic, but also creates sightline obstructions for pedestrians.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "1",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "residential",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Parked Vehicle Sightline Obstruction",
+            "severity": "Medium",
+            "description": "Continuous parallel parking on both sides of the narrow street obscures pedestrians from the view of approaching motorists.",
+            "location_in_image": "Along both curbs."
+          },
+          {
+            "name": "Sidewalk Obstructions",
+            "severity": "Low",
+            "description": "Trash bins and building steps narrow the already limited walking space on the sidewalk.",
+            "location_in_image": "Left and right sidewalks."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions at the ends of the block to improve visibility and shorten crossing distances.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Sidewalk Widening",
+            "description": "Increase the width of the sidewalk to provide a clear walking path and accommodate street furniture or trash storage.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 493,
+        "thinking_tokens": 6821,
+        "total_tokens": 8845
+      }
     },
     {
       "point_index": 2,
       "offset": 270,
       "heading": 190,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 95,
+        "summary": "This is a narrow residential street with row houses built directly to the sidewalk edge. While the street appears to have low traffic volumes, the pedestrian environment is compromised by a utility pole situated in the middle of the walkway and temporary debris.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "not_visible",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "1",
+          "crossing_distance": "under_24ft",
+          "land_use": "residential",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Utility Pole Obstruction",
+            "severity": "Medium",
+            "description": "A large wooden utility pole is located in the center of the sidewalk, significantly narrowing the clear path and creating an accessibility barrier for wheelchair users or strollers.",
+            "location_in_image": "Center-left, on the sidewalk in front of the grey house."
+          },
+          {
+            "name": "Sidewalk Debris",
+            "severity": "Low",
+            "description": "A black trash bag is placed on the sidewalk, creating a minor trip hazard and further obstructing the pedestrian path.",
+            "location_in_image": "On the sidewalk next to the black car."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Sidewalk Widening and Obstruction Removal",
+            "description": "Relocate utility poles to the curb edge or underground to provide a clear, unobstructed pedestrian through-zone of at least 5 feet.",
+            "impact": "High"
+          },
+          {
+            "title": "Street Lighting Improvements",
+            "description": "Install pedestrian-scale street lighting to improve visibility and safety during nighttime hours.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 748,
+        "thinking_tokens": 1239,
+        "total_tokens": 3518
+      }
     },
     {
       "point_index": 3,
       "offset": 0,
       "heading": 280,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 90,
+        "summary": "The image shows a narrow, one-way residential street with continuous sidewalks and parallel parking on both sides. The built environment is characterized by row houses situated directly at the sidewalk edge, providing a sense of enclosure, though visibility for pedestrians entering the roadway is limited by parked vehicles.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "yes",
+          "through_lanes": "1",
+          "crossing_distance": "under_24ft",
+          "land_use": "residential",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Visual Obstruction",
+            "severity": "Medium",
+            "description": "High density of parked vehicles on both sides of the street obscures sightlines between pedestrians on the sidewalk and drivers in the travel lane.",
+            "location_in_image": "Along both curbs throughout the visible block"
+          },
+          {
+            "name": "Lack of Designated Crossings",
+            "severity": "Low",
+            "description": "No marked crosswalks or pedestrian infrastructure are visible, requiring pedestrians to cross mid-block without formal protection.",
+            "location_in_image": "Entire roadway section"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions (bulb-outs) at potential crossing points to shorten the crossing distance and improve visibility between pedestrians and drivers.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Daylighting",
+            "description": "Remove parking spaces near intersections or mid-block crossing points to improve sightlines.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Speed Humps",
+            "description": "Install speed humps or cushions to maintain low vehicle speeds appropriate for a narrow residential street.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 849,
+        "thinking_tokens": 6496,
+        "total_tokens": 8876
+      }
     },
     {
       "point_index": 3,
       "offset": 90,
       "heading": 10,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 90,
+        "summary": "The image depicts a narrow residential street with continuous row house frontages and a paved sidewalk. The environment lacks a buffer between the walkway and the roadway, and the pavement exhibits some surface degradation, though the path remains clear of major obstructions.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "not_visible",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "1",
+          "crossing_distance": "under_24ft",
+          "land_use": "residential",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Lack of Pedestrian Buffer",
+            "severity": "Low",
+            "description": "The sidewalk is directly adjacent to the travel lane with no physical separation like a planting strip or parked cars.",
+            "location_in_image": "Along the curb line throughout the foreground."
+          },
+          {
+            "name": "Uneven Pavement",
+            "severity": "Low",
+            "description": "The sidewalk and roadway show cracks and patches which could present tripping hazards or indicate poor maintenance.",
+            "location_in_image": "Visible on the sidewalk surface in front of the houses."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Street Trees and Planters",
+            "description": "Introduce street trees or planters to create a vertical buffer between the sidewalk and the roadway.",
+            "impact": "Medium",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Sidewalk Repair",
+            "description": "Repair cracked and uneven sections of the sidewalk to ensure a smooth, accessible path.",
+            "impact": "Low",
+            "estimated_cost": "$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 494,
+        "thinking_tokens": 2857,
+        "total_tokens": 4882
+      }
     },
     {
       "point_index": 3,
       "offset": 180,
       "heading": 100,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 60,
+        "confidence": 85,
+        "summary": "The image shows a narrow residential street with row houses and continuous sidewalks on both sides. High-density parallel parking provides a buffer from traffic but creates significant visual obstructions for pedestrians wishing to cross the street.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "1",
+          "crossing_distance": "under_24ft",
+          "land_use": "residential",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Visual Obstructions",
+            "severity": "Medium",
+            "description": "Parked vehicles along both sides of the street block sightlines between drivers and pedestrians.",
+            "location_in_image": "Along both curbs of the street."
+          },
+          {
+            "name": "Poor Road Surface",
+            "severity": "Low",
+            "description": "The roadway appears uneven and cracked, which could pose a trip hazard for pedestrians crossing mid-block.",
+            "location_in_image": "The street surface in the center of the image."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Daylighting",
+            "description": "Removing parking spaces near intersections or mid-block crossing points to improve visibility.",
+            "impact": "Medium",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Extending the sidewalk at corners to reduce crossing distance and improve sightlines.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 473,
+        "thinking_tokens": 3066,
+        "total_tokens": 5070
+      }
     },
     {
       "point_index": 3,
       "offset": 270,
       "heading": 190,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 90,
+        "summary": "This is a narrow residential street with brick row houses and parallel parking on both sides. The pedestrian environment features a continuous but narrow sidewalk that is partially obstructed by trash bags and a large street tree.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "no",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "1",
+          "crossing_distance": "under_24ft",
+          "land_use": "residential",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Sidewalk Obstruction",
+            "severity": "Low",
+            "description": "Black trash bags are placed directly on the narrow sidewalk, forcing pedestrians to navigate around them.",
+            "location_in_image": "Center-left, at the base of the tree and near the building entrance."
+          },
+          {
+            "name": "Visual Obstruction",
+            "severity": "Medium",
+            "description": "Parked vehicles on both sides of the narrow street create significant sightline barriers for pedestrians attempting to cross mid-block.",
+            "location_in_image": "Foreground, cars parked along the curb."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Waste Management Solutions",
+            "description": "Implement designated off-sidewalk trash collection areas or containers to keep the narrow walkway clear for pedestrians.",
+            "impact": "Medium"
+          },
+          {
+            "title": "Street Lighting",
+            "description": "Install pedestrian-scale street lighting to improve visibility and safety during nighttime hours, as no luminaires are visible.",
+            "impact": "High"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "While this is mid-block, curb extensions at the nearest intersections would improve sightlines and reduce crossing distances.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 775,
+        "thinking_tokens": 924,
+        "total_tokens": 3230
+      }
     },
     {
       "point_index": 4,
       "offset": 0,
       "heading": 280,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 35,
+        "confidence": 90,
+        "summary": "The pedestrian environment is characterized by significantly degraded infrastructure, including severely cracked and uneven pavement on both the roadway and walkways. While stop signs are present to manage vehicle flow, the lack of marked crosswalks, narrow sidewalks, and absence of ADA-compliant features create a challenging and potentially unsafe environment for pedestrians.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "yes",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "yes",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "residential",
+          "sidewalk_condition": "poor",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Degraded Pavement",
+            "severity": "High",
+            "description": "The roadway and sidewalk surfaces are severely cracked, pitted, and uneven, creating significant trip hazards and barriers for people with mobility aids.",
+            "location_in_image": "Center foreground and along the left sidewalk area."
+          },
+          {
+            "name": "Lack of Marked Crosswalks",
+            "severity": "Medium",
+            "description": "The intersection lacks painted crosswalks, which fails to designate a clear path for pedestrians and reduces driver awareness of crossing activity.",
+            "location_in_image": "At the intersection in the middle ground."
+          },
+          {
+            "name": "Restricted Sightlines",
+            "severity": "Medium",
+            "description": "On-street parking extends close to the intersection, potentially obscuring pedestrians from the view of approaching drivers.",
+            "location_in_image": "Right side of the street approaching the intersection."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "High-Visibility Crosswalks",
+            "description": "Install continental or ladder-style marked crosswalks at all legs of the intersection to clearly define pedestrian space.",
+            "impact": "High",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Sidewalk Reconstruction",
+            "description": "Repair and level the sidewalk surfaces to provide a continuous, ADA-compliant path of travel.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Curb Extensions (Bulb-outs)",
+            "description": "Install curb extensions to shorten the crossing distance, improve sightlines between drivers and pedestrians, and prevent parking too close to the intersection.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 913,
+        "thinking_tokens": 1919,
+        "total_tokens": 4363
+      }
     },
     {
       "point_index": 4,
       "offset": 90,
       "heading": 10,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 55,
+        "confidence": 85,
+        "summary": "The image shows a residential street with a continuous concrete sidewalk and parallel on-street parking. The environment is characterized by a mix of row house frontage and a vacant lot, lacking pedestrian buffers or traffic calming measures.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "no",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "not_visible",
+          "crossing_distance": "not_visible",
+          "land_use": "residential",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Visual Obstruction",
+            "severity": "Medium",
+            "description": "Parked vehicles along the curb block sight lines between pedestrians on the sidewalk and drivers in the roadway.",
+            "location_in_image": "Foreground, cars parked along the curb"
+          },
+          {
+            "name": "Blank Frontage",
+            "severity": "Low",
+            "description": "The vacant lot and windowless side walls reduce natural surveillance and 'eyes on the street', potentially impacting social safety.",
+            "location_in_image": "Center and left background"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Street Trees and Planters",
+            "description": "Installing street trees or a planting strip would provide a physical and psychological buffer between pedestrians and moving traffic.",
+            "impact": "Medium"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Adding curb extensions at the nearest intersection would improve visibility and reduce crossing distances.",
+            "impact": "High"
+          },
+          {
+            "title": "Pedestrian-Scale Lighting",
+            "description": "Adding street lighting would improve visibility and safety for pedestrians during nighttime hours.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 757,
+        "thinking_tokens": 1531,
+        "total_tokens": 3819
+      }
     },
     {
       "point_index": 4,
       "offset": 180,
       "heading": 100,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 55,
+        "confidence": 90,
+        "summary": "The image depicts a narrow residential street with row houses situated directly at the sidewalk edge and parallel parking on both sides. While the narrow street width likely encourages lower vehicle speeds, the pedestrian environment is constrained by narrow sidewalks and a lack of physical buffers from the roadway.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "1",
+          "crossing_distance": "under_24ft",
+          "land_use": "residential",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Visual Obstructions from Parked Cars",
+            "severity": "Medium",
+            "description": "Continuous parallel parking on both sides of the narrow street creates significant blind spots for drivers and pedestrians attempting to cross.",
+            "location_in_image": "Along both curbs throughout the visible street length"
+          },
+          {
+            "name": "Sidewalk Obstructions",
+            "severity": "Low",
+            "description": "Trash bins and building stoops encroach on the narrow sidewalk, reducing the effective clear width for pedestrians.",
+            "location_in_image": "Right side sidewalk near the foreground and left side building entrances"
+          },
+          {
+            "name": "Degraded Road Surface",
+            "severity": "Low",
+            "description": "Visible cracking and uneven pavement in the roadway could pose a trip hazard for pedestrians crossing mid-block.",
+            "location_in_image": "Center of the roadway in the foreground"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions at intersections to increase pedestrian visibility and reduce the crossing distance.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Daylighting",
+            "description": "Remove parking spaces near intersections to improve sightlines between drivers and pedestrians.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Sidewalk Maintenance",
+            "description": "Repair uneven pavement and ensure clear walking paths by managing household obstructions.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 724,
+        "thinking_tokens": 6510,
+        "total_tokens": 8765
+      }
     },
     {
       "point_index": 4,
       "offset": 270,
       "heading": 190,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 60,
+        "confidence": 90,
+        "summary": "The pedestrian environment features a wide, continuous concrete sidewalk, but it is significantly obstructed by a centrally located utility pole. There is no buffer between the walkway and the roadway, and the frontage is a mix of residential buildings and a fenced lot.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "not_visible",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "yes",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "mixed",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Utility Pole Obstruction",
+            "severity": "Medium",
+            "description": "A large wooden utility pole is positioned in the middle of the sidewalk, restricting the clear path for pedestrians, especially those with mobility aids.",
+            "location_in_image": "Center foreground on the sidewalk."
+          },
+          {
+            "name": "Lack of Pedestrian Buffer",
+            "severity": "Low",
+            "description": "The sidewalk is immediately adjacent to the curb with no planting strip or physical barrier to provide a safety buffer from moving traffic.",
+            "location_in_image": "Along the curb line."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Relocate Utilities",
+            "description": "Move the utility pole to the edge of the sidewalk or underground the lines to provide a clear, ADA-compliant walking path.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$$"
+          },
+          {
+            "title": "Sidewalk Buffer/Furniture Zone",
+            "description": "Introduce a furniture zone with trees or bollards to separate pedestrians from the roadway and improve comfort.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 789,
+        "thinking_tokens": 62914,
+        "total_tokens": 65234
+      }
     }
   ],
-  "aggregate": {}
+  "aggregate": {
+    "safety_score_mean": 60.8,
+    "safety_score_sd": 8.47,
+    "safety_score_sd_within_point": 5.95,
+    "safety_score_sd_between_points": 6.29,
+    "safety_score_min": 35,
+    "safety_score_max": 70,
+    "confidence_mean": 81.5,
+    "n_views_scored": 20,
+    "n_points_scored": 5,
+    "features": {
+      "sidewalk_present": {
+        "any": true,
+        "proportion": 1.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "sidewalk_obstruction": {
+        "any": true,
+        "proportion": 0.5,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "crosswalk_marked": {
+        "any": true,
+        "proportion": 0.05,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "curb_ramp": {
+        "any": true,
+        "proportion": 0.059,
+        "n_visible": 17,
+        "n_views": 20,
+        "mixed": true
+      },
+      "refuge_island": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "median_present": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "pedestrian_signal": {
+        "any": true,
+        "proportion": 0.05,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "traffic_light": {
+        "any": true,
+        "proportion": 0.05,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "stop_sign": {
+        "any": true,
+        "proportion": 0.05,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "crossing_sign": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "lane_markings": {
+        "any": true,
+        "proportion": 0.053,
+        "n_visible": 19,
+        "n_views": 20,
+        "mixed": true
+      },
+      "street_lighting": {
+        "any": true,
+        "proportion": 0.833,
+        "n_visible": 12,
+        "n_views": 20,
+        "mixed": true
+      },
+      "bike_lane": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "trees": {
+        "any": true,
+        "proportion": 0.7,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "bus_stop": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "slip_lane": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "visual_obstruction": {
+        "any": true,
+        "proportion": 0.75,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "poor_pavement": {
+        "any": true,
+        "proportion": 0.368,
+        "n_visible": 19,
+        "n_views": 20,
+        "mixed": true
+      },
+      "sidewalk_buffer": {
+        "any": true,
+        "proportion": 0.3,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "sidewalk_gap": {
+        "any": true,
+        "proportion": 0.05,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "curb_present": {
+        "any": true,
+        "proportion": 1.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "on_street_parking": {
+        "any": true,
+        "proportion": 0.85,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "driveway_curb_cut": {
+        "any": true,
+        "proportion": 0.1,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "midblock_crossing": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "traffic_calming": {
+        "any": true,
+        "proportion": 0.05,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "blank_frontage": {
+        "any": true,
+        "proportion": 0.15,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "loading_activity": {
+        "any": true,
+        "proportion": 0.05,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "through_lanes": {
+        "modal": "1",
+        "values": [
+          "1",
+          "1",
+          "2",
+          "not_visible",
+          "1",
+          "not_visible",
+          "1",
+          "1",
+          "1",
+          "not_visible",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "2",
+          "not_visible",
+          "1",
+          "2"
+        ],
+        "agreement": 0.812
+      },
+      "crossing_distance": {
+        "modal": "under_24ft",
+        "values": [
+          "under_24ft",
+          "not_visible",
+          "24_to_40ft",
+          "not_visible",
+          "under_24ft",
+          "not_visible",
+          "under_24ft",
+          "under_24ft",
+          "under_24ft",
+          "not_visible",
+          "24_to_40ft",
+          "under_24ft",
+          "under_24ft",
+          "under_24ft",
+          "under_24ft",
+          "under_24ft",
+          "24_to_40ft",
+          "not_visible",
+          "under_24ft",
+          "24_to_40ft"
+        ],
+        "agreement": 0.733
+      },
+      "land_use": {
+        "modal": "residential",
+        "values": [
+          "residential",
+          "residential",
+          "mixed",
+          "residential",
+          "residential",
+          "residential",
+          "residential",
+          "residential",
+          "residential",
+          "residential",
+          "residential",
+          "residential",
+          "residential",
+          "residential",
+          "residential",
+          "residential",
+          "residential",
+          "residential",
+          "residential",
+          "mixed"
+        ],
+        "agreement": 0.9
+      },
+      "sidewalk_condition": {
+        "modal": "fair",
+        "values": [
+          "good",
+          "fair",
+          "good",
+          "fair",
+          "fair",
+          "good",
+          "fair",
+          "good",
+          "fair",
+          "fair",
+          "fair",
+          "fair",
+          "good",
+          "fair",
+          "fair",
+          "fair",
+          "poor",
+          "good",
+          "fair",
+          "fair"
+        ],
+        "agreement": 0.65
+      },
+      "sidewalk_width": {
+        "modal": "4_to_6ft",
+        "values": [
+          "4_to_6ft",
+          "4_to_6ft",
+          "6_to_10ft",
+          "4_to_6ft",
+          "4_to_6ft",
+          "4_to_6ft",
+          "4_to_6ft",
+          "6_to_10ft",
+          "4_to_6ft",
+          "4_to_6ft",
+          "4_to_6ft",
+          "4_to_6ft",
+          "4_to_6ft",
+          "6_to_10ft",
+          "4_to_6ft",
+          "4_to_6ft",
+          "4_to_6ft",
+          "4_to_6ft",
+          "4_to_6ft",
+          "6_to_10ft"
+        ],
+        "agreement": 0.8
+      },
+      "parking_configuration": {
+        "modal": "parallel",
+        "values": [
+          "parallel",
+          "parallel",
+          "parallel",
+          "parallel",
+          "parallel",
+          "parallel",
+          "parallel",
+          "none",
+          "parallel",
+          "parallel",
+          "parallel",
+          "parallel",
+          "parallel",
+          "none",
+          "parallel",
+          "parallel",
+          "parallel",
+          "parallel",
+          "parallel",
+          "none"
+        ],
+        "agreement": 0.85
+      },
+      "frontage_type": {
+        "modal": "buildings_at_sidewalk",
+        "values": [
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk"
+        ],
+        "agreement": 1.0
+      }
+    },
+    "hazards": [
+      {
+        "name": "Visual Obstruction from Parked Cars",
+        "severity": "Medium",
+        "description": "Continuous parallel parking on both sides of the narrow street can obscure pedestrians, particularly children, from the view of approaching drivers.",
+        "location_in_image": "Along both curbs of the street."
+      },
+      {
+        "name": "Sidewalk Obstructions",
+        "severity": "Medium",
+        "description": "Trash and recycling bins are placed directly in the narrow walking path, forcing pedestrians to maneuver around them.",
+        "location_in_image": "Center foreground on the sidewalk"
+      },
+      {
+        "name": "Visual Obstruction",
+        "severity": "High",
+        "description": "A large parked SUV and significant lens blurring on the left side of the frame block sightlines between pedestrians on the sidewalk and any approaching traffic.",
+        "location_in_image": "Foreground and left side of the image"
+      },
+      {
+        "name": "Lack of Pedestrian Buffer",
+        "severity": "Medium",
+        "description": "There is no physical buffer or planting strip between the narrow sidewalk and the roadway/parking lane.",
+        "location_in_image": "Along the curb line behind the parked car"
+      },
+      {
+        "name": "Intersection Sightline Obstruction",
+        "severity": "Medium",
+        "description": "Parked cars near the intersection crosswalk can hide pedestrians from approaching drivers.",
+        "location_in_image": "Right side of the street near the intersection"
+      },
+      {
+        "name": "Driveway Conflict Point",
+        "severity": "Low",
+        "description": "A garage door indicates a location where vehicles must cross the sidewalk to enter or exit the property.",
+        "location_in_image": "Right side of the building"
+      },
+      {
+        "name": "Visual Obstructions",
+        "severity": "Medium",
+        "description": "Parked cars along the curb obscure pedestrians from the view of oncoming drivers.",
+        "location_in_image": "Both sides of the street where cars are parked."
+      },
+      {
+        "name": "Degraded Pavement",
+        "severity": "High",
+        "description": "The roadway and sidewalk surfaces are severely cracked, pitted, and uneven, creating significant trip hazards and barriers for people with mobility aids.",
+        "location_in_image": "Center foreground and along the left sidewalk area."
+      },
+      {
+        "name": "Visual Obstruction from Parked Vehicle",
+        "severity": "Medium",
+        "description": "The large white SUV parked at the curb obscures the view of the roadway for pedestrians and makes it harder for drivers to see anyone stepping into the street.",
+        "location_in_image": "Foreground, parked along the curb."
+      },
+      {
+        "name": "Sidewalk Debris",
+        "severity": "Low",
+        "description": "A large white bag is left on the sidewalk, creating a minor trip hazard and narrowing the clear walking path.",
+        "location_in_image": "Center foreground on the sidewalk"
+      },
+      {
+        "name": "Narrow and obstructed sidewalks",
+        "severity": "Low",
+        "description": "The sidewalks are narrow and partially obstructed by trash bins and steps, which may hinder those with mobility aids.",
+        "location_in_image": "Left and right sidewalks throughout the block"
+      },
+      {
+        "name": "Degraded roadway surface",
+        "severity": "Low",
+        "description": "The street surface appears milled or worn, creating an uneven surface for pedestrians who may need to cross.",
+        "location_in_image": "Center roadway"
+      },
+      {
+        "name": "Parked Vehicle Sightline Obstruction",
+        "severity": "Medium",
+        "description": "Continuous parallel parking on both sides of the narrow street obscures pedestrians from the view of approaching motorists.",
+        "location_in_image": "Along both curbs."
+      },
+      {
+        "name": "Utility Pole Obstruction",
+        "severity": "Medium",
+        "description": "A large wooden utility pole is located in the center of the sidewalk, significantly narrowing the clear path and creating an accessibility barrier for wheelchair users or strollers.",
+        "location_in_image": "Center-left, on the sidewalk in front of the grey house."
+      },
+      {
+        "name": "Lack of Designated Crossings",
+        "severity": "Low",
+        "description": "No marked crosswalks or pedestrian infrastructure are visible, requiring pedestrians to cross mid-block without formal protection.",
+        "location_in_image": "Entire roadway section"
+      },
+      {
+        "name": "Uneven Pavement",
+        "severity": "Low",
+        "description": "The sidewalk and roadway show cracks and patches which could present tripping hazards or indicate poor maintenance.",
+        "location_in_image": "Visible on the sidewalk surface in front of the houses."
+      },
+      {
+        "name": "Poor Road Surface",
+        "severity": "Low",
+        "description": "The roadway appears uneven and cracked, which could pose a trip hazard for pedestrians crossing mid-block.",
+        "location_in_image": "The street surface in the center of the image."
+      },
+      {
+        "name": "Sidewalk Obstruction",
+        "severity": "Low",
+        "description": "Black trash bags are placed directly on the narrow sidewalk, forcing pedestrians to navigate around them.",
+        "location_in_image": "Center-left, at the base of the tree and near the building entrance."
+      },
+      {
+        "name": "Lack of Marked Crosswalks",
+        "severity": "Medium",
+        "description": "The intersection lacks painted crosswalks, which fails to designate a clear path for pedestrians and reduces driver awareness of crossing activity.",
+        "location_in_image": "At the intersection in the middle ground."
+      },
+      {
+        "name": "Restricted Sightlines",
+        "severity": "Medium",
+        "description": "On-street parking extends close to the intersection, potentially obscuring pedestrians from the view of approaching drivers.",
+        "location_in_image": "Right side of the street approaching the intersection."
+      },
+      {
+        "name": "Blank Frontage",
+        "severity": "Low",
+        "description": "The vacant lot and windowless side walls reduce natural surveillance and 'eyes on the street', potentially impacting social safety.",
+        "location_in_image": "Center and left background"
+      },
+      {
+        "name": "Visual Obstructions from Parked Cars",
+        "severity": "Medium",
+        "description": "Continuous parallel parking on both sides of the narrow street creates significant blind spots for drivers and pedestrians attempting to cross.",
+        "location_in_image": "Along both curbs throughout the visible street length"
+      },
+      {
+        "name": "Degraded Road Surface",
+        "severity": "Low",
+        "description": "Visible cracking and uneven pavement in the roadway could pose a trip hazard for pedestrians crossing mid-block.",
+        "location_in_image": "Center of the roadway in the foreground"
+      }
+    ],
+    "interventions": [
+      {
+        "title": "Daylighting",
+        "description": "Remove parking spaces near potential crossing points to improve sightlines between drivers and pedestrians.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Curb Extensions",
+        "description": "Install curb extensions at intersections or mid-block to shorten crossing distances and prevent parking too close to crossings.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Street Trees and Furniture Zone",
+        "description": "Introduce a planting strip or furniture zone to provide a physical and psychological buffer between pedestrians and vehicles.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Curb Extensions (Bulb-outs)",
+        "description": "Extend the sidewalk at the intersection to reduce crossing distance and improve visibility between pedestrians and drivers.",
+        "impact": "High"
+      },
+      {
+        "title": "Intersection Daylighting",
+        "description": "Remove parking spaces immediately adjacent to the crosswalk to ensure clear sightlines.",
+        "impact": "High"
+      },
+      {
+        "title": "Street Trees and Greenery",
+        "description": "Install street trees or planters to create a vertical buffer and improve the walking environment.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Street Trees",
+        "description": "Adding street trees would provide a physical and psychological buffer between the narrow sidewalk and moving traffic.",
+        "impact": "Medium"
+      },
+      {
+        "title": "High-Visibility Crosswalks",
+        "description": "Install marked crossings to designate safe areas for pedestrians to cross the street.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Speed Humps",
+        "description": "Implement speed humps to further reinforce low vehicle speeds on this residential street.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Street Trees and Planting Strips",
+        "description": "Add a furniture zone or planting strip between the sidewalk and the curb to provide a physical buffer from traffic.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Street Trees and Planters",
+        "description": "Install street trees or planters to provide a physical and psychological buffer between pedestrians and vehicles while improving the streetscape.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Waste Management Infrastructure",
+        "description": "Provide designated trash receptacles to prevent debris from being left on the pedestrian walkway.",
+        "impact": "Low"
+      },
+      {
+        "title": "Roadway Resurfacing",
+        "description": "Repave the street to provide a smooth, even surface for all users.",
+        "impact": "Low",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Sidewalk Clear Zone Management",
+        "description": "Establish clear zones for trash collection to prevent bins from obstructing the narrow pedestrian path.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Dedicated Bin Storage",
+        "description": "Provide designated areas for trash and recycling bins that do not encroach on the clear walking path of the sidewalk.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Sidewalk Widening",
+        "description": "Increase the width of the pedestrian zone to provide a consistent clear path even when street furniture or bins are present.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Sidewalk Widening and Obstruction Removal",
+        "description": "Relocate utility poles to the curb edge or underground to provide a clear, unobstructed pedestrian through-zone of at least 5 feet.",
+        "impact": "High"
+      },
+      {
+        "title": "Street Lighting Improvements",
+        "description": "Install pedestrian-scale street lighting to improve visibility and safety during nighttime hours.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Sidewalk Repair",
+        "description": "Repair cracked and uneven sections of the sidewalk to ensure a smooth, accessible path.",
+        "impact": "Low",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Waste Management Solutions",
+        "description": "Implement designated off-sidewalk trash collection areas or containers to keep the narrow walkway clear for pedestrians.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Street Lighting",
+        "description": "Install pedestrian-scale street lighting to improve visibility and safety during nighttime hours, as no luminaires are visible.",
+        "impact": "High"
+      },
+      {
+        "title": "Sidewalk Reconstruction",
+        "description": "Repair and level the sidewalk surfaces to provide a continuous, ADA-compliant path of travel.",
+        "impact": "High",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Pedestrian-Scale Lighting",
+        "description": "Adding street lighting would improve visibility and safety for pedestrians during nighttime hours.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Sidewalk Maintenance",
+        "description": "Repair uneven pavement and ensure clear walking paths by managing household obstructions.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Relocate Utilities",
+        "description": "Move the utility pole to the edge of the sidewalk or underground the lines to provide a clear, ADA-compliant walking path.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$$"
+      },
+      {
+        "title": "Sidewalk Buffer/Furniture Zone",
+        "description": "Introduce a furniture zone with trees or bollards to separate pedestrians from the roadway and improve comfort.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      }
+    ]
+  }
 }

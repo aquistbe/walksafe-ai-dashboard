@@ -3,7 +3,7 @@
   "node_id": 620691,
   "int_name": "GERMANTOWN AVE 4800-block",
   "status": "OK",
-  "run_ts": "2026-08-02T05:43:11.715508+00:00",
+  "run_ts": "2026-08-02T17:11:12.138289+00:00",
   "model": "gemini-3-flash-preview",
   "prompt_version": "blind-seg-v1",
   "mode": "blind",
@@ -23,10 +23,10 @@
       {
         "point_index": 0,
         "status": "OK",
-        "pano_id": "CAoSF0NJSE0wb2dLRUlDQWdJRGF5YXI5aHdF",
-        "capture_date": "2019-11",
-        "lat": 40.02795108807972,
-        "lng": -75.16164550425604,
+        "pano_id": "BuKJDfW3cCThQl1a20hKdQ",
+        "capture_date": "2025-06",
+        "lat": 40.02788138712922,
+        "lng": -75.1615855633804,
         "requested_lat": 40.02792,
         "requested_lng": -75.161648,
         "centreline_bearing": 311.8,
@@ -80,12 +80,12 @@
       "result": {
         "safety_score": 65,
         "confidence": 90,
-        "summary": "A residential street with row houses and mature street trees, featuring embedded tram tracks in the roadway. While sidewalks are present on both sides, the lack of marked crossings and the presence of tracks and parked cars create potential hazards for pedestrians.",
+        "summary": "The street is a narrow residential corridor with continuous sidewalks and on-street parking that provides a buffer for pedestrians. However, the environment lacks marked crossings and features trolley tracks that may pose a tripping hazard.",
         "features": {
           "sidewalk_present": "yes",
           "sidewalk_obstruction": "no",
           "crosswalk_marked": "no",
-          "curb_ramp": "not_visible",
+          "curb_ramp": "no",
           "refuge_island": "no",
           "median_present": "no",
           "pedestrian_signal": "no",
@@ -119,36 +119,40 @@
         },
         "hazards": [
           {
-            "name": "Tram tracks",
-            "severity": "Medium",
-            "description": "Embedded metal tracks in the roadway can be a tripping hazard for pedestrians crossing midblock and a slip hazard when wet.",
-            "location_in_image": "Center of the roadway running longitudinally"
+            "name": "Trolley Tracks",
+            "severity": "Low",
+            "description": "Metal tracks in the roadway can be a tripping hazard for pedestrians and a danger for cyclists.",
+            "location_in_image": "Center of the street"
           },
           {
-            "name": "Visual obstructions from parked cars",
-            "severity": "Low",
-            "description": "Parked vehicles along the curb can block sightlines between pedestrians attempting to cross and oncoming traffic.",
-            "location_in_image": "Right side of the street along the curb"
+            "name": "Visual Obstructions",
+            "severity": "Medium",
+            "description": "Parked cars on both sides of the street create visual barriers between pedestrians and drivers.",
+            "location_in_image": "Along both curbs"
           }
         ],
         "interventions": [
           {
-            "title": "Marked Midblock Crossing",
-            "description": "Install a high-visibility marked crosswalk to provide a designated and safer crossing point for pedestrians.",
-            "impact": "High"
+            "title": "Curb Extensions",
+            "description": "Install curb extensions to increase pedestrian visibility and shorten the crossing distance.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
           },
           {
-            "title": "Curb Extensions",
-            "description": "Construct curb extensions (bulb-outs) at potential crossing points to shorten the crossing distance and improve visibility between drivers and pedestrians.",
-            "impact": "High"
+            "title": "High-Visibility Crosswalks",
+            "description": "Add high-visibility crosswalk markings to designate safe crossing locations.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
           }
         ]
       },
       "usage": {
         "prompt_tokens": 1531,
-        "output_tokens": 734,
-        "thinking_tokens": 1031,
-        "total_tokens": 3296
+        "output_tokens": 739,
+        "thinking_tokens": 3305,
+        "total_tokens": 5575
       }
     },
     {
@@ -156,9 +160,9 @@
       "offset": 90,
       "heading": 42,
       "result": {
-        "safety_score": 55,
-        "confidence": 65,
-        "summary": "The image shows a narrow brick sidewalk directly adjacent to a historic stone residential building. A large SUV is parked parallel to the curb, creating a significant visual barrier between the sidewalk and the roadway.",
+        "safety_score": 62,
+        "confidence": 85,
+        "summary": "The pedestrian environment features a brick and concrete sidewalk along a historic cobblestone street. While the cobblestones naturally calm traffic, the walkway is obstructed by a utility pole and encroaching parked vehicles, and lacks dedicated lighting or marked crossings.",
         "features": {
           "sidewalk_present": "yes",
           "sidewalk_obstruction": "yes",
@@ -182,51 +186,62 @@
           "sidewalk_gap": "no",
           "curb_present": "yes",
           "on_street_parking": "yes",
-          "driveway_curb_cut": "no",
+          "driveway_curb_cut": "yes",
           "midblock_crossing": "no",
-          "traffic_calming": "no",
+          "traffic_calming": "yes",
           "blank_frontage": "no",
           "loading_activity": "no",
-          "through_lanes": "not_visible",
-          "crossing_distance": "not_visible",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
           "land_use": "residential",
-          "sidewalk_condition": "good",
-          "sidewalk_width": "under_4ft",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "6_to_10ft",
           "parking_configuration": "parallel",
           "frontage_type": "buildings_at_sidewalk"
         },
         "hazards": [
           {
-            "name": "Visual Obstruction",
+            "name": "Sidewalk Obstruction",
             "severity": "Medium",
-            "description": "The large parked SUV in the foreground significantly blocks the line of sight between pedestrians on the sidewalk and drivers on the roadway.",
-            "location_in_image": "Foreground, center and left"
+            "description": "A utility pole is positioned in the center of the brick walkway, significantly narrowing the effective clear width for pedestrians and those with mobility aids.",
+            "location_in_image": "Center-left, on the brick sidewalk"
           },
           {
-            "name": "Narrow Sidewalk",
+            "name": "Vehicle Encroachment",
             "severity": "Low",
-            "description": "The brick walkway appears narrow, which may restrict mobility for users with assistive devices or strollers.",
-            "location_in_image": "Middle ground, behind the parked car"
+            "description": "A parked vehicle is positioned very close to or slightly over the curb line, reducing the available pedestrian space and blocking sightlines.",
+            "location_in_image": "Bottom left foreground"
           }
         ],
         "interventions": [
           {
-            "title": "Daylighting",
-            "description": "Restrict parking near building entrances or potential crossing points to improve visibility between pedestrians and motorists.",
-            "impact": "Medium"
+            "title": "Pedestrian-Scale Lighting",
+            "description": "Install street lamps to improve visibility and safety for pedestrians at night, as no lighting is currently visible.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
           },
           {
-            "title": "Sidewalk Widening",
-            "description": "Increase the width of the pedestrian walkway to meet modern accessibility standards and improve comfort.",
-            "impact": "High"
+            "title": "Sidewalk Clear Zone Maintenance",
+            "description": "Relocate the utility pole or widen the sidewalk to ensure a continuous, unobstructed path of travel meeting ADA standards.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Implement curb extensions at the driveway/gate area to better define the pedestrian realm and prevent vehicle encroachment on the sidewalk.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
           }
         ]
       },
       "usage": {
         "prompt_tokens": 1531,
-        "output_tokens": 701,
-        "thinking_tokens": 1694,
-        "total_tokens": 3926
+        "output_tokens": 862,
+        "thinking_tokens": 987,
+        "total_tokens": 3380
       }
     },
     {
@@ -234,98 +249,9 @@
       "offset": 180,
       "heading": 132,
       "result": {
-        "safety_score": 65,
+        "safety_score": 45,
         "confidence": 85,
-        "summary": "The street features wide sidewalks and mature tree cover, providing a pleasant environment, but is bisected by tram tracks embedded in a mix of cobblestone and pavement. There is a lack of marked pedestrian crossings or clear lane delineation, which may lead to unpredictable vehicle and pedestrian interactions.",
-        "features": {
-          "sidewalk_present": "yes",
-          "sidewalk_obstruction": "no",
-          "crosswalk_marked": "no",
-          "curb_ramp": "not_visible",
-          "refuge_island": "no",
-          "median_present": "no",
-          "pedestrian_signal": "no",
-          "traffic_light": "no",
-          "stop_sign": "no",
-          "crossing_sign": "no",
-          "lane_markings": "no",
-          "street_lighting": "yes",
-          "bike_lane": "no",
-          "trees": "yes",
-          "bus_stop": "no",
-          "slip_lane": "no",
-          "visual_obstruction": "no",
-          "poor_pavement": "no",
-          "sidewalk_buffer": "yes",
-          "sidewalk_gap": "no",
-          "curb_present": "yes",
-          "on_street_parking": "yes",
-          "driveway_curb_cut": "no",
-          "midblock_crossing": "no",
-          "traffic_calming": "no",
-          "blank_frontage": "no",
-          "loading_activity": "no",
-          "through_lanes": "2",
-          "crossing_distance": "24_to_40ft",
-          "land_use": "mixed",
-          "sidewalk_condition": "good",
-          "sidewalk_width": "6_to_10ft",
-          "parking_configuration": "parallel",
-          "frontage_type": "not_clear"
-        },
-        "hazards": [
-          {
-            "name": "Tram tracks",
-            "severity": "Medium",
-            "description": "Embedded tracks in the roadway can be a tripping hazard for pedestrians and a slip hazard for cyclists.",
-            "location_in_image": "Center of the roadway running longitudinally"
-          },
-          {
-            "name": "Lack of marked crossings",
-            "severity": "Medium",
-            "description": "The absence of marked crossings over a long stretch of road may encourage unsafe mid-block crossing behavior.",
-            "location_in_image": "Entire visible roadway length"
-          }
-        ],
-        "interventions": [
-          {
-            "title": "Mid-block Crossing",
-            "description": "Install a high-visibility marked crosswalk with appropriate signage to provide a safe crossing point.",
-            "impact": "High",
-            "source": "NACTO Urban Street Design Guide",
-            "estimated_cost": "$$"
-          },
-          {
-            "title": "Curb Extensions",
-            "description": "Add curb extensions at potential crossing points to reduce the crossing distance and improve pedestrian visibility.",
-            "impact": "High",
-            "source": "NACTO Urban Street Design Guide",
-            "estimated_cost": "$$"
-          },
-          {
-            "title": "Warning Signage",
-            "description": "Install signage warning pedestrians and cyclists of the presence of tram tracks.",
-            "impact": "Low",
-            "source": "NACTO Urban Street Design Guide",
-            "estimated_cost": "$"
-          }
-        ]
-      },
-      "usage": {
-        "prompt_tokens": 1531,
-        "output_tokens": 833,
-        "thinking_tokens": 1121,
-        "total_tokens": 3485
-      }
-    },
-    {
-      "point_index": 0,
-      "offset": 270,
-      "heading": 222,
-      "result": {
-        "safety_score": 65,
-        "confidence": 85,
-        "summary": "This is a residential street with row houses and mature street trees providing a canopy. The roadway includes embedded tracks and a mix of paved and cobblestone surfaces, but lacks formal pedestrian crossing infrastructure like marked crosswalks or signals.",
+        "summary": "The street environment features a wide roadway with integrated trolley tracks and sidewalks on both sides, though the right-side walkway is significantly narrower and lacks a buffer. There is a complete absence of marked pedestrian crossings or traffic control devices, forcing pedestrians to cross an expansive, uneven surface without protection. While mature trees and a grass buffer on the left enhance the walking experience, the lack of crossing infrastructure creates a high-risk environment for those needing to traverse the street.",
         "features": {
           "sidewalk_present": "yes",
           "sidewalk_obstruction": "no",
@@ -343,68 +269,145 @@
           "trees": "yes",
           "bus_stop": "no",
           "slip_lane": "no",
-          "visual_obstruction": "yes",
+          "visual_obstruction": "no",
           "poor_pavement": "yes",
           "sidewalk_buffer": "yes",
           "sidewalk_gap": "no",
           "curb_present": "yes",
-          "on_street_parking": "yes",
-          "driveway_curb_cut": "no",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "yes",
           "midblock_crossing": "no",
           "traffic_calming": "no",
           "blank_frontage": "no",
           "loading_activity": "no",
           "through_lanes": "2",
           "crossing_distance": "24_to_40ft",
-          "land_use": "residential",
-          "sidewalk_condition": "fair",
-          "sidewalk_width": "4_to_6ft",
-          "parking_configuration": "parallel",
-          "frontage_type": "buildings_at_sidewalk"
+          "land_use": "institutional",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "detached_residential"
         },
         "hazards": [
           {
-            "name": "Embedded tracks",
+            "name": "Trolley tracks",
             "severity": "Medium",
-            "description": "Metal tracks in the roadway can be a tripping hazard for pedestrians and a slip hazard when wet.",
-            "location_in_image": "Running horizontally across the foreground and middle ground of the roadway"
+            "description": "The embedded metal tracks and surrounding uneven cobblestones create significant trip hazards and can be slippery when wet.",
+            "location_in_image": "Center of the roadway extending into the distance"
           },
           {
-            "name": "Uneven pavement",
-            "severity": "Low",
-            "description": "The transition between the cobblestone gutter and the main roadway surface creates an uneven walking surface.",
-            "location_in_image": "Along the curb line where the car is parked"
-          },
-          {
-            "name": "Visual obstructions",
-            "severity": "Medium",
-            "description": "Parked cars and large tree trunks can obscure pedestrians, especially children, from the view of oncoming drivers.",
-            "location_in_image": "Along the far curb line"
+            "name": "Lack of marked crossings",
+            "severity": "High",
+            "description": "The absence of designated crossing points forces pedestrians to cross multiple lanes of traffic and tracks without any safety markings or priority.",
+            "location_in_image": "Entire visible stretch of the roadway"
           }
         ],
         "interventions": [
           {
-            "title": "High-Visibility Crosswalks",
-            "description": "Install marked crosswalks at intersections or appropriate mid-block locations to define pedestrian right-of-way.",
-            "impact": "High"
+            "title": "High-visibility crosswalks",
+            "description": "Install continental-style crosswalks at intersections to clearly define pedestrian right-of-way.",
+            "impact": "High",
+            "estimated_cost": "$"
           },
           {
-            "title": "Curb Extensions",
-            "description": "Add curb extensions (bulb-outs) to reduce crossing distance and improve sightlines between pedestrians and drivers.",
-            "impact": "High"
+            "title": "Curb extensions",
+            "description": "Construct bulb-outs to reduce the crossing distance and improve visibility between drivers and pedestrians.",
+            "impact": "High",
+            "estimated_cost": "$$"
           },
           {
-            "title": "Pedestrian-Scale Lighting",
-            "description": "Supplement existing street lighting with lower-height fixtures to better illuminate the sidewalk and crossing areas.",
-            "impact": "Medium"
+            "title": "Pedestrian-scale lighting",
+            "description": "Add lighting fixtures at a lower height to better illuminate the sidewalk and crossing areas.",
+            "impact": "Medium",
+            "estimated_cost": "$$"
           }
         ]
       },
       "usage": {
         "prompt_tokens": 1531,
-        "output_tokens": 844,
-        "thinking_tokens": 936,
-        "total_tokens": 3311
+        "output_tokens": 681,
+        "thinking_tokens": 4352,
+        "total_tokens": 6564
+      }
+    },
+    {
+      "point_index": 0,
+      "offset": 270,
+      "heading": 222,
+      "result": {
+        "safety_score": 75,
+        "confidence": 90,
+        "summary": "The image shows a narrow residential street with a continuous sidewalk and mature street trees providing shade. The cobblestone roadway serves as a natural traffic calming measure, though the lack of a physical buffer between the walkway and the street reduces pedestrian protection.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "not_visible",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "yes",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "1",
+          "crossing_distance": "under_24ft",
+          "land_use": "residential",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Sidewalk Obstructions",
+            "severity": "Low",
+            "description": "Trash and recycling bins are placed on the sidewalk, narrowing the clear path for pedestrians.",
+            "location_in_image": "Right side of the sidewalk near the blue door."
+          },
+          {
+            "name": "Uneven Road Surface",
+            "severity": "Low",
+            "description": "The cobblestone roadway, while slowing traffic, creates an uneven surface for pedestrians crossing the street.",
+            "location_in_image": "Foreground roadway."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Sidewalk Management",
+            "description": "Implement designated storage areas for waste containers to ensure the full width of the sidewalk remains clear for pedestrians.",
+            "impact": "Low",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions at nearby intersections to shorten crossing distances and improve visibility between drivers and pedestrians.",
+            "impact": "Medium",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 488,
+        "thinking_tokens": 5241,
+        "total_tokens": 7260
       }
     },
     {
@@ -493,13 +496,13 @@
       "heading": 42,
       "result": {
         "safety_score": 62,
-        "confidence": 90,
-        "summary": "The pedestrian environment features a continuous sidewalk with a mix of concrete and brick paving adjacent to a historic cobblestone street. A wide driveway apron serving a daycare facility creates a significant conflict point, and large vegetation near this entrance may obstruct sightlines between drivers and pedestrians.",
+        "confidence": 95,
+        "summary": "The pedestrian environment features a wide sidewalk with mixed paving, though it is partially obstructed by a utility pole and a large bush that limits visibility. The street is surfaced with cobblestones, providing natural traffic calming, but the area lacks formal crossing infrastructure or safety signage despite the presence of a childcare facility. A wide driveway access point introduces a conflict zone where vehicles cross the pedestrian path.",
         "features": {
           "sidewalk_present": "yes",
-          "sidewalk_obstruction": "no",
+          "sidewalk_obstruction": "yes",
           "crosswalk_marked": "no",
-          "curb_ramp": "not_visible",
+          "curb_ramp": "no",
           "refuge_island": "no",
           "median_present": "no",
           "pedestrian_signal": "no",
@@ -523,7 +526,7 @@
           "traffic_calming": "yes",
           "blank_frontage": "no",
           "loading_activity": "no",
-          "through_lanes": "2",
+          "through_lanes": "1",
           "crossing_distance": "under_24ft",
           "land_use": "institutional",
           "sidewalk_condition": "good",
@@ -533,44 +536,47 @@
         },
         "hazards": [
           {
-            "name": "Wide Driveway Conflict Point",
+            "name": "Sightline Obstruction",
             "severity": "Medium",
-            "description": "A wide concrete driveway apron for the daycare facility creates a large area where vehicles and pedestrians, including children, may conflict.",
-            "location_in_image": "Center-left, leading to the gated academy entrance"
+            "description": "A large, dense bush on the sidewalk blocks the view between pedestrians and oncoming traffic.",
+            "location_in_image": "Right side of the image, adjacent to the stone building."
           },
           {
-            "name": "Vegetation Sightline Obstruction",
-            "severity": "Medium",
-            "description": "A large bush/tree adjacent to the driveway apron may block the view of pedestrians for drivers exiting the facility.",
-            "location_in_image": "Center-right, between the brick sidewalk and the driveway"
+            "name": "Conflict Zone",
+            "severity": "Low",
+            "description": "A wide concrete apron allows vehicles to cross the sidewalk into a fenced area, creating a conflict zone.",
+            "location_in_image": "Center-left of the image, leading to the black fence."
           }
         ],
         "interventions": [
           {
-            "title": "Daylighting and Vegetation Management",
-            "description": "Trim or remove the large bush adjacent to the driveway to ensure clear sightlines between exiting drivers and pedestrians on the sidewalk.",
-            "impact": "High",
+            "title": "Vegetation Management",
+            "description": "Trim or replace the large bush to ensure clear sightlines for pedestrians and drivers at the sidewalk edge.",
+            "impact": "Medium",
+            "source": "NACTO",
             "estimated_cost": "$"
           },
           {
-            "title": "Driveway Material Contrast",
-            "description": "Continue the sidewalk material (brick or concrete) across the driveway apron to reinforce pedestrian priority and signal to drivers they are crossing a walkway.",
-            "impact": "Medium",
+            "title": "High-Visibility Crosswalk",
+            "description": "Install a marked crosswalk with appropriate signage, particularly important given the adjacent childcare land use.",
+            "impact": "High",
+            "source": "NACTO",
             "estimated_cost": "$$"
           },
           {
-            "title": "Midblock Pedestrian Crossing",
-            "description": "Given the presence of a daycare, a marked midblock crossing with appropriate signage would improve safety for families crossing the cobblestone street.",
-            "impact": "High",
-            "estimated_cost": "$$"
+            "title": "Pedestrian Warning Signage",
+            "description": "Install signage to alert drivers to the institutional land use and presence of children.",
+            "impact": "Medium",
+            "source": "NACTO",
+            "estimated_cost": "$"
           }
         ]
       },
       "usage": {
         "prompt_tokens": 1531,
-        "output_tokens": 843,
-        "thinking_tokens": 1630,
-        "total_tokens": 4004
+        "output_tokens": 578,
+        "thinking_tokens": 62915,
+        "total_tokens": 65024
       }
     },
     {
@@ -579,13 +585,13 @@
       "heading": 132,
       "result": {
         "safety_score": 65,
-        "confidence": 95,
-        "summary": "This is a residential street with a low-speed character, featuring embedded trolley tracks and sidewalks on both sides. While the presence of sidewalks and a parking buffer enhances safety, the lack of marked crossings and the potential tripping hazard from the tracks are notable deficiencies.",
+        "confidence": 90,
+        "summary": "A residential street with sidewalks on both sides and trolley tracks embedded in the central asphalt roadway. Parallel parking is permitted along the cobblestone gutters, which provides a buffer between pedestrians and moving traffic, though no formal crossing infrastructure is visible.",
         "features": {
           "sidewalk_present": "yes",
           "sidewalk_obstruction": "no",
           "crosswalk_marked": "no",
-          "curb_ramp": "no",
+          "curb_ramp": "not_visible",
           "refuge_island": "no",
           "median_present": "no",
           "pedestrian_signal": "no",
@@ -613,47 +619,50 @@
           "crossing_distance": "24_to_40ft",
           "land_use": "residential",
           "sidewalk_condition": "good",
-          "sidewalk_width": "4_to_6ft",
+          "sidewalk_width": "6_to_10ft",
           "parking_configuration": "parallel",
           "frontage_type": "buildings_at_sidewalk"
         },
         "hazards": [
           {
-            "name": "Embedded Trolley Tracks",
+            "name": "Trolley tracks",
             "severity": "Medium",
-            "description": "The metal tracks embedded in the roadway can be slippery when wet and create a tripping hazard for pedestrians crossing mid-block.",
+            "description": "Steel tracks embedded in the roadway can be a tripping hazard for pedestrians and a slip/entrapment hazard for cyclists.",
             "location_in_image": "Center of the roadway running longitudinally"
           },
           {
-            "name": "Visual Obstruction from Parked Cars",
-            "severity": "Low",
-            "description": "Continuous parallel parking on both sides of the street can obscure pedestrians, particularly children, from the view of approaching drivers.",
-            "location_in_image": "Along both curbsides"
+            "name": "Visual obstructions from parked cars",
+            "severity": "Medium",
+            "description": "Continuous parallel parking on both sides of the street limits sightlines between drivers and pedestrians attempting to cross.",
+            "location_in_image": "Along both curbs"
           }
         ],
         "interventions": [
           {
-            "title": "High-Visibility Crosswalks",
-            "description": "Install marked crosswalks with high-visibility patterns at intersections to provide designated and safe crossing points.",
-            "impact": "High"
-          },
-          {
-            "title": "Curb Extensions",
-            "description": "Implement curb extensions (bulb-outs) at crossing points to reduce the crossing distance and improve sightlines between pedestrians and drivers.",
-            "impact": "High"
+            "title": "Curb Extensions (Bulb-outs)",
+            "description": "Extend the sidewalk into the parking lane at potential crossing points to shorten crossing distance and improve visibility.",
+            "impact": "High",
+            "estimated_cost": "$$"
           },
           {
             "title": "Daylighting",
-            "description": "Restrict parking near intersections or potential crossing points to ensure clear visibility for all road users.",
-            "impact": "Medium"
+            "description": "Remove parking spaces near intersections or mid-block crossing points to ensure clear sightlines.",
+            "impact": "Medium",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Marked Mid-block Crossing",
+            "description": "Install high-visibility crosswalk markings to designate a safe place for pedestrians to cross this long block.",
+            "impact": "Medium",
+            "estimated_cost": "$"
           }
         ]
       },
       "usage": {
         "prompt_tokens": 1531,
-        "output_tokens": 788,
-        "thinking_tokens": 1990,
-        "total_tokens": 4309
+        "output_tokens": 804,
+        "thinking_tokens": 1176,
+        "total_tokens": 3511
       }
     },
     {
@@ -662,11 +671,11 @@
       "heading": 222,
       "result": {
         "safety_score": 65,
-        "confidence": 90,
-        "summary": "The image shows a residential street with row houses and a continuous sidewalk. The roadway consists of an asphalt travel lane and a cobblestone parking lane, with some sidewalk obstructions such as trash bins and small trees.",
+        "confidence": 95,
+        "summary": "The image shows a typical urban residential street with row houses and a continuous sidewalk. The roadway consists of an asphalt travel lane and a cobblestone parking lane, with no visible mid-block pedestrian crossing infrastructure.",
         "features": {
           "sidewalk_present": "yes",
-          "sidewalk_obstruction": "yes",
+          "sidewalk_obstruction": "no",
           "crosswalk_marked": "no",
           "curb_ramp": "no",
           "refuge_island": "no",
@@ -676,7 +685,7 @@
           "stop_sign": "no",
           "crossing_sign": "no",
           "lane_markings": "no",
-          "street_lighting": "not_visible",
+          "street_lighting": "no",
           "bike_lane": "no",
           "trees": "yes",
           "bus_stop": "no",
@@ -692,40 +701,42 @@
           "traffic_calming": "no",
           "blank_frontage": "no",
           "loading_activity": "no",
-          "through_lanes": "1",
-          "crossing_distance": "under_24ft",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
           "land_use": "residential",
           "sidewalk_condition": "good",
-          "sidewalk_width": "4_to_6ft",
+          "sidewalk_width": "6_to_10ft",
           "parking_configuration": "parallel",
           "frontage_type": "buildings_at_sidewalk"
         },
         "hazards": [
           {
-            "name": "Sidewalk Obstructions",
+            "name": "Uneven Parking Surface",
             "severity": "Low",
-            "description": "Trash bins and recycling containers are placed on the sidewalk, narrowing the effective walking width.",
-            "location_in_image": "Left and center-left on the sidewalk in front of the houses"
+            "description": "The cobblestone parking lane presents an uneven surface that could be a trip hazard for pedestrians accessing parked vehicles.",
+            "location_in_image": "Foreground, the cobblestone area where the black car is parked."
           }
         ],
         "interventions": [
           {
-            "title": "Designated Trash Storage",
-            "description": "Implement designated off-sidewalk storage areas for waste containers to maintain a clear pedestrian through-zone.",
-            "impact": "Medium"
+            "title": "Street Lighting",
+            "description": "Install pedestrian-scale street lighting to improve visibility and safety during nighttime hours.",
+            "impact": "Medium",
+            "estimated_cost": "$$"
           },
           {
-            "title": "Street Lighting",
-            "description": "Ensure adequate pedestrian-scale lighting is installed to improve visibility and safety at night.",
-            "impact": "Medium"
+            "title": "Street Trees",
+            "description": "Increase the number of street trees to provide a natural buffer between the sidewalk and the roadway and improve the pedestrian environment.",
+            "impact": "Low",
+            "estimated_cost": "$"
           }
         ]
       },
       "usage": {
         "prompt_tokens": 1531,
-        "output_tokens": 647,
-        "thinking_tokens": 1443,
-        "total_tokens": 3621
+        "output_tokens": 442,
+        "thinking_tokens": 3528,
+        "total_tokens": 5501
       }
     },
     {
@@ -733,17 +744,17 @@
       "offset": 0,
       "heading": 312,
       "result": {
-        "safety_score": 55,
+        "safety_score": 65,
         "confidence": 90,
-        "summary": "The street environment features continuous sidewalks on both sides, though the presence of trolley tracks and uneven cobblestone shoulders creates potential hazards for pedestrians and cyclists. The lack of marked midblock crossings and the wide roadway width may encourage higher vehicle speeds, despite the residential character of the buildings.",
+        "summary": "The street features continuous sidewalks on both sides, separated from the main travel lanes by a cobblestone buffer zone used for parking. However, the environment lacks marked midblock crossings and contains utility poles that obstruct the pedestrian clear path.",
         "features": {
           "sidewalk_present": "yes",
-          "sidewalk_obstruction": "no",
+          "sidewalk_obstruction": "yes",
           "crosswalk_marked": "no",
           "curb_ramp": "no",
           "refuge_island": "no",
           "median_present": "no",
-          "pedestrian_signal": "yes",
+          "pedestrian_signal": "no",
           "traffic_light": "yes",
           "stop_sign": "no",
           "crossing_sign": "no",
@@ -753,8 +764,8 @@
           "trees": "yes",
           "bus_stop": "yes",
           "slip_lane": "no",
-          "visual_obstruction": "yes",
-          "poor_pavement": "yes",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
           "sidewalk_buffer": "yes",
           "sidewalk_gap": "no",
           "curb_present": "yes",
@@ -767,60 +778,54 @@
           "through_lanes": "2",
           "crossing_distance": "24_to_40ft",
           "land_use": "residential",
-          "sidewalk_condition": "fair",
-          "sidewalk_width": "4_to_6ft",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
           "parking_configuration": "parallel",
           "frontage_type": "buildings_at_sidewalk"
         },
         "hazards": [
           {
-            "name": "Trolley tracks",
+            "name": "Sidewalk Obstructions",
             "severity": "Medium",
-            "description": "Metal tracks embedded in the roadway can be slippery and pose a trip hazard or catch bicycle wheels.",
-            "location_in_image": "Center of the roadway extending into the distance"
+            "description": "Utility poles are positioned within the sidewalk area, reducing the effective width for pedestrians.",
+            "location_in_image": "Right side sidewalk foreground and midground"
           },
           {
-            "name": "Uneven pavement",
-            "severity": "Low",
-            "description": "Cobblestone shoulders are uneven and may cause tripping or difficulty for those with mobility aids.",
-            "location_in_image": "Right side of the roadway between the paved sidewalk and the tracks"
-          },
-          {
-            "name": "Lack of marked crossings",
+            "name": "Lack of Marked Crossings",
             "severity": "Medium",
-            "description": "No marked pedestrian crossings are visible in the immediate foreground, requiring long walks to the nearest intersection.",
-            "location_in_image": "Foreground and mid-ground of the street"
+            "description": "There are no marked pedestrian crossings visible in the immediate vicinity, forcing pedestrians to cross at unmarked locations.",
+            "location_in_image": "Entire foreground roadway"
           }
         ],
         "interventions": [
           {
-            "title": "High-Visibility Crosswalks",
-            "description": "Install continental-style marked crosswalks at regular intervals to provide safe, visible crossing points.",
+            "title": "Curb Extensions",
+            "description": "Install bulb-outs at the nearest intersection to shorten crossing distances and increase pedestrian visibility.",
             "impact": "High",
-            "source": "NACTO",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "High-Visibility Crosswalks",
+            "description": "Add marked crosswalks with high-visibility patterns to clearly designate pedestrian right-of-way.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
             "estimated_cost": "$"
           },
           {
-            "title": "Curb Extensions",
-            "description": "Construct bulb-outs at intersections to reduce crossing distance and improve visibility between pedestrians and drivers.",
-            "impact": "High",
-            "source": "NACTO",
-            "estimated_cost": "$$"
-          },
-          {
-            "title": "Pedestrian-Scale Lighting",
-            "description": "Add lower-height lighting fixtures specifically for the sidewalk to improve nighttime visibility and safety.",
+            "title": "Utility Pole Relocation",
+            "description": "Relocate utility poles to a dedicated furniture zone or consolidate them to ensure a clear walking path.",
             "impact": "Medium",
-            "source": "NACTO",
-            "estimated_cost": "$$"
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$$"
           }
         ]
       },
       "usage": {
         "prompt_tokens": 1531,
-        "output_tokens": 728,
-        "thinking_tokens": 5294,
-        "total_tokens": 7553
+        "output_tokens": 836,
+        "thinking_tokens": 1669,
+        "total_tokens": 4036
       }
     },
     {
@@ -909,270 +914,435 @@
       "point_index": 2,
       "offset": 180,
       "heading": 132,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 95,
+        "summary": "This residential street features sidewalks on both sides separated from the roadway by a strip of cobblestones and parked cars. The roadway contains embedded tram tracks and lacks marked pedestrian crossings in the visible mid-block section.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "residential",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Tram Tracks",
+            "severity": "Medium",
+            "description": "Embedded metal tracks in the roadway can cause tripping or catch bicycle wheels.",
+            "location_in_image": "Center of the roadway"
+          },
+          {
+            "name": "Visual Obstructions from Parked Cars",
+            "severity": "Medium",
+            "description": "Continuous parallel parking on both sides of the street limits visibility between pedestrians and drivers.",
+            "location_in_image": "Both sides of the roadway"
+          },
+          {
+            "name": "Uneven Pavement",
+            "severity": "Low",
+            "description": "Cobblestone sections between the sidewalk and the asphalt roadway may be uneven and difficult for those with mobility aids.",
+            "location_in_image": "Edges of the roadway"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Curb Extensions (Bulb-outs)",
+            "description": "Extend the sidewalk into the parking lane at potential crossing points to shorten crossing distance and improve visibility.",
+            "impact": "High"
+          },
+          {
+            "title": "Mid-block Crosswalk",
+            "description": "Install a high-visibility marked crosswalk to provide a designated and safer place for pedestrians to cross.",
+            "impact": "High"
+          },
+          {
+            "title": "Daylighting",
+            "description": "Remove parking spaces near intersections or mid-block crossings to improve sightlines.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 824,
+        "thinking_tokens": 1901,
+        "total_tokens": 4256
+      }
     },
     {
       "point_index": 2,
       "offset": 270,
       "heading": 222,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 95,
+        "summary": "The image shows a residential street with row houses and a wide, well-maintained sidewalk. The roadway features embedded rail tracks and a cobblestone gutter, with parallel parking directly adjacent to the pedestrian walkway.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "residential",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Embedded Rail Tracks",
+            "severity": "Medium",
+            "description": "Rail tracks embedded in the roadway can be a tripping hazard for pedestrians crossing mid-block and a significant hazard for cyclists.",
+            "location_in_image": "Running horizontally across the foreground in the roadway."
+          },
+          {
+            "name": "Lack of Pedestrian Buffer",
+            "severity": "Low",
+            "description": "There is no physical buffer, such as street trees or a planting strip, between the sidewalk and the parking or travel lane.",
+            "location_in_image": "The edge between the sidewalk and the cobblestone gutter."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Street Trees and Planting Strips",
+            "description": "Install street trees or a planting zone between the sidewalk and the curb to provide a physical buffer from traffic and improve the pedestrian environment.",
+            "impact": "Medium",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Implement curb extensions at nearby intersections to reduce crossing distances and improve visibility between drivers and pedestrians.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 564,
+        "thinking_tokens": 2987,
+        "total_tokens": 5082
+      }
     }
   ],
   "aggregate": {
-    "safety_score_mean": 63.7,
-    "safety_score_sd": 5.7,
-    "safety_score_sd_within_point": 6.88,
-    "safety_score_sd_between_points": 1.28,
-    "safety_score_min": 55,
+    "safety_score_mean": 64.5,
+    "safety_score_sd": 7.48,
+    "safety_score_sd_within_point": 6.32,
+    "safety_score_sd_between_points": 2.88,
+    "safety_score_min": 45,
     "safety_score_max": 75,
-    "confidence_mean": 87.5,
-    "n_views_scored": 10,
+    "confidence_mean": 91.2,
+    "n_views_scored": 12,
     "n_points_scored": 3,
     "features": {
       "sidewalk_present": {
         "any": true,
         "proportion": 1.0,
-        "n_visible": 10,
-        "n_views": 10,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": false
       },
       "sidewalk_obstruction": {
         "any": true,
-        "proportion": 0.2,
-        "n_visible": 10,
-        "n_views": 10,
+        "proportion": 0.333,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": true
       },
       "crosswalk_marked": {
         "any": false,
         "proportion": 0.0,
-        "n_visible": 10,
-        "n_views": 10,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": false
       },
       "curb_ramp": {
         "any": false,
         "proportion": 0.0,
-        "n_visible": 7,
-        "n_views": 10,
+        "n_visible": 9,
+        "n_views": 12,
         "mixed": false
       },
       "refuge_island": {
         "any": false,
         "proportion": 0.0,
-        "n_visible": 10,
-        "n_views": 10,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": false
       },
       "median_present": {
         "any": false,
         "proportion": 0.0,
-        "n_visible": 10,
-        "n_views": 10,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": false
       },
       "pedestrian_signal": {
-        "any": true,
-        "proportion": 0.1,
-        "n_visible": 10,
-        "n_views": 10,
-        "mixed": true
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 12,
+        "n_views": 12,
+        "mixed": false
       },
       "traffic_light": {
         "any": true,
-        "proportion": 0.1,
-        "n_visible": 10,
-        "n_views": 10,
+        "proportion": 0.083,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": true
       },
       "stop_sign": {
         "any": false,
         "proportion": 0.0,
-        "n_visible": 10,
-        "n_views": 10,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": false
       },
       "crossing_sign": {
         "any": false,
         "proportion": 0.0,
-        "n_visible": 10,
-        "n_views": 10,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": false
       },
       "lane_markings": {
         "any": false,
         "proportion": 0.0,
-        "n_visible": 10,
-        "n_views": 10,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": false
       },
       "street_lighting": {
         "any": true,
-        "proportion": 0.875,
-        "n_visible": 8,
-        "n_views": 10,
+        "proportion": 0.8,
+        "n_visible": 10,
+        "n_views": 12,
         "mixed": true
       },
       "bike_lane": {
         "any": false,
         "proportion": 0.0,
-        "n_visible": 10,
-        "n_views": 10,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": false
       },
       "trees": {
         "any": true,
         "proportion": 1.0,
-        "n_visible": 10,
-        "n_views": 10,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": false
       },
       "bus_stop": {
         "any": true,
-        "proportion": 0.1,
-        "n_visible": 10,
-        "n_views": 10,
+        "proportion": 0.083,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": true
       },
       "slip_lane": {
         "any": false,
         "proportion": 0.0,
-        "n_visible": 10,
-        "n_views": 10,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": false
       },
       "visual_obstruction": {
         "any": true,
-        "proportion": 0.6,
-        "n_visible": 10,
-        "n_views": 10,
+        "proportion": 0.417,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": true
       },
       "poor_pavement": {
         "any": true,
-        "proportion": 0.3,
-        "n_visible": 10,
-        "n_views": 10,
+        "proportion": 0.25,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": true
       },
       "sidewalk_buffer": {
         "any": true,
-        "proportion": 0.6,
-        "n_visible": 10,
-        "n_views": 10,
+        "proportion": 0.5,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": true
       },
       "sidewalk_gap": {
         "any": false,
         "proportion": 0.0,
-        "n_visible": 10,
-        "n_views": 10,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": false
       },
       "curb_present": {
         "any": true,
         "proportion": 1.0,
-        "n_visible": 10,
-        "n_views": 10,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": false
       },
       "on_street_parking": {
         "any": true,
-        "proportion": 0.9,
-        "n_visible": 10,
-        "n_views": 10,
+        "proportion": 0.833,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": true
       },
       "driveway_curb_cut": {
         "any": true,
-        "proportion": 0.1,
-        "n_visible": 10,
-        "n_views": 10,
+        "proportion": 0.25,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": true
       },
       "midblock_crossing": {
         "any": false,
         "proportion": 0.0,
-        "n_visible": 10,
-        "n_views": 10,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": false
       },
       "traffic_calming": {
         "any": true,
-        "proportion": 0.2,
-        "n_visible": 10,
-        "n_views": 10,
+        "proportion": 0.333,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": true
       },
       "blank_frontage": {
         "any": false,
         "proportion": 0.0,
-        "n_visible": 10,
-        "n_views": 10,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": false
       },
       "loading_activity": {
         "any": false,
         "proportion": 0.0,
-        "n_visible": 10,
-        "n_views": 10,
+        "n_visible": 12,
+        "n_views": 12,
         "mixed": false
       },
       "through_lanes": {
         "modal": "2",
         "values": [
           "2",
-          "not_visible",
-          "2",
-          "2",
-          "2",
           "2",
           "2",
           "1",
           "2",
+          "1",
+          "2",
+          "2",
+          "2",
+          "2",
+          "2",
           "2"
         ],
-        "agreement": 0.889
+        "agreement": 0.833
       },
       "crossing_distance": {
         "modal": "24_to_40ft",
         "values": [
           "24_to_40ft",
-          "not_visible",
-          "24_to_40ft",
           "24_to_40ft",
           "24_to_40ft",
           "under_24ft",
           "24_to_40ft",
           "under_24ft",
           "24_to_40ft",
-          "under_24ft"
+          "24_to_40ft",
+          "24_to_40ft",
+          "under_24ft",
+          "24_to_40ft",
+          "24_to_40ft"
         ],
-        "agreement": 0.667
+        "agreement": 0.75
       },
       "land_use": {
         "modal": "residential",
         "values": [
           "residential",
           "residential",
-          "mixed",
+          "institutional",
           "residential",
           "residential",
           "institutional",
           "residential",
           "residential",
           "residential",
-          "mixed"
+          "mixed",
+          "residential",
+          "residential"
         ],
-        "agreement": 0.7
+        "agreement": 0.75
       },
       "sidewalk_condition": {
         "modal": "good",
         "values": [
           "good",
-          "good",
-          "good",
           "fair",
+          "good",
+          "good",
+          "good",
+          "good",
           "good",
           "good",
           "good",
@@ -1180,46 +1350,52 @@
           "fair",
           "good"
         ],
-        "agreement": 0.8
+        "agreement": 0.833
       },
       "sidewalk_width": {
         "modal": "6_to_10ft",
         "values": [
           "6_to_10ft",
-          "under_4ft",
-          "6_to_10ft",
-          "4_to_6ft",
           "6_to_10ft",
           "6_to_10ft",
-          "4_to_6ft",
-          "4_to_6ft",
+          "6_to_10ft",
+          "6_to_10ft",
+          "6_to_10ft",
+          "6_to_10ft",
+          "6_to_10ft",
+          "6_to_10ft",
+          "6_to_10ft",
           "4_to_6ft",
           "6_to_10ft"
         ],
-        "agreement": 0.5
+        "agreement": 0.917
       },
       "parking_configuration": {
         "modal": "parallel",
         "values": [
           "parallel",
           "parallel",
+          "none",
           "parallel",
           "parallel",
           "parallel",
           "parallel",
           "parallel",
           "parallel",
+          "none",
           "parallel",
-          "none"
+          "parallel"
         ],
-        "agreement": 0.9
+        "agreement": 0.833
       },
       "frontage_type": {
         "modal": "buildings_at_sidewalk",
         "values": [
           "buildings_at_sidewalk",
           "buildings_at_sidewalk",
-          "not_clear",
+          "detached_residential",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
           "buildings_at_sidewalk",
           "buildings_at_sidewalk",
           "buildings_at_sidewalk",
@@ -1228,63 +1404,51 @@
           "buildings_at_sidewalk",
           "buildings_at_sidewalk"
         ],
-        "agreement": 1.0
+        "agreement": 0.917
       }
     },
     "hazards": [
       {
-        "name": "Tram tracks",
+        "name": "Trolley tracks",
         "severity": "Medium",
-        "description": "Embedded metal tracks in the roadway can be a tripping hazard for pedestrians crossing midblock and a slip hazard when wet.",
-        "location_in_image": "Center of the roadway running longitudinally"
+        "description": "The embedded metal tracks and surrounding uneven cobblestones create significant trip hazards and can be slippery when wet.",
+        "location_in_image": "Center of the roadway extending into the distance"
       },
       {
-        "name": "Visual obstructions from parked cars",
-        "severity": "Low",
-        "description": "Parked vehicles along the curb can block sightlines between pedestrians attempting to cross and oncoming traffic.",
-        "location_in_image": "Right side of the street along the curb"
-      },
-      {
-        "name": "Visual Obstruction",
+        "name": "Visual Obstructions",
         "severity": "Medium",
-        "description": "The large parked SUV in the foreground significantly blocks the line of sight between pedestrians on the sidewalk and drivers on the roadway.",
-        "location_in_image": "Foreground, center and left"
+        "description": "Parked cars on both sides of the street create visual barriers between pedestrians and drivers.",
+        "location_in_image": "Along both curbs"
       },
       {
-        "name": "Narrow Sidewalk",
+        "name": "Sidewalk Obstruction",
+        "severity": "Medium",
+        "description": "A utility pole is positioned in the center of the brick walkway, significantly narrowing the effective clear width for pedestrians and those with mobility aids.",
+        "location_in_image": "Center-left, on the brick sidewalk"
+      },
+      {
+        "name": "Vehicle Encroachment",
         "severity": "Low",
-        "description": "The brick walkway appears narrow, which may restrict mobility for users with assistive devices or strollers.",
-        "location_in_image": "Middle ground, behind the parked car"
+        "description": "A parked vehicle is positioned very close to or slightly over the curb line, reducing the available pedestrian space and blocking sightlines.",
+        "location_in_image": "Bottom left foreground"
       },
       {
         "name": "Lack of marked crossings",
-        "severity": "Medium",
-        "description": "The absence of marked crossings over a long stretch of road may encourage unsafe mid-block crossing behavior.",
-        "location_in_image": "Entire visible roadway length"
+        "severity": "High",
+        "description": "The absence of designated crossing points forces pedestrians to cross multiple lanes of traffic and tracks without any safety markings or priority.",
+        "location_in_image": "Entire visible stretch of the roadway"
       },
       {
-        "name": "Embedded tracks",
+        "name": "Sidewalk Obstructions",
         "severity": "Medium",
-        "description": "Metal tracks in the roadway can be a tripping hazard for pedestrians and a slip hazard when wet.",
-        "location_in_image": "Running horizontally across the foreground and middle ground of the roadway"
+        "description": "Utility poles are positioned within the sidewalk area, reducing the effective width for pedestrians.",
+        "location_in_image": "Right side sidewalk foreground and midground"
       },
       {
-        "name": "Uneven pavement",
+        "name": "Uneven Road Surface",
         "severity": "Low",
-        "description": "The transition between the cobblestone gutter and the main roadway surface creates an uneven walking surface.",
-        "location_in_image": "Along the curb line where the car is parked"
-      },
-      {
-        "name": "Visual obstructions",
-        "severity": "Medium",
-        "description": "Parked cars and large tree trunks can obscure pedestrians, especially children, from the view of oncoming drivers.",
-        "location_in_image": "Along the far curb line"
-      },
-      {
-        "name": "Trolley Tracks",
-        "severity": "Medium",
-        "description": "Metal tracks in the roadway can cause trips for pedestrians or catch bicycle tires.",
-        "location_in_image": "Center of the roadway"
+        "description": "The cobblestone roadway, while slowing traffic, creates an uneven surface for pedestrians crossing the street.",
+        "location_in_image": "Foreground roadway."
       },
       {
         "name": "Uneven Cobblestones",
@@ -1293,34 +1457,28 @@
         "location_in_image": "Both sides of the asphalt roadway"
       },
       {
-        "name": "Wide Driveway Conflict Point",
+        "name": "Sightline Obstruction",
         "severity": "Medium",
-        "description": "A wide concrete driveway apron for the daycare facility creates a large area where vehicles and pedestrians, including children, may conflict.",
-        "location_in_image": "Center-left, leading to the gated academy entrance"
+        "description": "A large, dense bush on the sidewalk blocks the view between pedestrians and oncoming traffic.",
+        "location_in_image": "Right side of the image, adjacent to the stone building."
       },
       {
-        "name": "Vegetation Sightline Obstruction",
-        "severity": "Medium",
-        "description": "A large bush/tree adjacent to the driveway apron may block the view of pedestrians for drivers exiting the facility.",
-        "location_in_image": "Center-right, between the brick sidewalk and the driveway"
-      },
-      {
-        "name": "Embedded Trolley Tracks",
-        "severity": "Medium",
-        "description": "The metal tracks embedded in the roadway can be slippery when wet and create a tripping hazard for pedestrians crossing mid-block.",
-        "location_in_image": "Center of the roadway running longitudinally"
-      },
-      {
-        "name": "Visual Obstruction from Parked Cars",
+        "name": "Conflict Zone",
         "severity": "Low",
-        "description": "Continuous parallel parking on both sides of the street can obscure pedestrians, particularly children, from the view of approaching drivers.",
-        "location_in_image": "Along both curbsides"
+        "description": "A wide concrete apron allows vehicles to cross the sidewalk into a fenced area, creating a conflict zone.",
+        "location_in_image": "Center-left of the image, leading to the black fence."
       },
       {
-        "name": "Sidewalk Obstructions",
+        "name": "Visual obstructions from parked cars",
+        "severity": "Medium",
+        "description": "Continuous parallel parking on both sides of the street limits sightlines between drivers and pedestrians attempting to cross.",
+        "location_in_image": "Along both curbs"
+      },
+      {
+        "name": "Uneven Parking Surface",
         "severity": "Low",
-        "description": "Trash bins and recycling containers are placed on the sidewalk, narrowing the effective walking width.",
-        "location_in_image": "Left and center-left on the sidewalk in front of the houses"
+        "description": "The cobblestone parking lane presents an uneven surface that could be a trip hazard for pedestrians accessing parked vehicles.",
+        "location_in_image": "Foreground, the cobblestone area where the black car is parked."
       },
       {
         "name": "Lack of Pedestrian Buffer",
@@ -1333,80 +1491,118 @@
         "severity": "Medium",
         "description": "The presence of a daycare and playground suggests high child pedestrian activity, yet there is no marked crossing or warning signage.",
         "location_in_image": "The roadway area directly in front of the playground entrance."
+      },
+      {
+        "name": "Tram Tracks",
+        "severity": "Medium",
+        "description": "Embedded metal tracks in the roadway can cause tripping or catch bicycle wheels.",
+        "location_in_image": "Center of the roadway"
+      },
+      {
+        "name": "Uneven Pavement",
+        "severity": "Low",
+        "description": "Cobblestone sections between the sidewalk and the asphalt roadway may be uneven and difficult for those with mobility aids.",
+        "location_in_image": "Edges of the roadway"
+      },
+      {
+        "name": "Embedded Rail Tracks",
+        "severity": "Medium",
+        "description": "Rail tracks embedded in the roadway can be a tripping hazard for pedestrians crossing mid-block and a significant hazard for cyclists.",
+        "location_in_image": "Running horizontally across the foreground in the roadway."
       }
     ],
     "interventions": [
       {
-        "title": "Marked Midblock Crossing",
-        "description": "Install a high-visibility marked crosswalk to provide a designated and safer crossing point for pedestrians.",
-        "impact": "High"
-      },
-      {
         "title": "Curb Extensions",
-        "description": "Construct curb extensions (bulb-outs) at potential crossing points to shorten the crossing distance and improve visibility between drivers and pedestrians.",
-        "impact": "High"
-      },
-      {
-        "title": "Daylighting",
-        "description": "Restrict parking near building entrances or potential crossing points to improve visibility between pedestrians and motorists.",
-        "impact": "Medium"
-      },
-      {
-        "title": "Sidewalk Widening",
-        "description": "Increase the width of the pedestrian walkway to meet modern accessibility standards and improve comfort.",
-        "impact": "High"
-      },
-      {
-        "title": "Mid-block Crossing",
-        "description": "Install a high-visibility marked crosswalk with appropriate signage to provide a safe crossing point.",
+        "description": "Install curb extensions to increase pedestrian visibility and shorten the crossing distance.",
         "impact": "High",
         "source": "NACTO Urban Street Design Guide",
         "estimated_cost": "$$"
       },
       {
-        "title": "Warning Signage",
-        "description": "Install signage warning pedestrians and cyclists of the presence of tram tracks.",
-        "impact": "Low",
+        "title": "High-Visibility Crosswalks",
+        "description": "Add high-visibility crosswalk markings to designate safe crossing locations.",
+        "impact": "Medium",
         "source": "NACTO Urban Street Design Guide",
         "estimated_cost": "$"
       },
       {
-        "title": "High-Visibility Crosswalks",
-        "description": "Install marked crosswalks at intersections or appropriate mid-block locations to define pedestrian right-of-way.",
-        "impact": "High"
-      },
-      {
         "title": "Pedestrian-Scale Lighting",
-        "description": "Supplement existing street lighting with lower-height fixtures to better illuminate the sidewalk and crossing areas.",
-        "impact": "Medium"
+        "description": "Install street lamps to improve visibility and safety for pedestrians at night, as no lighting is currently visible.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
       },
       {
-        "title": "Daylighting and Vegetation Management",
-        "description": "Trim or remove the large bush adjacent to the driveway to ensure clear sightlines between exiting drivers and pedestrians on the sidewalk.",
-        "impact": "High",
+        "title": "Sidewalk Clear Zone Maintenance",
+        "description": "Relocate the utility pole or widen the sidewalk to ensure a continuous, unobstructed path of travel meeting ADA standards.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$$"
+      },
+      {
+        "title": "Sidewalk Management",
+        "description": "Implement designated storage areas for waste containers to ensure the full width of the sidewalk remains clear for pedestrians.",
+        "impact": "Low",
         "estimated_cost": "$"
       },
       {
-        "title": "Driveway Material Contrast",
-        "description": "Continue the sidewalk material (brick or concrete) across the driveway apron to reinforce pedestrian priority and signal to drivers they are crossing a walkway.",
+        "title": "Vegetation Management",
+        "description": "Trim or replace the large bush to ensure clear sightlines for pedestrians and drivers at the sidewalk edge.",
+        "impact": "Medium",
+        "source": "NACTO",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "High-Visibility Crosswalk",
+        "description": "Install a marked crosswalk with appropriate signage, particularly important given the adjacent childcare land use.",
+        "impact": "High",
+        "source": "NACTO",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Pedestrian Warning Signage",
+        "description": "Install signage to alert drivers to the institutional land use and presence of children.",
+        "impact": "Medium",
+        "source": "NACTO",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Curb Extensions (Bulb-outs)",
+        "description": "Extend the sidewalk into the parking lane at potential crossing points to shorten crossing distance and improve visibility.",
+        "impact": "High",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Daylighting",
+        "description": "Remove parking spaces near intersections or mid-block crossing points to ensure clear sightlines.",
+        "impact": "Medium",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Marked Mid-block Crossing",
+        "description": "Install high-visibility crosswalk markings to designate a safe place for pedestrians to cross this long block.",
+        "impact": "Medium",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Street Lighting",
+        "description": "Install pedestrian-scale street lighting to improve visibility and safety during nighttime hours.",
         "impact": "Medium",
         "estimated_cost": "$$"
       },
       {
-        "title": "Midblock Pedestrian Crossing",
-        "description": "Given the presence of a daycare, a marked midblock crossing with appropriate signage would improve safety for families crossing the cobblestone street.",
-        "impact": "High",
-        "estimated_cost": "$$"
+        "title": "Street Trees",
+        "description": "Increase the number of street trees to provide a natural buffer between the sidewalk and the roadway and improve the pedestrian environment.",
+        "impact": "Low",
+        "estimated_cost": "$"
       },
       {
-        "title": "Designated Trash Storage",
-        "description": "Implement designated off-sidewalk storage areas for waste containers to maintain a clear pedestrian through-zone.",
-        "impact": "Medium"
-      },
-      {
-        "title": "Street Lighting",
-        "description": "Ensure adequate pedestrian-scale lighting is installed to improve visibility and safety at night.",
-        "impact": "Medium"
+        "title": "Utility Pole Relocation",
+        "description": "Relocate utility poles to a dedicated furniture zone or consolidate them to ensure a clear walking path.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$$"
       },
       {
         "title": "Street Trees and Planters",
@@ -1416,11 +1612,15 @@
         "estimated_cost": "$$"
       },
       {
-        "title": "Marked Mid-block Crossing",
-        "description": "Implement a high-visibility marked crosswalk with associated pedestrian warning signage to facilitate safe access to the daycare.",
-        "impact": "High",
-        "source": "NACTO Urban Street Design Guide",
-        "estimated_cost": "$"
+        "title": "Mid-block Crosswalk",
+        "description": "Install a high-visibility marked crosswalk to provide a designated and safer place for pedestrians to cross.",
+        "impact": "High"
+      },
+      {
+        "title": "Street Trees and Planting Strips",
+        "description": "Install street trees or a planting zone between the sidewalk and the curb to provide a physical buffer from traffic and improve the pedestrian environment.",
+        "impact": "Medium",
+        "estimated_cost": "$$"
       }
     ]
   }

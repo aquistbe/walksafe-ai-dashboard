@@ -2,8 +2,8 @@
   "seg_id": 542315,
   "node_id": 542315,
   "int_name": "CORAL ST 2000-block",
-  "status": "NO_SCORES",
-  "run_ts": "2026-08-02T05:43:11.715508+00:00",
+  "status": "OK",
+  "run_ts": "2026-08-02T19:52:52.766559+00:00",
   "model": "gemini-3-flash-preview",
   "prompt_version": "blind-seg-v1",
   "mode": "blind",
@@ -53,26 +53,733 @@
       "point_index": 0,
       "offset": 0,
       "heading": 57,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 62,
+        "confidence": 90,
+        "summary": "The environment provides basic pedestrian infrastructure including continuous sidewalks, curb ramps, and traffic signals. However, safety is reduced by faded crosswalk markings, sidewalk obstructions, and a lack of physical buffers between pedestrians and moving vehicles.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "yes",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "not_visible",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "mixed",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Faded Crosswalk Markings",
+            "severity": "Medium",
+            "description": "The painted crosswalk markings are significantly worn, reducing their visibility to approaching motorists.",
+            "location_in_image": "Foreground roadway crossing"
+          },
+          {
+            "name": "Sidewalk Obstructions",
+            "severity": "Low",
+            "description": "Orange plastic barriers and utility poles are placed within the walkway, narrowing the effective path for pedestrians.",
+            "location_in_image": "Left-hand sidewalk"
+          },
+          {
+            "name": "Visual Obstructions from Parked Vehicles",
+            "severity": "Medium",
+            "description": "Vehicles parked close to the intersection corner may block sightlines between pedestrians waiting to cross and oncoming traffic.",
+            "location_in_image": "Right-hand side of the intersection"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "High-Visibility Crosswalks",
+            "description": "Replace faded markings with high-visibility continental or ladder-style crosswalks to improve driver awareness.",
+            "impact": "High"
+          },
+          {
+            "title": "Curb Extensions (Bulb-outs)",
+            "description": "Install curb extensions to shorten the crossing distance and improve sightlines by preventing parking too close to the corner.",
+            "impact": "High"
+          },
+          {
+            "title": "Sidewalk Clearance",
+            "description": "Remove temporary barriers and ensure utility infrastructure does not impede the clear walking width.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 840,
+        "thinking_tokens": 1167,
+        "total_tokens": 3538
+      }
     },
     {
       "point_index": 0,
       "offset": 90,
       "heading": 147,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 20,
+        "confidence": 95,
+        "summary": "The pedestrian environment is severely obstructed by an active construction site that has blocked the sidewalk and the landing area of a marked crosswalk. Pedestrians are forced to navigate around heavy plastic barriers and fencing on uneven, debris-strewn ground, creating significant safety risks.",
+        "features": {
+          "sidewalk_present": "no",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "not_visible",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "yes",
+          "curb_present": "no",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "yes",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "absent",
+          "sidewalk_width": "absent",
+          "parking_configuration": "none",
+          "frontage_type": "open_or_vacant"
+        },
+        "hazards": [
+          {
+            "name": "Blocked Crosswalk Landing",
+            "severity": "High",
+            "description": "Orange plastic barriers and construction fencing completely block the pedestrian landing area of the marked crosswalk, forcing pedestrians into the street.",
+            "location_in_image": "Foreground and center-right, where the crosswalk meets the construction site."
+          },
+          {
+            "name": "Surface Debris and Uneven Ground",
+            "severity": "Medium",
+            "description": "Loose dirt, gravel, and construction debris are scattered across the paved area, creating trip hazards for anyone attempting to navigate the site edge.",
+            "location_in_image": "Foreground, near the base of the orange barriers."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Temporary Pedestrian Access Route (TPAR)",
+            "description": "Establish a protected, ADA-compliant walkway that bypasses the construction site, using water-filled barriers to separate pedestrians from traffic.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Pedestrian Detour Signage",
+            "description": "Install clear signage at the previous intersection and at the crosswalk to direct pedestrians to a safe, unobstructed crossing point.",
+            "impact": "Medium",
+            "source": "MUTCD",
+            "estimated_cost": "$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 612,
+        "thinking_tokens": 5030,
+        "total_tokens": 7173
+      }
     },
     {
       "point_index": 0,
       "offset": 180,
       "heading": 237,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 45,
+        "confidence": 85,
+        "summary": "The pedestrian environment is dominated by an elevated rail structure that creates significant visual obstructions and shadows. While sidewalks are present, they are currently narrowed by construction barriers on one side, and the overall infrastructure prioritizes vehicle flow and rail transit over pedestrian comfort.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "yes",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "not_visible",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "mixed",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Sidewalk Obstruction",
+            "severity": "Medium",
+            "description": "Orange construction barriers on the left side significantly narrow the available walking space for pedestrians.",
+            "location_in_image": "Left foreground and mid-ground"
+          },
+          {
+            "name": "Visual Obstructions",
+            "severity": "Medium",
+            "description": "Large concrete pillars supporting the elevated rail structure block sightlines between drivers and pedestrians at the crossing.",
+            "location_in_image": "Center and left side of the roadway"
+          },
+          {
+            "name": "Faded Crosswalk Markings",
+            "severity": "Low",
+            "description": "The crosswalk markings in the immediate foreground are faded, reducing their visibility to approaching drivers.",
+            "location_in_image": "Bottom left foreground"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "High-Visibility Crosswalks",
+            "description": "Repaint the crosswalks with high-visibility 'continental' markings to improve driver awareness.",
+            "impact": "Medium"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions (bulb-outs) at the intersection to shorten crossing distances and improve pedestrian visibility.",
+            "impact": "High"
+          },
+          {
+            "title": "Improved Under-Structure Lighting",
+            "description": "Enhance lighting under the elevated rail to eliminate dark spots and improve safety at night.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 838,
+        "thinking_tokens": 2917,
+        "total_tokens": 5286
+      }
     },
     {
       "point_index": 0,
       "offset": 270,
       "heading": 327,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 55,
+        "confidence": 90,
+        "summary": "The pedestrian environment is dominated by an elevated rail structure that provides shade but creates significant visual obstructions with its large steel support columns. While sidewalks and marked zebra crosswalks are present, the heavy infrastructure and parked vehicles limit sightlines at the intersection.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "yes",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "mixed",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Structural Column Obstruction",
+            "severity": "High",
+            "description": "Large steel support columns for the elevated rail are positioned near the intersection, significantly blocking sightlines between drivers and pedestrians.",
+            "location_in_image": "At the corner and along the curb line where the blue steel columns meet the sidewalk."
+          },
+          {
+            "name": "Poor Visibility due to Shadows",
+            "severity": "Medium",
+            "description": "The overhead rail structure creates deep shadows on the roadway and sidewalk, potentially making it harder for drivers to see pedestrians.",
+            "location_in_image": "Throughout the intersection area directly underneath the elevated tracks."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Intersection Daylighting",
+            "description": "Remove on-street parking spaces immediately adjacent to the crosswalk to improve sightlines for both pedestrians and drivers.",
+            "impact": "High",
+            "source": "NACTO",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Under-deck Pedestrian Lighting",
+            "description": "Install high-intensity, pedestrian-scale lighting underneath the elevated rail structure to eliminate dark spots and improve safety.",
+            "impact": "Medium",
+            "source": "NACTO",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Curb Extensions (Bulb-outs)",
+            "description": "Construct curb extensions to reduce the crossing distance and place pedestrians in a more visible position before they enter the roadway.",
+            "impact": "High",
+            "source": "NACTO",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 865,
+        "thinking_tokens": 1529,
+        "total_tokens": 3925
+      }
     }
   ],
-  "aggregate": {}
+  "aggregate": {
+    "safety_score_mean": 45.5,
+    "safety_score_sd": 18.38,
+    "safety_score_sd_within_point": 18.38,
+    "safety_score_sd_between_points": 0.0,
+    "safety_score_min": 20,
+    "safety_score_max": 62,
+    "confidence_mean": 90.0,
+    "n_views_scored": 4,
+    "n_points_scored": 1,
+    "features": {
+      "sidewalk_present": {
+        "any": true,
+        "proportion": 0.75,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": true
+      },
+      "sidewalk_obstruction": {
+        "any": true,
+        "proportion": 1.0,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": false
+      },
+      "crosswalk_marked": {
+        "any": true,
+        "proportion": 1.0,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": false
+      },
+      "curb_ramp": {
+        "any": true,
+        "proportion": 0.75,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": true
+      },
+      "refuge_island": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": false
+      },
+      "median_present": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": false
+      },
+      "pedestrian_signal": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 2,
+        "n_views": 4,
+        "mixed": false
+      },
+      "traffic_light": {
+        "any": true,
+        "proportion": 0.75,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": true
+      },
+      "stop_sign": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": false
+      },
+      "crossing_sign": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": false
+      },
+      "lane_markings": {
+        "any": true,
+        "proportion": 1.0,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": false
+      },
+      "street_lighting": {
+        "any": true,
+        "proportion": 1.0,
+        "n_visible": 3,
+        "n_views": 4,
+        "mixed": false
+      },
+      "bike_lane": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": false
+      },
+      "trees": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": false
+      },
+      "bus_stop": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": false
+      },
+      "slip_lane": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": false
+      },
+      "visual_obstruction": {
+        "any": true,
+        "proportion": 1.0,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": false
+      },
+      "poor_pavement": {
+        "any": true,
+        "proportion": 0.5,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": true
+      },
+      "sidewalk_buffer": {
+        "any": true,
+        "proportion": 0.25,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": true
+      },
+      "sidewalk_gap": {
+        "any": true,
+        "proportion": 0.25,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": true
+      },
+      "curb_present": {
+        "any": true,
+        "proportion": 0.75,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": true
+      },
+      "on_street_parking": {
+        "any": true,
+        "proportion": 0.75,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": true
+      },
+      "driveway_curb_cut": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": false
+      },
+      "midblock_crossing": {
+        "any": true,
+        "proportion": 0.25,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": true
+      },
+      "traffic_calming": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": false
+      },
+      "blank_frontage": {
+        "any": true,
+        "proportion": 0.5,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": true
+      },
+      "loading_activity": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 4,
+        "n_views": 4,
+        "mixed": false
+      },
+      "through_lanes": {
+        "modal": "2",
+        "values": [
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        "agreement": 1.0
+      },
+      "crossing_distance": {
+        "modal": "24_to_40ft",
+        "values": [
+          "24_to_40ft",
+          "24_to_40ft",
+          "24_to_40ft",
+          "24_to_40ft"
+        ],
+        "agreement": 1.0
+      },
+      "land_use": {
+        "modal": "mixed",
+        "values": [
+          "mixed",
+          "commercial",
+          "mixed",
+          "mixed"
+        ],
+        "agreement": 0.75
+      },
+      "sidewalk_condition": {
+        "modal": "fair",
+        "values": [
+          "fair",
+          "absent",
+          "fair",
+          "good"
+        ],
+        "agreement": 0.5
+      },
+      "sidewalk_width": {
+        "modal": "6_to_10ft",
+        "values": [
+          "6_to_10ft",
+          "absent",
+          "6_to_10ft",
+          "6_to_10ft"
+        ],
+        "agreement": 0.75
+      },
+      "parking_configuration": {
+        "modal": "parallel",
+        "values": [
+          "parallel",
+          "none",
+          "parallel",
+          "parallel"
+        ],
+        "agreement": 0.75
+      },
+      "frontage_type": {
+        "modal": "buildings_at_sidewalk",
+        "values": [
+          "buildings_at_sidewalk",
+          "open_or_vacant",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk"
+        ],
+        "agreement": 0.75
+      }
+    },
+    "hazards": [
+      {
+        "name": "Faded Crosswalk Markings",
+        "severity": "Medium",
+        "description": "The painted crosswalk markings are significantly worn, reducing their visibility to approaching motorists.",
+        "location_in_image": "Foreground roadway crossing"
+      },
+      {
+        "name": "Sidewalk Obstructions",
+        "severity": "Low",
+        "description": "Orange plastic barriers and utility poles are placed within the walkway, narrowing the effective path for pedestrians.",
+        "location_in_image": "Left-hand sidewalk"
+      },
+      {
+        "name": "Visual Obstructions from Parked Vehicles",
+        "severity": "Medium",
+        "description": "Vehicles parked close to the intersection corner may block sightlines between pedestrians waiting to cross and oncoming traffic.",
+        "location_in_image": "Right-hand side of the intersection"
+      },
+      {
+        "name": "Blocked Crosswalk Landing",
+        "severity": "High",
+        "description": "Orange plastic barriers and construction fencing completely block the pedestrian landing area of the marked crosswalk, forcing pedestrians into the street.",
+        "location_in_image": "Foreground and center-right, where the crosswalk meets the construction site."
+      },
+      {
+        "name": "Surface Debris and Uneven Ground",
+        "severity": "Medium",
+        "description": "Loose dirt, gravel, and construction debris are scattered across the paved area, creating trip hazards for anyone attempting to navigate the site edge.",
+        "location_in_image": "Foreground, near the base of the orange barriers."
+      },
+      {
+        "name": "Sidewalk Obstruction",
+        "severity": "Medium",
+        "description": "Orange construction barriers on the left side significantly narrow the available walking space for pedestrians.",
+        "location_in_image": "Left foreground and mid-ground"
+      },
+      {
+        "name": "Visual Obstructions",
+        "severity": "Medium",
+        "description": "Large concrete pillars supporting the elevated rail structure block sightlines between drivers and pedestrians at the crossing.",
+        "location_in_image": "Center and left side of the roadway"
+      },
+      {
+        "name": "Structural Column Obstruction",
+        "severity": "High",
+        "description": "Large steel support columns for the elevated rail are positioned near the intersection, significantly blocking sightlines between drivers and pedestrians.",
+        "location_in_image": "At the corner and along the curb line where the blue steel columns meet the sidewalk."
+      },
+      {
+        "name": "Poor Visibility due to Shadows",
+        "severity": "Medium",
+        "description": "The overhead rail structure creates deep shadows on the roadway and sidewalk, potentially making it harder for drivers to see pedestrians.",
+        "location_in_image": "Throughout the intersection area directly underneath the elevated tracks."
+      }
+    ],
+    "interventions": [
+      {
+        "title": "High-Visibility Crosswalks",
+        "description": "Replace faded markings with high-visibility continental or ladder-style crosswalks to improve driver awareness.",
+        "impact": "High"
+      },
+      {
+        "title": "Curb Extensions (Bulb-outs)",
+        "description": "Install curb extensions to shorten the crossing distance and improve sightlines by preventing parking too close to the corner.",
+        "impact": "High"
+      },
+      {
+        "title": "Sidewalk Clearance",
+        "description": "Remove temporary barriers and ensure utility infrastructure does not impede the clear walking width.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Temporary Pedestrian Access Route (TPAR)",
+        "description": "Establish a protected, ADA-compliant walkway that bypasses the construction site, using water-filled barriers to separate pedestrians from traffic.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Pedestrian Detour Signage",
+        "description": "Install clear signage at the previous intersection and at the crosswalk to direct pedestrians to a safe, unobstructed crossing point.",
+        "impact": "Medium",
+        "source": "MUTCD",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Curb Extensions",
+        "description": "Install curb extensions (bulb-outs) at the intersection to shorten crossing distances and improve pedestrian visibility.",
+        "impact": "High"
+      },
+      {
+        "title": "Improved Under-Structure Lighting",
+        "description": "Enhance lighting under the elevated rail to eliminate dark spots and improve safety at night.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Intersection Daylighting",
+        "description": "Remove on-street parking spaces immediately adjacent to the crosswalk to improve sightlines for both pedestrians and drivers.",
+        "impact": "High",
+        "source": "NACTO",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Under-deck Pedestrian Lighting",
+        "description": "Install high-intensity, pedestrian-scale lighting underneath the elevated rail structure to eliminate dark spots and improve safety.",
+        "impact": "Medium",
+        "source": "NACTO",
+        "estimated_cost": "$$"
+      }
+    ]
+  }
 }

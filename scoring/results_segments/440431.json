@@ -2,8 +2,8 @@
   "seg_id": 440431,
   "node_id": 440431,
   "int_name": "MARKET ST 400-block",
-  "status": "NO_SCORES",
-  "run_ts": "2026-08-02T05:43:11.715508+00:00",
+  "status": "OK",
+  "run_ts": "2026-08-02T19:52:52.766559+00:00",
   "model": "gemini-3-flash-preview",
   "prompt_version": "blind-seg-v1",
   "mode": "blind",
@@ -101,122 +101,2311 @@
       "point_index": 0,
       "offset": 0,
       "heading": 280,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 90,
+        "summary": "The street features wide sidewalks with mature trees on one side, providing a good buffer from traffic, while the opposite side is partially obstructed by construction fencing. The roadway consists of multiple lanes with on-street parking, but lacks visible mid-block pedestrian crossings despite the high-density commercial surroundings.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Sidewalk Obstruction",
+            "severity": "Medium",
+            "description": "Construction fencing and barriers on the right side of the street significantly narrow the available walking space.",
+            "location_in_image": "Right side sidewalk"
+          },
+          {
+            "name": "Lack of Mid-block Crossing",
+            "severity": "Medium",
+            "description": "In a high-density commercial area, the absence of mid-block crossings may encourage unsafe mid-block crossing behavior.",
+            "location_in_image": "Center roadway"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Mid-block Crosswalk",
+            "description": "Install a marked mid-block crosswalk with high-visibility markings to provide a safe crossing point for pedestrians.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Implement curb extensions at potential crossing points to reduce crossing distance and improve visibility between drivers and pedestrians.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 781,
+        "thinking_tokens": 1312,
+        "total_tokens": 3624
+      }
     },
     {
       "point_index": 0,
       "offset": 90,
       "heading": 10,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 30,
+        "confidence": 95,
+        "summary": "The pedestrian environment is severely compromised by a total sidewalk closure due to construction, with chain-link fencing blocking the entire walkway. No temporary protected pedestrian path is visible, likely forcing pedestrians to walk in the multi-lane roadway alongside high-speed traffic.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "yes",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "yes",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "3",
+          "crossing_distance": "40_to_60ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "poor",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Sidewalk Closure",
+            "severity": "High",
+            "description": "Construction fencing completely blocks the pedestrian walkway, forcing pedestrians into the active travel lanes.",
+            "location_in_image": "Foreground, spanning the entire building frontage"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Temporary Pedestrian Path",
+            "description": "Establish a protected temporary walkway in the curb lane using water-filled barriers or jersey barriers to maintain pedestrian continuity and safety during construction.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 424,
+        "thinking_tokens": 1702,
+        "total_tokens": 3657
+      }
     },
     {
       "point_index": 0,
       "offset": 180,
       "heading": 100,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 60,
+        "confidence": 85,
+        "summary": "The pedestrian environment features wide sidewalks and signalized crossings, but is challenged by a multi-lane roadway with significant crossing distances. Faded pavement markings and active construction on one side of the street further impact the perceived safety and clarity of the pedestrian realm.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "yes",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "yes",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "4_or_more",
+          "crossing_distance": "40_to_60ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Faded Crosswalk Markings",
+            "severity": "Medium",
+            "description": "The continental crosswalk markings are significantly worn, making the pedestrian crossing less visible to approaching motorists.",
+            "location_in_image": "Foreground and center intersection"
+          },
+          {
+            "name": "Long Crossing Distance",
+            "severity": "Medium",
+            "description": "The wide multi-lane roadway requires pedestrians to cross a large distance without a refuge island, increasing exposure time to traffic.",
+            "location_in_image": "Across the main roadway"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "High-Visibility Crosswalks",
+            "description": "Repaint crosswalks with high-visibility thermoplastic markings to improve driver awareness.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions (bulb-outs) to shorten the crossing distance and improve sightlines between pedestrians and drivers.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Pedestrian Refuge Island",
+            "description": "Add a median refuge island to allow pedestrians to cross the wide street in two stages.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 568,
+        "thinking_tokens": 5908,
+        "total_tokens": 8007
+      }
     },
     {
       "point_index": 0,
       "offset": 270,
       "heading": 190,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 78,
+        "confidence": 90,
+        "summary": "The image depicts a high-quality urban pedestrian environment featuring a very wide sidewalk with brick and concrete paving. Mature street trees and a bus shelter provide a significant physical and psychological buffer between pedestrians and the roadway.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "yes",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "yes",
+          "through_lanes": "not_visible",
+          "crossing_distance": "not_visible",
+          "land_use": "commercial",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "over_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Vendor Obstruction",
+            "severity": "Low",
+            "description": "A food truck is parked on the sidewalk area, which may create localized congestion and force pedestrians to deviate from their path.",
+            "location_in_image": "Left background on the sidewalk plaza"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Designated Vendor Zones",
+            "description": "Formalize space for mobile vendors to ensure they do not encroach on the primary pedestrian through-zone.",
+            "impact": "Low",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Mid-block Crossing",
+            "description": "Evaluate the need for a marked mid-block crossing to provide safe access to the bus stop from the opposite side of the street.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 702,
+        "thinking_tokens": 1819,
+        "total_tokens": 4052
+      }
     },
     {
       "point_index": 1,
       "offset": 0,
       "heading": 280,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 45,
+        "confidence": 90,
+        "summary": "The street features a wide, multi-lane roadway flanked by large commercial buildings. While the left side provides a well-maintained sidewalk with trees, the right side is currently inaccessible due to construction fencing, creating a significant barrier for pedestrians.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "not_visible",
+          "traffic_light": "not_visible",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "3",
+          "crossing_distance": "40_to_60ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Sidewalk Closure",
+            "severity": "High",
+            "description": "Construction fencing completely blocks the sidewalk on the right side, forcing pedestrians into the roadway or requiring an unplanned crossing.",
+            "location_in_image": "Right side of the street along the building frontage"
+          },
+          {
+            "name": "Wide Multi-lane Roadway",
+            "severity": "Medium",
+            "description": "The presence of three travel lanes without traffic calming measures encourages higher vehicle speeds and increases pedestrian exposure during crossings.",
+            "location_in_image": "Center roadway area"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Temporary Pedestrian Bypass",
+            "description": "Establish a protected walkway in the curb lane to maintain pedestrian continuity around the construction site.",
+            "impact": "High",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Mid-block Pedestrian Crossing",
+            "description": "Install a marked crossing with a pedestrian refuge island to provide a safe point for pedestrians to cross the wide street.",
+            "impact": "Medium",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 505,
+        "thinking_tokens": 2975,
+        "total_tokens": 5011
+      }
     },
     {
       "point_index": 1,
       "offset": 90,
       "heading": 10,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 15,
+        "confidence": 90,
+        "summary": "The pedestrian environment is severely compromised by a construction fence that completely blocks the sidewalk, forcing pedestrians into the roadway. There is no visible temporary protected walkway or bypass provided for people walking along this block.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "not_visible",
+          "land_use": "commercial",
+          "sidewalk_condition": "not_visible",
+          "sidewalk_width": "not_visible",
+          "parking_configuration": "none",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Sidewalk Closure",
+            "severity": "High",
+            "description": "A chain-link fence and construction barrels completely block the sidewalk, forcing pedestrians to walk in the active travel lane.",
+            "location_in_image": "Spanning the entire width of the sidewalk in the midground"
+          },
+          {
+            "name": "Lack of Protected Bypass",
+            "severity": "High",
+            "description": "No temporary pedestrian walkway or physical separation from traffic is provided despite the sidewalk closure.",
+            "location_in_image": "Roadway adjacent to the construction fence"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Temporary Pedestrian Bypass",
+            "description": "Install a temporary, ADA-compliant walkway in the roadway protected by water-filled or concrete barriers to maintain pedestrian continuity.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Pedestrian Detour Signage",
+            "description": "Provide clear signage at the nearest intersections to inform pedestrians of the closure and direct them to a safe alternative route.",
+            "impact": "Medium",
+            "source": "MUTCD",
+            "estimated_cost": "$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 764,
+        "thinking_tokens": 1015,
+        "total_tokens": 3310
+      }
     },
     {
       "point_index": 1,
       "offset": 180,
       "heading": 100,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 55,
+        "confidence": 85,
+        "summary": "The street features a wide roadway with a well-maintained, tree-lined sidewalk on the right side. However, the left side is currently obstructed by extensive construction fencing, creating a significant gap in the pedestrian network and a blank frontage.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "not_visible",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "yes",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "yes",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "3",
+          "crossing_distance": "40_to_60ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Construction Obstruction",
+            "severity": "High",
+            "description": "The left sidewalk is completely blocked by construction fencing without a visible temporary bypass, forcing pedestrians to cross or walk in the street.",
+            "location_in_image": "Left side of the image along the building frontage."
+          },
+          {
+            "name": "Wide Roadway",
+            "severity": "Medium",
+            "description": "The wide, multi-lane roadway without traffic calming measures may encourage higher vehicle speeds and increases crossing distance.",
+            "location_in_image": "Center of the image roadway."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Temporary Pedestrian Path",
+            "description": "Provide a protected temporary walkway around the construction site to maintain sidewalk continuity and safety.",
+            "impact": "High"
+          },
+          {
+            "title": "Protected Bike Lanes",
+            "description": "Repurpose excess roadway width for protected bike lanes to narrow travel lanes and provide a buffer for pedestrians.",
+            "impact": "High"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions at the upcoming intersection to reduce crossing distance and improve pedestrian visibility.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 777,
+        "thinking_tokens": 2162,
+        "total_tokens": 4470
+      }
     },
     {
       "point_index": 1,
       "offset": 270,
       "heading": 190,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 75,
+        "confidence": 90,
+        "summary": "The image shows a well-maintained urban sidewalk with mature trees providing shade and a buffer from the roadway. Parallel parked cars line the curb, which provides a physical barrier but also creates visual obstructions between pedestrians and moving traffic.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "not_visible",
+          "traffic_light": "not_visible",
+          "stop_sign": "not_visible",
+          "crossing_sign": "no",
+          "lane_markings": "not_visible",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Visual Obstruction from Parked Cars",
+            "severity": "Medium",
+            "description": "Parked vehicles along the curb block the line of sight between pedestrians on the sidewalk and drivers in the roadway.",
+            "location_in_image": "Along the curb line where the white and blue cars are parked."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Daylighting",
+            "description": "Remove parking spaces near potential crossing points to improve visibility for both pedestrians and drivers.",
+            "impact": "Medium",
+            "source": "NACTO",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Mid-block Crossing",
+            "description": "Install a marked mid-block crosswalk with appropriate signage and curb extensions if pedestrian demand warrants it.",
+            "impact": "High",
+            "source": "NACTO",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 706,
+        "thinking_tokens": 1765,
+        "total_tokens": 4002
+      }
     },
     {
       "point_index": 2,
       "offset": 0,
       "heading": 280,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 60,
+        "confidence": 90,
+        "summary": "The street features a wide, well-maintained sidewalk on the left side with a tree buffer and street lighting, providing a comfortable pedestrian environment. However, the right side is significantly obstructed by active construction and a large dump truck, which limits pedestrian space and visibility. There are no visible crosswalks or traffic calming measures in this mid-block section, leaving a long stretch of roadway for vehicles.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "yes",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Construction Obstruction",
+            "severity": "Medium",
+            "description": "Fencing and construction equipment on the right side block the sidewalk, potentially forcing pedestrians into the roadway.",
+            "location_in_image": "Right side of the street"
+          },
+          {
+            "name": "Large Vehicle Visual Obstruction",
+            "severity": "Medium",
+            "description": "A large dump truck parked in the roadway creates a significant blind spot for both drivers and pedestrians.",
+            "location_in_image": "Right side, mid-ground"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Temporary Pedestrian Access Route",
+            "description": "Provide a protected, ADA-compliant walkway around the construction site to maintain pedestrian continuity.",
+            "impact": "High"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions at the nearest intersection to shorten crossing distances and improve visibility between pedestrians and drivers.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 753,
+        "thinking_tokens": 3124,
+        "total_tokens": 5408
+      }
     },
     {
       "point_index": 2,
       "offset": 90,
       "heading": 10,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 25,
+        "confidence": 90,
+        "summary": "The pedestrian environment is currently obstructed by a construction site that has completely blocked the sidewalk with chain-link fencing. No temporary protected walkway is visible, forcing pedestrians to enter the roadway to bypass the obstruction. The lack of a safe, continuous path significantly degrades pedestrian safety at this location.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "yes",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "poor",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Sidewalk Obstruction",
+            "severity": "High",
+            "description": "Chain-link fencing and construction materials completely block the pedestrian walkway, rendering it unusable.",
+            "location_in_image": "Center and left foreground, along the building frontage"
+          },
+          {
+            "name": "Lack of Protected Bypass",
+            "severity": "High",
+            "description": "No temporary protected walkway is provided in the roadway, forcing pedestrians to walk in active travel lanes to bypass the construction.",
+            "location_in_image": "Roadway adjacent to the construction fence"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Temporary Pedestrian Bypass",
+            "description": "Install a protected walkway in the roadway using physical barriers (e.g., water-filled or concrete barriers) to maintain pedestrian continuity and safety.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Pedestrian Detour Signage",
+            "description": "Provide clear signage at the nearest intersections to inform pedestrians of the sidewalk closure and guide them to safe alternative routes.",
+            "impact": "Medium",
+            "estimated_cost": "$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 770,
+        "thinking_tokens": 2459,
+        "total_tokens": 4760
+      }
     },
     {
       "point_index": 2,
       "offset": 180,
       "heading": 100,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 90,
+        "summary": "The image shows a wide urban street flanked by high-rise buildings with sidewalks on both sides. The pedestrian environment is buffered by street trees and parallel parking on the right, while the left side is currently constrained by construction fencing.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Construction Fencing",
+            "severity": "Medium",
+            "description": "Fencing on the left side narrows the usable sidewalk and creates a blank, uninviting frontage.",
+            "location_in_image": "Left side of the street along the sidewalk"
+          },
+          {
+            "name": "Visual Obstructions from Parked Cars",
+            "severity": "Low",
+            "description": "Parallel parked cars can obscure pedestrians, particularly children, from the view of oncoming drivers.",
+            "location_in_image": "Right side of the roadway"
+          },
+          {
+            "name": "Wide Straight Roadway",
+            "severity": "Medium",
+            "description": "The wide, straight geometry of the road without traffic calming may encourage higher vehicle speeds.",
+            "location_in_image": "Center roadway"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Mid-block Crossing",
+            "description": "Install a high-visibility marked crosswalk with a pedestrian refuge island to facilitate safe crossing on this long block.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Add bulb-outs at the ends of the parking lane to reduce crossing distance and improve visibility between pedestrians and drivers.",
+            "impact": "Medium",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Speed Management",
+            "description": "Implement traffic calming measures such as speed tables or narrower lane markings to reduce vehicle speeds.",
+            "impact": "Medium",
+            "estimated_cost": "$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 862,
+        "thinking_tokens": 1783,
+        "total_tokens": 4176
+      }
     },
     {
       "point_index": 2,
       "offset": 270,
       "heading": 190,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 68,
+        "confidence": 80,
+        "summary": "The image shows a well-developed urban pedestrian environment with a wide sidewalk, mature street trees, and a buffer of parallel-parked vehicles. While the walkway itself is high quality, the lack of visible crossing infrastructure and the visual obstruction created by large parked vehicles present typical mid-block safety challenges.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Visual Obstruction from Parked Vehicles",
+            "severity": "Medium",
+            "description": "Large SUVs parked along the curb block the line of sight between drivers and pedestrians who might attempt to cross the street mid-block.",
+            "location_in_image": "Foreground and mid-ground, where the white and black SUVs are parked."
+          },
+          {
+            "name": "Lack of Protected Crossing",
+            "severity": "Medium",
+            "description": "In a commercial area with active frontages, the absence of a marked mid-block crossing may lead to unsafe informal crossings.",
+            "location_in_image": "The entire roadway section visible in the foreground."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Curb Extensions (Bulb-outs)",
+            "description": "Extend the sidewalk into the parking lane at potential crossing points to improve pedestrian visibility and shorten crossing distance.",
+            "impact": "High"
+          },
+          {
+            "title": "Daylighting",
+            "description": "Remove parking spaces near potential crossing points or intersections to ensure clear sightlines between pedestrians and motorists.",
+            "impact": "Medium"
+          },
+          {
+            "title": "Mid-block Crosswalk",
+            "description": "Install a marked crosswalk with appropriate signage and potentially a pedestrian-activated signal if crossing demand is high.",
+            "impact": "High"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 816,
+        "thinking_tokens": 881,
+        "total_tokens": 3228
+      }
     },
     {
       "point_index": 3,
       "offset": 0,
       "heading": 280,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 45,
+        "confidence": 85,
+        "summary": "The street features a well-maintained brick sidewalk on the left side protected by bollards, but the right side is heavily impacted by active construction. Pedestrians on the right are forced into the roadway or onto uneven surfaces due to the lack of a protected temporary walkway.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "yes",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "yes",
+          "blank_frontage": "no",
+          "loading_activity": "yes",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Construction Zone Obstruction",
+            "severity": "High",
+            "description": "The sidewalk on the right is completely blocked by construction activity and equipment, forcing pedestrians into the vehicle travel lane.",
+            "location_in_image": "Right side of the roadway"
+          },
+          {
+            "name": "Lack of Marked Crossing",
+            "severity": "Medium",
+            "description": "There are no visible marked crosswalks in the immediate vicinity, despite the presence of large commercial/institutional buildings.",
+            "location_in_image": "Foreground and midground roadway"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Temporary Pedestrian Bypass",
+            "description": "Establish a protected, ADA-compliant temporary walkway around the construction site using longitudinal channelizing devices.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "High-Visibility Crosswalk",
+            "description": "Install high-visibility continental crosswalk markings to improve driver awareness of pedestrians.",
+            "impact": "Medium",
+            "estimated_cost": "$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 747,
+        "thinking_tokens": 1261,
+        "total_tokens": 3539
+      }
     },
     {
       "point_index": 3,
       "offset": 90,
       "heading": 10,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 35,
+        "confidence": 95,
+        "summary": "The pedestrian environment is currently severely obstructed by an active construction site that blocks the entire sidewalk and curb lane. Pedestrians are forced into the roadway to bypass heavy machinery and fencing without a protected walkway, creating a high-risk conflict zone with vehicle traffic.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "yes",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "yes",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "poor",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Sidewalk Obstruction",
+            "severity": "High",
+            "description": "Active construction and heavy machinery completely block the pedestrian walkway, forcing people into the street.",
+            "location_in_image": "Center and right side of the sidewalk area"
+          },
+          {
+            "name": "Visual Obstruction",
+            "severity": "Medium",
+            "description": "Large dump truck and backhoe block sightlines between pedestrians and oncoming traffic.",
+            "location_in_image": "Curb lane"
+          },
+          {
+            "name": "Unprotected Work Zone",
+            "severity": "High",
+            "description": "Lack of a clearly defined and protected temporary pedestrian path around the construction site.",
+            "location_in_image": "Roadway adjacent to the construction"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Temporary Protected Walkway",
+            "description": "Install water-filled barriers or jersey barriers to create a safe, separated pedestrian path in the roadway around the work zone.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Pedestrian Detour Signage",
+            "description": "Provide clear signage at the nearest intersections to inform pedestrians of the closure and direct them to a safe crossing.",
+            "impact": "Medium",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Work Zone Traffic Control",
+            "description": "Utilize flaggers or temporary signals to manage vehicle speeds and ensure pedestrian safety during active machinery operation.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 866,
+        "thinking_tokens": 2752,
+        "total_tokens": 5149
+      }
     },
     {
       "point_index": 3,
       "offset": 180,
       "heading": 100,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 85,
+        "summary": "The street features wide sidewalks with mature trees and street lighting on the right, providing a comfortable pedestrian environment. However, the left side is currently constrained by construction fencing, and the lack of mid-block crossing infrastructure combined with parked cars creates visibility challenges for pedestrians.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Construction Obstruction",
+            "severity": "Medium",
+            "description": "Fencing on the left side of the street narrows the usable sidewalk width and creates a visual barrier.",
+            "location_in_image": "Left side sidewalk area"
+          },
+          {
+            "name": "Visual Obstruction from Parked Cars",
+            "severity": "Low",
+            "description": "Continuous parallel parking on both sides of the street obscures sightlines between pedestrians and motorists.",
+            "location_in_image": "Both sides of the roadway"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Mid-block Curb Extensions",
+            "description": "Install curb extensions (bulb-outs) to increase pedestrian visibility and reduce the crossing distance across the street.",
+            "impact": "High"
+          },
+          {
+            "title": "High-Visibility Crosswalk",
+            "description": "Add a marked mid-block crossing with high-visibility paint to provide a designated and safer crossing point.",
+            "impact": "High"
+          },
+          {
+            "title": "Construction Walkway Management",
+            "description": "Ensure construction barriers maintain a minimum clear width and provide adequate signage for pedestrian detours if necessary.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 780,
+        "thinking_tokens": 1095,
+        "total_tokens": 3406
+      }
     },
     {
       "point_index": 3,
       "offset": 270,
       "heading": 190,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 75,
+        "confidence": 90,
+        "summary": "The pedestrian environment features a wide, paved sidewalk separated from the roadway by a buffer of street trees and parallel parking. While the walkway is in good condition, the large parked vehicles create visual obstructions that could hide pedestrians from oncoming traffic.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "not_visible",
+          "crossing_distance": "not_visible",
+          "land_use": "commercial",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Visual Obstruction",
+            "severity": "Medium",
+            "description": "Parked vehicles, particularly the large white pickup truck, block sightlines between pedestrians on the sidewalk and motorists in the roadway.",
+            "location_in_image": "Along the curb line where the white truck and black car are parked."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Curb Extensions",
+            "description": "Implement curb extensions (bulb-outs) to improve visibility between pedestrians and drivers and to shorten crossing distances.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Daylighting",
+            "description": "Remove parking spaces closest to potential crossing points to improve sightlines.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 702,
+        "thinking_tokens": 2975,
+        "total_tokens": 5208
+      }
     },
     {
       "point_index": 4,
       "offset": 0,
       "heading": 280,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 90,
+        "summary": "The environment features wide sidewalks and a signalized intersection with marked crosswalks, providing a basic level of pedestrian infrastructure. However, the presence of active construction zones and a wide roadway with multiple lanes increases potential conflicts and crossing distances.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "yes",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "yes",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "4_or_more",
+          "crossing_distance": "40_to_60ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "over_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Construction Zone Obstructions",
+            "severity": "Medium",
+            "description": "Traffic cones and fencing on the right side of the roadway narrow the travel path and may obstruct pedestrian sightlines or walkway access.",
+            "location_in_image": "Right side of the roadway and sidewalk area"
+          },
+          {
+            "name": "Wide Crossing Distance",
+            "severity": "Medium",
+            "description": "The intersection ahead requires pedestrians to cross multiple lanes of traffic without a median refuge.",
+            "location_in_image": "Intersection in the center background"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions (bulb-outs) at the intersection to reduce crossing distance and improve pedestrian visibility.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Leading Pedestrian Interval (LPI)",
+            "description": "Program the traffic signal to give pedestrians a head start before vehicles get a green light.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Enhanced Construction Signage",
+            "description": "Ensure clear, ADA-compliant pedestrian detours and signage are provided through the construction zone.",
+            "impact": "Medium",
+            "source": "Manual on Uniform Traffic Control Devices (MUTCD)",
+            "estimated_cost": "$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 844,
+        "thinking_tokens": 874,
+        "total_tokens": 3249
+      }
     },
     {
       "point_index": 4,
       "offset": 90,
       "heading": 10,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 45,
+        "confidence": 90,
+        "summary": "The pedestrian environment is currently a construction zone with significant obstructions and uneven surfaces along a wide sidewalk. There is no physical buffer between the walkway and the adjacent multi-lane roadway, increasing risk for pedestrians.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "poor",
+          "sidewalk_width": "over_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Construction Obstructions",
+            "severity": "Medium",
+            "description": "Cones, barriers, and construction materials are scattered across the sidewalk, creating trip hazards and narrowing the usable path.",
+            "location_in_image": "Along the sidewalk in front of the building."
+          },
+          {
+            "name": "Lack of Pedestrian Buffer",
+            "severity": "Medium",
+            "description": "There is no physical separation or buffer between the active construction zone/sidewalk and the roadway.",
+            "location_in_image": "Edge of the roadway adjacent to the sidewalk."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Protected Temporary Walkway",
+            "description": "Establish a clearly defined, ADA-compliant temporary pedestrian path with physical barriers to separate people from construction activities and traffic.",
+            "impact": "High"
+          },
+          {
+            "title": "Sidewalk Buffer Zone",
+            "description": "Post-construction, install a furniture zone or planting strip to provide permanent separation between pedestrians and the roadway.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 487,
+        "thinking_tokens": 2419,
+        "total_tokens": 4437
+      }
     },
     {
       "point_index": 4,
       "offset": 180,
       "heading": 100,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 65,
+        "confidence": 90,
+        "summary": "The street features wide sidewalks on both sides, but the pedestrian environment is currently compromised by construction activity on the left. There are no marked crossings or traffic calming measures visible in this mid-block section, though street trees and lighting provide some amenity on the right.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "yes",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "over_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Sidewalk Obstruction",
+            "severity": "High",
+            "description": "Construction equipment and vehicles are blocking the sidewalk and curb lane on the left side of the image.",
+            "location_in_image": "Left foreground and mid-ground"
+          },
+          {
+            "name": "Visual Obstruction",
+            "severity": "Medium",
+            "description": "Large construction vehicles and parked cars limit sight lines between pedestrians and moving traffic.",
+            "location_in_image": "Left and right sides of the roadway"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Temporary Pedestrian Path",
+            "description": "Ensure a clear, ADA-compliant walkway is maintained around the construction zone using barriers.",
+            "impact": "High",
+            "source": "NACTO",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Mid-block Crossing",
+            "description": "Install a marked mid-block crossing with curb extensions to reduce crossing distance and improve visibility.",
+            "impact": "Medium",
+            "source": "NACTO",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 754,
+        "thinking_tokens": 1528,
+        "total_tokens": 3813
+      }
     },
     {
       "point_index": 4,
       "offset": 270,
       "heading": 190,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 75,
+        "confidence": 85,
+        "summary": "The image shows a wide, well-maintained brick-paved pedestrian plaza in front of a large institutional building. While the walkway is spacious and protected by bollards near the entrance, there is a lack of visible crossing infrastructure or traffic calming measures on the adjacent roadway.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "yes",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "not_visible",
+          "crossing_distance": "not_visible",
+          "land_use": "institutional",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "over_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Lack of marked crossing",
+            "severity": "Medium",
+            "description": "There is no visible marked crosswalk for pedestrians wishing to access the museum from across the street.",
+            "location_in_image": "Roadway in the foreground"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "High-Visibility Crosswalk",
+            "description": "Install a high-visibility marked crosswalk to provide a designated and safer crossing point for pedestrians.",
+            "impact": "High",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Implement curb extensions to shorten the crossing distance and increase pedestrian visibility to drivers.",
+            "impact": "Medium",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 670,
+        "thinking_tokens": 1842,
+        "total_tokens": 4043
+      }
     }
   ],
-  "aggregate": {}
+  "aggregate": {
+    "safety_score_mean": 55.5,
+    "safety_score_sd": 18.16,
+    "safety_score_sd_within_point": 19.22,
+    "safety_score_sd_between_points": 5.52,
+    "safety_score_min": 15,
+    "safety_score_max": 78,
+    "confidence_mean": 88.8,
+    "n_views_scored": 20,
+    "n_points_scored": 5,
+    "features": {
+      "sidewalk_present": {
+        "any": true,
+        "proportion": 1.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "sidewalk_obstruction": {
+        "any": true,
+        "proportion": 0.7,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "crosswalk_marked": {
+        "any": true,
+        "proportion": 0.1,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "curb_ramp": {
+        "any": true,
+        "proportion": 0.25,
+        "n_visible": 8,
+        "n_views": 20,
+        "mixed": true
+      },
+      "refuge_island": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "median_present": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "pedestrian_signal": {
+        "any": true,
+        "proportion": 0.118,
+        "n_visible": 17,
+        "n_views": 20,
+        "mixed": true
+      },
+      "traffic_light": {
+        "any": true,
+        "proportion": 0.167,
+        "n_visible": 18,
+        "n_views": 20,
+        "mixed": true
+      },
+      "stop_sign": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 19,
+        "n_views": 20,
+        "mixed": false
+      },
+      "crossing_sign": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "lane_markings": {
+        "any": true,
+        "proportion": 0.789,
+        "n_visible": 19,
+        "n_views": 20,
+        "mixed": true
+      },
+      "street_lighting": {
+        "any": true,
+        "proportion": 1.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "bike_lane": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "trees": {
+        "any": true,
+        "proportion": 1.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "bus_stop": {
+        "any": true,
+        "proportion": 0.15,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "slip_lane": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "visual_obstruction": {
+        "any": true,
+        "proportion": 0.85,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "poor_pavement": {
+        "any": true,
+        "proportion": 0.15,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "sidewalk_buffer": {
+        "any": true,
+        "proportion": 0.7,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "sidewalk_gap": {
+        "any": true,
+        "proportion": 0.25,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "curb_present": {
+        "any": true,
+        "proportion": 1.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "on_street_parking": {
+        "any": true,
+        "proportion": 0.55,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "driveway_curb_cut": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "midblock_crossing": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": false
+      },
+      "traffic_calming": {
+        "any": true,
+        "proportion": 0.1,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "blank_frontage": {
+        "any": true,
+        "proportion": 0.25,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "loading_activity": {
+        "any": true,
+        "proportion": 0.25,
+        "n_visible": 20,
+        "n_views": 20,
+        "mixed": true
+      },
+      "through_lanes": {
+        "modal": "2",
+        "values": [
+          "2",
+          "3",
+          "4_or_more",
+          "not_visible",
+          "3",
+          "2",
+          "3",
+          "2",
+          "2",
+          "2",
+          "2",
+          "2",
+          "2",
+          "2",
+          "2",
+          "not_visible",
+          "4_or_more",
+          "2",
+          "2",
+          "not_visible"
+        ],
+        "agreement": 0.706
+      },
+      "crossing_distance": {
+        "modal": "24_to_40ft",
+        "values": [
+          "24_to_40ft",
+          "40_to_60ft",
+          "40_to_60ft",
+          "not_visible",
+          "40_to_60ft",
+          "not_visible",
+          "40_to_60ft",
+          "24_to_40ft",
+          "24_to_40ft",
+          "24_to_40ft",
+          "24_to_40ft",
+          "24_to_40ft",
+          "24_to_40ft",
+          "24_to_40ft",
+          "24_to_40ft",
+          "not_visible",
+          "40_to_60ft",
+          "24_to_40ft",
+          "24_to_40ft",
+          "not_visible"
+        ],
+        "agreement": 0.688
+      },
+      "land_use": {
+        "modal": "commercial",
+        "values": [
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "commercial",
+          "institutional"
+        ],
+        "agreement": 0.95
+      },
+      "sidewalk_condition": {
+        "modal": "good",
+        "values": [
+          "good",
+          "poor",
+          "good",
+          "good",
+          "good",
+          "not_visible",
+          "fair",
+          "good",
+          "good",
+          "poor",
+          "good",
+          "good",
+          "fair",
+          "poor",
+          "good",
+          "good",
+          "good",
+          "poor",
+          "fair",
+          "good"
+        ],
+        "agreement": 0.632
+      },
+      "sidewalk_width": {
+        "modal": "6_to_10ft",
+        "values": [
+          "6_to_10ft",
+          "6_to_10ft",
+          "6_to_10ft",
+          "over_10ft",
+          "6_to_10ft",
+          "not_visible",
+          "6_to_10ft",
+          "6_to_10ft",
+          "6_to_10ft",
+          "6_to_10ft",
+          "6_to_10ft",
+          "6_to_10ft",
+          "6_to_10ft",
+          "6_to_10ft",
+          "6_to_10ft",
+          "6_to_10ft",
+          "over_10ft",
+          "over_10ft",
+          "over_10ft",
+          "over_10ft"
+        ],
+        "agreement": 0.737
+      },
+      "parking_configuration": {
+        "modal": "parallel",
+        "values": [
+          "parallel",
+          "none",
+          "none",
+          "none",
+          "parallel",
+          "none",
+          "none",
+          "parallel",
+          "parallel",
+          "none",
+          "parallel",
+          "parallel",
+          "parallel",
+          "none",
+          "parallel",
+          "parallel",
+          "parallel",
+          "none",
+          "parallel",
+          "none"
+        ],
+        "agreement": 0.55
+      },
+      "frontage_type": {
+        "modal": "buildings_at_sidewalk",
+        "values": [
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk"
+        ],
+        "agreement": 1.0
+      }
+    },
+    "hazards": [
+      {
+        "name": "Sidewalk Obstruction",
+        "severity": "High",
+        "description": "Chain-link fencing and construction materials completely block the pedestrian walkway, rendering it unusable.",
+        "location_in_image": "Center and left foreground, along the building frontage"
+      },
+      {
+        "name": "Lack of Mid-block Crossing",
+        "severity": "Medium",
+        "description": "In a high-density commercial area, the absence of mid-block crossings may encourage unsafe mid-block crossing behavior.",
+        "location_in_image": "Center roadway"
+      },
+      {
+        "name": "Sidewalk Closure",
+        "severity": "High",
+        "description": "Construction fencing completely blocks the pedestrian walkway, forcing pedestrians into the active travel lanes.",
+        "location_in_image": "Foreground, spanning the entire building frontage"
+      },
+      {
+        "name": "Faded Crosswalk Markings",
+        "severity": "Medium",
+        "description": "The continental crosswalk markings are significantly worn, making the pedestrian crossing less visible to approaching motorists.",
+        "location_in_image": "Foreground and center intersection"
+      },
+      {
+        "name": "Long Crossing Distance",
+        "severity": "Medium",
+        "description": "The wide multi-lane roadway requires pedestrians to cross a large distance without a refuge island, increasing exposure time to traffic.",
+        "location_in_image": "Across the main roadway"
+      },
+      {
+        "name": "Vendor Obstruction",
+        "severity": "Low",
+        "description": "A food truck is parked on the sidewalk area, which may create localized congestion and force pedestrians to deviate from their path.",
+        "location_in_image": "Left background on the sidewalk plaza"
+      },
+      {
+        "name": "Wide Multi-lane Roadway",
+        "severity": "Medium",
+        "description": "The presence of three travel lanes without traffic calming measures encourages higher vehicle speeds and increases pedestrian exposure during crossings.",
+        "location_in_image": "Center roadway area"
+      },
+      {
+        "name": "Lack of Protected Bypass",
+        "severity": "High",
+        "description": "No temporary pedestrian walkway or physical separation from traffic is provided despite the sidewalk closure.",
+        "location_in_image": "Roadway adjacent to the construction fence"
+      },
+      {
+        "name": "Construction Obstruction",
+        "severity": "High",
+        "description": "The left sidewalk is completely blocked by construction fencing without a visible temporary bypass, forcing pedestrians to cross or walk in the street.",
+        "location_in_image": "Left side of the image along the building frontage."
+      },
+      {
+        "name": "Wide Roadway",
+        "severity": "Medium",
+        "description": "The wide, multi-lane roadway without traffic calming measures may encourage higher vehicle speeds and increases crossing distance.",
+        "location_in_image": "Center of the image roadway."
+      },
+      {
+        "name": "Visual Obstruction from Parked Cars",
+        "severity": "Medium",
+        "description": "Parked vehicles along the curb block the line of sight between pedestrians on the sidewalk and drivers in the roadway.",
+        "location_in_image": "Along the curb line where the white and blue cars are parked."
+      },
+      {
+        "name": "Large Vehicle Visual Obstruction",
+        "severity": "Medium",
+        "description": "A large dump truck parked in the roadway creates a significant blind spot for both drivers and pedestrians.",
+        "location_in_image": "Right side, mid-ground"
+      },
+      {
+        "name": "Construction Fencing",
+        "severity": "Medium",
+        "description": "Fencing on the left side narrows the usable sidewalk and creates a blank, uninviting frontage.",
+        "location_in_image": "Left side of the street along the sidewalk"
+      },
+      {
+        "name": "Visual Obstructions from Parked Cars",
+        "severity": "Low",
+        "description": "Parallel parked cars can obscure pedestrians, particularly children, from the view of oncoming drivers.",
+        "location_in_image": "Right side of the roadway"
+      },
+      {
+        "name": "Wide Straight Roadway",
+        "severity": "Medium",
+        "description": "The wide, straight geometry of the road without traffic calming may encourage higher vehicle speeds.",
+        "location_in_image": "Center roadway"
+      },
+      {
+        "name": "Visual Obstruction from Parked Vehicles",
+        "severity": "Medium",
+        "description": "Large SUVs parked along the curb block the line of sight between drivers and pedestrians who might attempt to cross the street mid-block.",
+        "location_in_image": "Foreground and mid-ground, where the white and black SUVs are parked."
+      },
+      {
+        "name": "Lack of Protected Crossing",
+        "severity": "Medium",
+        "description": "In a commercial area with active frontages, the absence of a marked mid-block crossing may lead to unsafe informal crossings.",
+        "location_in_image": "The entire roadway section visible in the foreground."
+      },
+      {
+        "name": "Construction Zone Obstruction",
+        "severity": "High",
+        "description": "The sidewalk on the right is completely blocked by construction activity and equipment, forcing pedestrians into the vehicle travel lane.",
+        "location_in_image": "Right side of the roadway"
+      },
+      {
+        "name": "Lack of Marked Crossing",
+        "severity": "Medium",
+        "description": "There are no visible marked crosswalks in the immediate vicinity, despite the presence of large commercial/institutional buildings.",
+        "location_in_image": "Foreground and midground roadway"
+      },
+      {
+        "name": "Visual Obstruction",
+        "severity": "Medium",
+        "description": "Large dump truck and backhoe block sightlines between pedestrians and oncoming traffic.",
+        "location_in_image": "Curb lane"
+      },
+      {
+        "name": "Unprotected Work Zone",
+        "severity": "High",
+        "description": "Lack of a clearly defined and protected temporary pedestrian path around the construction site.",
+        "location_in_image": "Roadway adjacent to the construction"
+      },
+      {
+        "name": "Construction Zone Obstructions",
+        "severity": "Medium",
+        "description": "Traffic cones and fencing on the right side of the roadway narrow the travel path and may obstruct pedestrian sightlines or walkway access.",
+        "location_in_image": "Right side of the roadway and sidewalk area"
+      },
+      {
+        "name": "Wide Crossing Distance",
+        "severity": "Medium",
+        "description": "The intersection ahead requires pedestrians to cross multiple lanes of traffic without a median refuge.",
+        "location_in_image": "Intersection in the center background"
+      },
+      {
+        "name": "Construction Obstructions",
+        "severity": "Medium",
+        "description": "Cones, barriers, and construction materials are scattered across the sidewalk, creating trip hazards and narrowing the usable path.",
+        "location_in_image": "Along the sidewalk in front of the building."
+      },
+      {
+        "name": "Lack of Pedestrian Buffer",
+        "severity": "Medium",
+        "description": "There is no physical separation or buffer between the active construction zone/sidewalk and the roadway.",
+        "location_in_image": "Edge of the roadway adjacent to the sidewalk."
+      }
+    ],
+    "interventions": [
+      {
+        "title": "Mid-block Crosswalk",
+        "description": "Install a marked mid-block crosswalk with high-visibility markings to provide a safe crossing point for pedestrians.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Curb Extensions",
+        "description": "Implement curb extensions at potential crossing points to reduce crossing distance and improve visibility between drivers and pedestrians.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Temporary Pedestrian Path",
+        "description": "Establish a protected temporary walkway in the curb lane using water-filled barriers or jersey barriers to maintain pedestrian continuity and safety during construction.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "High-Visibility Crosswalks",
+        "description": "Repaint crosswalks with high-visibility thermoplastic markings to improve driver awareness.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Pedestrian Refuge Island",
+        "description": "Add a median refuge island to allow pedestrians to cross the wide street in two stages.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Designated Vendor Zones",
+        "description": "Formalize space for mobile vendors to ensure they do not encroach on the primary pedestrian through-zone.",
+        "impact": "Low",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Mid-block Crossing",
+        "description": "Evaluate the need for a marked mid-block crossing to provide safe access to the bus stop from the opposite side of the street.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Temporary Pedestrian Bypass",
+        "description": "Establish a protected walkway in the curb lane to maintain pedestrian continuity around the construction site.",
+        "impact": "High",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Mid-block Pedestrian Crossing",
+        "description": "Install a marked crossing with a pedestrian refuge island to provide a safe point for pedestrians to cross the wide street.",
+        "impact": "Medium",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Pedestrian Detour Signage",
+        "description": "Provide clear signage at the nearest intersections to inform pedestrians of the closure and direct them to a safe alternative route.",
+        "impact": "Medium",
+        "source": "MUTCD",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Protected Bike Lanes",
+        "description": "Repurpose excess roadway width for protected bike lanes to narrow travel lanes and provide a buffer for pedestrians.",
+        "impact": "High"
+      },
+      {
+        "title": "Daylighting",
+        "description": "Remove parking spaces near potential crossing points to improve visibility for both pedestrians and drivers.",
+        "impact": "Medium",
+        "source": "NACTO",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Temporary Pedestrian Access Route",
+        "description": "Provide a protected, ADA-compliant walkway around the construction site to maintain pedestrian continuity.",
+        "impact": "High"
+      },
+      {
+        "title": "Speed Management",
+        "description": "Implement traffic calming measures such as speed tables or narrower lane markings to reduce vehicle speeds.",
+        "impact": "Medium",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Curb Extensions (Bulb-outs)",
+        "description": "Extend the sidewalk into the parking lane at potential crossing points to improve pedestrian visibility and shorten crossing distance.",
+        "impact": "High"
+      },
+      {
+        "title": "High-Visibility Crosswalk",
+        "description": "Install high-visibility continental crosswalk markings to improve driver awareness of pedestrians.",
+        "impact": "Medium",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Temporary Protected Walkway",
+        "description": "Install water-filled barriers or jersey barriers to create a safe, separated pedestrian path in the roadway around the work zone.",
+        "impact": "High",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Work Zone Traffic Control",
+        "description": "Utilize flaggers or temporary signals to manage vehicle speeds and ensure pedestrian safety during active machinery operation.",
+        "impact": "High",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Mid-block Curb Extensions",
+        "description": "Install curb extensions (bulb-outs) to increase pedestrian visibility and reduce the crossing distance across the street.",
+        "impact": "High"
+      },
+      {
+        "title": "Construction Walkway Management",
+        "description": "Ensure construction barriers maintain a minimum clear width and provide adequate signage for pedestrian detours if necessary.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Leading Pedestrian Interval (LPI)",
+        "description": "Program the traffic signal to give pedestrians a head start before vehicles get a green light.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Enhanced Construction Signage",
+        "description": "Ensure clear, ADA-compliant pedestrian detours and signage are provided through the construction zone.",
+        "impact": "Medium",
+        "source": "Manual on Uniform Traffic Control Devices (MUTCD)",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Protected Temporary Walkway",
+        "description": "Establish a clearly defined, ADA-compliant temporary pedestrian path with physical barriers to separate people from construction activities and traffic.",
+        "impact": "High"
+      },
+      {
+        "title": "Sidewalk Buffer Zone",
+        "description": "Post-construction, install a furniture zone or planting strip to provide permanent separation between pedestrians and the roadway.",
+        "impact": "Medium"
+      }
+    ]
+  }
 }

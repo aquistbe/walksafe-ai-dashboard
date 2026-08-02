@@ -2,8 +2,8 @@
   "seg_id": 761777,
   "node_id": 761777,
   "int_name": "OXFORD AVE 5400-block",
-  "status": "NO_SCORES",
-  "run_ts": "2026-08-02T05:43:11.715508+00:00",
+  "status": "OK",
+  "run_ts": "2026-08-02T19:52:52.766559+00:00",
   "model": "gemini-3-flash-preview",
   "prompt_version": "blind-seg-v1",
   "mode": "blind",
@@ -89,98 +89,2202 @@
       "point_index": 0,
       "offset": 0,
       "heading": 11,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 35,
+        "confidence": 85,
+        "summary": "The environment is dominated by a wide, multi-lane roadway with minimal pedestrian infrastructure. A narrow sidewalk exists on the right side without a buffer, while the left side lacks a paved walkway entirely, creating a hostile environment for walking.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "yes",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "yes",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "40_to_60ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "under_4ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Excessive Crossing Distance",
+            "severity": "High",
+            "description": "The wide roadway lacks any mid-block crossings or refuge islands, forcing pedestrians to cross multiple lanes of traffic unprotected.",
+            "location_in_image": "Center roadway"
+          },
+          {
+            "name": "Missing Sidewalk",
+            "severity": "High",
+            "description": "There is no paved sidewalk on the left side of the street, forcing pedestrians into the grass or the roadway.",
+            "location_in_image": "Left side of the image"
+          },
+          {
+            "name": "Narrow Sidewalk without Buffer",
+            "severity": "Medium",
+            "description": "The existing sidewalk on the right is very narrow and directly abuts the travel/parking lane with no physical separation.",
+            "location_in_image": "Right side of the image"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Pedestrian Refuge Island",
+            "description": "Install a raised median or refuge island to allow pedestrians to cross the wide street in two stages.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "New Sidewalk Construction",
+            "description": "Construct a continuous paved sidewalk on the left side of the street to complete the pedestrian network.",
+            "impact": "High",
+            "estimated_cost": "$$$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions at potential crossing points to reduce crossing distance and improve visibility between drivers and pedestrians.",
+            "impact": "Medium",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 865,
+        "thinking_tokens": 1854,
+        "total_tokens": 4250
+      }
     },
     {
       "point_index": 0,
       "offset": 90,
       "heading": 101,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 45,
+        "confidence": 90,
+        "summary": "The pedestrian environment features a continuous concrete sidewalk along a commercial block, but it is cluttered with utility poles that obstruct the walking path. The street lacks a buffer between the walkway and parked cars, and the absence of trees or active frontages creates a sterile, exposed environment for people walking.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "not_visible",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Utility Pole Obstructions",
+            "severity": "Medium",
+            "description": "Large wooden poles are placed within the sidewalk, reducing the clear path for pedestrians and creating barriers for those with mobility aids.",
+            "location_in_image": "Center-left of the sidewalk area"
+          },
+          {
+            "name": "Lack of Pedestrian Buffer",
+            "severity": "Low",
+            "description": "No physical separation or planting strip exists between the sidewalk and the roadway, increasing exposure to traffic.",
+            "location_in_image": "Along the curb line"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Street Trees and Furniture Zone",
+            "description": "Implement a planting strip or furniture zone to provide a physical buffer between pedestrians and the roadway.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Sidewalk Clearing and Pole Relocation",
+            "description": "Relocate utility poles to the curb edge or underground the lines to ensure a consistent clear walking width.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 533,
+        "thinking_tokens": 3835,
+        "total_tokens": 5899
+      }
     },
     {
       "point_index": 0,
       "offset": 180,
       "heading": 191,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 45,
+        "confidence": 85,
+        "summary": "The pedestrian environment features a wide roadway with sidewalks on both sides, though the left side lacks a protective buffer from traffic. The absence of marked crosswalks at the visible intersection and the overall width of the street suggest a design that prioritizes vehicle throughput over pedestrian safety.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "not_visible",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "not_visible",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "yes",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "40_to_60ft",
+          "land_use": "mixed",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Wide Roadway",
+            "severity": "Medium",
+            "description": "The excessive width of the roadway without traffic calming measures encourages higher vehicle speeds.",
+            "location_in_image": "Center of the roadway"
+          },
+          {
+            "name": "Lack of Sidewalk Buffer",
+            "severity": "Medium",
+            "description": "The sidewalk on the left is directly adjacent to the travel and parking lanes, offering no protection to pedestrians.",
+            "location_in_image": "Left side of the street"
+          },
+          {
+            "name": "Unmarked Crossing",
+            "severity": "High",
+            "description": "The intersection ahead lacks visible crosswalk markings, making it dangerous for pedestrians to cross.",
+            "location_in_image": "Intersection in the background"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "High-Visibility Crosswalks",
+            "description": "Install continental-style crosswalks at the intersection to improve pedestrian visibility and safety.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Construct curb extensions to shorten the crossing distance and slow down turning vehicles.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$$"
+          },
+          {
+            "title": "Road Diet",
+            "description": "Reconfigure the wide roadway to include narrower travel lanes and a dedicated bike lane or wider sidewalk buffers to slow traffic.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 724,
+        "thinking_tokens": 7326,
+        "total_tokens": 9581
+      }
     },
     {
       "point_index": 0,
       "offset": 270,
       "heading": 281,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 15,
+        "confidence": 90,
+        "summary": "The pedestrian environment is extremely hostile, lacking basic infrastructure such as paved sidewalks, marked crosswalks, or pedestrian signals. Pedestrians are forced to navigate unpaved dirt areas or the roadway itself at a wide, multi-lane intersection designed primarily for high-volume vehicle throughput.",
+        "features": {
+          "sidewalk_present": "no",
+          "sidewalk_obstruction": "not_visible",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "yes",
+          "curb_present": "no",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "yes",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "4_or_more",
+          "crossing_distance": "over_60ft",
+          "land_use": "mixed",
+          "sidewalk_condition": "absent",
+          "sidewalk_width": "absent",
+          "parking_configuration": "none",
+          "frontage_type": "setback_with_parking"
+        },
+        "hazards": [
+          {
+            "name": "Missing Sidewalks",
+            "severity": "High",
+            "description": "There are no paved walkways, forcing pedestrians to walk on uneven dirt or in the travel lanes.",
+            "location_in_image": "Foreground and corners of the intersection"
+          },
+          {
+            "name": "Unmarked Crossing",
+            "severity": "High",
+            "description": "The wide intersection lacks marked crosswalks, providing no designated or protected path for pedestrians to cross.",
+            "location_in_image": "Across the main roadway"
+          },
+          {
+            "name": "Excessive Crossing Distance",
+            "severity": "High",
+            "description": "The roadway is very wide with no refuge, maximizing the time pedestrians are exposed to vehicle traffic.",
+            "location_in_image": "Entire width of the intersection"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Sidewalk Construction",
+            "description": "Install continuous, ADA-compliant paved sidewalks on all sides of the intersection to separate pedestrians from traffic.",
+            "impact": "High",
+            "source": "NACTO",
+            "estimated_cost": "$$$"
+          },
+          {
+            "title": "High-Visibility Crosswalks and Pedestrian Signals",
+            "description": "Mark continental crosswalks and install pedestrian signal heads with countdown timers to provide protected crossing phases.",
+            "impact": "High",
+            "source": "NACTO",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions to reduce crossing distances and improve sight lines between drivers and pedestrians.",
+            "impact": "High",
+            "source": "NACTO",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 904,
+        "thinking_tokens": 1913,
+        "total_tokens": 4348
+      }
     },
     {
       "point_index": 1,
       "offset": 0,
       "heading": 11,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 35,
+        "confidence": 85,
+        "summary": "The pedestrian environment is characterized by a wide, multi-lane roadway with a narrow sidewalk directly adjacent to traffic. The lack of physical buffers, marked crossings, and traffic calming measures creates a high-speed environment that is hostile to pedestrians.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "yes",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "4_or_more",
+          "crossing_distance": "over_60ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "good",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Wide Roadway",
+            "severity": "High",
+            "description": "The wide, multi-lane roadway encourages high vehicle speeds and creates a long, unprotected crossing distance.",
+            "location_in_image": "Center and left of the roadway"
+          },
+          {
+            "name": "Lack of Pedestrian Buffer",
+            "severity": "Medium",
+            "description": "The sidewalk is directly adjacent to the travel and parking lanes with no physical separation like trees or a planting strip.",
+            "location_in_image": "Right side along the buildings"
+          },
+          {
+            "name": "Absence of Marked Crossings",
+            "severity": "High",
+            "description": "There are no visible marked crosswalks or pedestrian signals, forcing pedestrians to cross multiple lanes of traffic without protection.",
+            "location_in_image": "Throughout the visible street segment"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "High-Visibility Crosswalks",
+            "description": "Install marked crosswalks with high-visibility paint and signage to clearly define pedestrian right-of-way.",
+            "impact": "High",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions at potential crossing points to reduce crossing distance and improve visibility between drivers and pedestrians.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Street Trees and Buffer Zone",
+            "description": "Add a planting strip with street trees between the sidewalk and the roadway to provide a physical and psychological buffer from traffic.",
+            "impact": "Medium",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Road Diet",
+            "description": "Reduce the number of travel lanes to slow traffic and repurpose space for wider sidewalks or protected bike lanes.",
+            "impact": "High",
+            "estimated_cost": "$$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 941,
+        "thinking_tokens": 1890,
+        "total_tokens": 4362
+      }
     },
     {
       "point_index": 1,
       "offset": 90,
       "heading": 101,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 55,
+        "confidence": 85,
+        "summary": "The image shows a commercial mid-block environment with continuous sidewalks and active building frontages. While the pedestrian walkway is paved and unobstructed, there is no buffer between the sidewalk and on-street parking, and sightlines are limited by parked vehicles.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Visual Obstruction",
+            "severity": "Medium",
+            "description": "Parked vehicles along the curb block the line of sight between drivers and pedestrians who might step into the roadway.",
+            "location_in_image": "Along the curb line in the foreground and mid-ground."
+          },
+          {
+            "name": "Lack of Pedestrian Buffer",
+            "severity": "Low",
+            "description": "The sidewalk is directly adjacent to the parking lane with no physical separation or furniture zone, increasing proximity to vehicle doors and movement.",
+            "location_in_image": "The entire length of the visible sidewalk edge."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions at the ends of the block or mid-block to improve visibility and shorten crossing distances.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Street Trees and Planters",
+            "description": "Add a furniture zone with trees or planters to provide a physical buffer between pedestrians and the roadway.",
+            "impact": "Medium",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Daylighting",
+            "description": "Remove parking spaces near potential crossing points to ensure clear sightlines between pedestrians and motorists.",
+            "impact": "High",
+            "estimated_cost": "$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 546,
+        "thinking_tokens": 982,
+        "total_tokens": 3059
+      }
     },
     {
       "point_index": 1,
       "offset": 180,
       "heading": 191,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 35,
+        "confidence": 85,
+        "summary": "The environment is dominated by a wide, largely unmarked roadway that likely encourages higher vehicle speeds. Pedestrian infrastructure is minimal, consisting of narrow sidewalks directly adjacent to traffic with no marked crossings or safety buffers visible in the immediate area.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "yes",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "40_to_60ft",
+          "land_use": "mixed",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Wide unmarked roadway",
+            "severity": "High",
+            "description": "The lack of lane markings on a wide street encourages higher vehicle speeds and unpredictable lane positioning.",
+            "location_in_image": "Center roadway"
+          },
+          {
+            "name": "Lack of marked crossings",
+            "severity": "High",
+            "description": "There are no designated pedestrian crossing points visible, forcing pedestrians to cross a wide road without protection.",
+            "location_in_image": "Entire foreground roadway"
+          },
+          {
+            "name": "Sidewalk obstructions",
+            "severity": "Medium",
+            "description": "Utility poles are located directly in the narrow walking path on the left side.",
+            "location_in_image": "Left sidewalk"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "High-visibility crosswalks",
+            "description": "Install marked crosswalks at the intersection and mid-block to provide designated pedestrian space.",
+            "impact": "High"
+          },
+          {
+            "title": "Curb extensions",
+            "description": "Install bulb-outs at intersections to reduce crossing distance and improve visibility between drivers and pedestrians.",
+            "impact": "High"
+          },
+          {
+            "title": "Lane narrowing and markings",
+            "description": "Paint clear lane lines and parking stalls to organize traffic and naturally slow vehicle speeds.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 813,
+        "thinking_tokens": 1360,
+        "total_tokens": 3704
+      }
     },
     {
       "point_index": 1,
       "offset": 270,
       "heading": 281,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 20,
+        "confidence": 90,
+        "summary": "The environment is highly car-oriented, characterized by a wide, unmarked roadway and a complete lack of dedicated pedestrian infrastructure such as sidewalks or crosswalks. Pedestrians are forced to navigate through active parking lots and wide driveway openings, creating numerous conflict points with vehicles.",
+        "features": {
+          "sidewalk_present": "no",
+          "sidewalk_obstruction": "not_visible",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "no",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "yes",
+          "curb_present": "no",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "yes",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "40_to_60ft",
+          "land_use": "mixed",
+          "sidewalk_condition": "absent",
+          "sidewalk_width": "absent",
+          "parking_configuration": "none",
+          "frontage_type": "setback_with_parking"
+        },
+        "hazards": [
+          {
+            "name": "Lack of Sidewalks",
+            "severity": "High",
+            "description": "Pedestrians are forced to walk in the roadway or through active parking lots due to the absence of a paved walkway.",
+            "location_in_image": "Along both sides of the roadway"
+          },
+          {
+            "name": "Unmarked Roadway",
+            "severity": "Medium",
+            "description": "The wide, unmarked pavement lacks lane discipline, likely leading to higher vehicle speeds and unpredictable maneuvers.",
+            "location_in_image": "Main travel lanes in the foreground"
+          },
+          {
+            "name": "Excessive Curb Cuts",
+            "severity": "High",
+            "description": "The street frontage consists of wide, undefined driveway entrances, maximizing conflict points between pedestrians and vehicles.",
+            "location_in_image": "Transition between the road and the commercial parking lots"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Sidewalk Installation",
+            "description": "Construct a continuous, ADA-compliant sidewalk to separate pedestrians from vehicle traffic.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$$"
+          },
+          {
+            "title": "Lane Markings and Road Diet",
+            "description": "Apply paint to define travel lanes and narrow the perceived roadway width to slow traffic.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Consolidated Driveways",
+            "description": "Reduce the number and width of curb cuts to minimize conflict zones and provide a more predictable environment.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 915,
+        "thinking_tokens": 2428,
+        "total_tokens": 4874
+      }
     },
     {
       "point_index": 2,
       "offset": 0,
       "heading": 11,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 25,
+        "confidence": 90,
+        "summary": "The environment is highly car-oriented, lacking dedicated sidewalks or protected pedestrian paths in the immediate vicinity. The wide roadway, faded pavement markings, and lack of physical separation between vehicles and pedestrians create a hostile environment for walking.",
+        "features": {
+          "sidewalk_present": "no",
+          "sidewalk_obstruction": "not_visible",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "not_visible",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "yes",
+          "curb_present": "no",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "4_or_more",
+          "crossing_distance": "over_60ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "absent",
+          "sidewalk_width": "absent",
+          "parking_configuration": "none",
+          "frontage_type": "setback_with_parking"
+        },
+        "hazards": [
+          {
+            "name": "Missing Sidewalks",
+            "severity": "High",
+            "description": "There are no paved walkways for pedestrians, forcing them to walk on the unpaved shoulder or in the roadway.",
+            "location_in_image": "Both sides of the foreground roadway"
+          },
+          {
+            "name": "Faded Pavement Markings",
+            "severity": "Medium",
+            "description": "Lane markings and crosswalk lines are significantly worn, reducing their visibility and effectiveness in guiding traffic.",
+            "location_in_image": "Center and left side of the roadway"
+          },
+          {
+            "name": "Excessive Crossing Distance",
+            "severity": "High",
+            "description": "The wide, multi-lane intersection ahead requires pedestrians to cross a large expanse of asphalt without a refuge island.",
+            "location_in_image": "Intersection in the background"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Install Paved Sidewalks",
+            "description": "Construct continuous, ADA-compliant sidewalks on both sides of the street to provide safe pedestrian passage.",
+            "impact": "High",
+            "estimated_cost": "$$$"
+          },
+          {
+            "title": "High-Visibility Crosswalks",
+            "description": "Repaint the intersection crosswalks using high-visibility continental or ladder patterns to improve driver awareness.",
+            "impact": "Medium",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Pedestrian Refuge Island",
+            "description": "Install a raised median or refuge island at the intersection to reduce the unprotected crossing distance for pedestrians.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 876,
+        "thinking_tokens": 1127,
+        "total_tokens": 3534
+      }
     },
     {
       "point_index": 2,
       "offset": 90,
       "heading": 101,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 45,
+        "confidence": 90,
+        "summary": "The pedestrian environment consists of a narrow, paved sidewalk directly adjacent to a commercial street with parallel parking. There is a lack of physical buffering from traffic and no visible crossing infrastructure, while parked vehicles create significant visual obstructions.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Visual Obstruction from Parked Vehicles",
+            "severity": "Medium",
+            "description": "Large vehicles parked along the curb block sightlines between pedestrians on the sidewalk and drivers on the road.",
+            "location_in_image": "Foreground left"
+          },
+          {
+            "name": "Lack of Pedestrian Buffer",
+            "severity": "Medium",
+            "description": "The sidewalk is directly adjacent to the travel lane with no physical or vertical separation other than a standard curb.",
+            "location_in_image": "Along the entire block"
+          },
+          {
+            "name": "Uneven Sidewalk Surface",
+            "severity": "Low",
+            "description": "Cracks and wear in the concrete sidewalk create potential trip hazards.",
+            "location_in_image": "Center foreground"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Curb Extensions (Bulb-outs)",
+            "description": "Extend the sidewalk into the parking lane to shorten crossing distances and improve visibility.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Street Trees and Furniture Zone",
+            "description": "Install a buffer zone with trees or bollards to separate pedestrians from moving traffic.",
+            "impact": "Medium",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Sidewalk Repair",
+            "description": "Resurface the sidewalk to eliminate cracks and uneven joints.",
+            "impact": "Low",
+            "estimated_cost": "$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 840,
+        "thinking_tokens": 1619,
+        "total_tokens": 3990
+      }
     },
     {
       "point_index": 2,
       "offset": 180,
       "heading": 191,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 35,
+        "confidence": 90,
+        "summary": "The image shows a wide, multi-lane arterial road with narrow sidewalks directly adjacent to the roadway. There is a complete lack of pedestrian crossing infrastructure or traffic calming measures, creating a high-speed environment hostile to pedestrians.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "no",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "yes",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "4_or_more",
+          "crossing_distance": "over_60ft",
+          "land_use": "mixed",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Excessive crossing distance",
+            "severity": "High",
+            "description": "The wide roadway requires pedestrians to cross multiple lanes of traffic without a refuge island or marked crossing.",
+            "location_in_image": "Center roadway"
+          },
+          {
+            "name": "Lack of marked crossings",
+            "severity": "High",
+            "description": "No designated pedestrian crossings are visible, forcing pedestrians to cross mid-block in a high-speed environment.",
+            "location_in_image": "Entire visible roadway"
+          },
+          {
+            "name": "Visual obstructions from parked cars",
+            "severity": "Medium",
+            "description": "Parked vehicles along the curb block sightlines between pedestrians entering the roadway and oncoming drivers.",
+            "location_in_image": "Left side curb"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Road Diet",
+            "description": "Reduce the number of travel lanes to slow traffic and provide space for pedestrian safety improvements.",
+            "impact": "High",
+            "estimated_cost": "$$$"
+          },
+          {
+            "title": "High-Visibility Crosswalks",
+            "description": "Install marked crossings with high-visibility paint to designate safe pedestrian paths.",
+            "impact": "Medium",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Extend the sidewalk at intersections or mid-block to reduce crossing distance and improve visibility.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 555,
+        "thinking_tokens": 2433,
+        "total_tokens": 4519
+      }
     },
     {
       "point_index": 2,
       "offset": 270,
       "heading": 281,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 25,
+        "confidence": 85,
+        "summary": "The environment is highly car-oriented, characterized by a wide roadway lacking visible sidewalks, curbs, or marked pedestrian crossings. The absence of dedicated pedestrian infrastructure and the presence of large surface parking lots create a hostile environment for walking.",
+        "features": {
+          "sidewalk_present": "no",
+          "sidewalk_obstruction": "not_visible",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "yes",
+          "curb_present": "no",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "yes",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "absent",
+          "sidewalk_width": "absent",
+          "parking_configuration": "none",
+          "frontage_type": "setback_with_parking"
+        },
+        "hazards": [
+          {
+            "name": "Missing Sidewalks",
+            "severity": "High",
+            "description": "There are no paved walkways on either side of the road, forcing pedestrians to walk on the unpaved shoulder or in the travel lane.",
+            "location_in_image": "Both sides of the roadway throughout the view"
+          },
+          {
+            "name": "Lack of Lane Markings",
+            "severity": "Medium",
+            "description": "The absence of clear lane markings on a wide road can lead to unpredictable vehicle positioning and higher speeds.",
+            "location_in_image": "Center of the roadway"
+          },
+          {
+            "name": "Degraded Pavement",
+            "severity": "Low",
+            "description": "Significant cracking and wear in the asphalt surface in the foreground creates trip hazards.",
+            "location_in_image": "Foreground asphalt area"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Sidewalk Installation",
+            "description": "Construct continuous, ADA-compliant sidewalks on both sides of the street to provide safe pedestrian separation.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$$"
+          },
+          {
+            "title": "Lane Narrowing and Markings",
+            "description": "Apply clear lane markings to define travel lanes and reduce the effective width of the road to slow vehicle speeds.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Marked Midblock Crossing",
+            "description": "Install a high-visibility marked crosswalk with appropriate signage to facilitate safe crossing between land uses.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 911,
+        "thinking_tokens": 1155,
+        "total_tokens": 3597
+      }
     },
     {
       "point_index": 3,
       "offset": 0,
       "heading": 11,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 35,
+        "confidence": 85,
+        "summary": "The pedestrian environment is characterized by a wide, car-oriented intersection with faded crosswalk markings and degraded pavement. While a sidewalk and curb ramps are present, the expansive asphalt and lack of vertical separation create a hostile environment for walking.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "yes",
+          "refuge_island": "yes",
+          "median_present": "yes",
+          "pedestrian_signal": "not_visible",
+          "traffic_light": "yes",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "yes",
+          "visual_obstruction": "no",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "yes",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "4_or_more",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "not_clear",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "6_to_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "open_or_vacant"
+        },
+        "hazards": [
+          {
+            "name": "Faded Crosswalk",
+            "severity": "Medium",
+            "description": "The zebra markings are significantly worn, reducing visibility to approaching drivers.",
+            "location_in_image": "Foreground across the roadway"
+          },
+          {
+            "name": "Degraded Pavement",
+            "severity": "Low",
+            "description": "Cracked and uneven asphalt surface on the roadway and near the walkway.",
+            "location_in_image": "Throughout the foreground roadway"
+          },
+          {
+            "name": "Wide Turning Radius",
+            "severity": "High",
+            "description": "The open geometry of the intersection allows for high-speed vehicle turns across the pedestrian path.",
+            "location_in_image": "Right side of the image where the road curves"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "High-Visibility Crosswalk",
+            "description": "Repaint the crosswalk with thermoplastic ladder or continental markings to improve visibility.",
+            "impact": "Medium"
+          },
+          {
+            "title": "Curb Extensions",
+            "description": "Install curb extensions (bulb-outs) to shorten crossing distances and slow turning traffic.",
+            "impact": "High"
+          },
+          {
+            "title": "Pedestrian Countdown Signals",
+            "description": "Install signals to provide pedestrians with clear information on crossing time.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 818,
+        "thinking_tokens": 2267,
+        "total_tokens": 4616
+      }
     },
     {
       "point_index": 3,
       "offset": 90,
       "heading": 101,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 35,
+        "confidence": 85,
+        "summary": "The pedestrian environment is dominated by a large, undefined driveway apron for a commercial property, creating a wide conflict zone between vehicles and people. There is a lack of clear separation between the roadway and the walking area, with no visible curbs, markings, or dedicated pedestrian infrastructure.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "no",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "no",
+          "on_street_parking": "no",
+          "driveway_curb_cut": "yes",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "yes",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "not_visible",
+          "land_use": "commercial",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "over_10ft",
+          "parking_configuration": "none",
+          "frontage_type": "setback_with_parking"
+        },
+        "hazards": [
+          {
+            "name": "Excessive Driveway Width",
+            "severity": "High",
+            "description": "The entire frontage is a paved apron, allowing vehicles to cross the pedestrian path at any point without a defined entry/exit.",
+            "location_in_image": "Center foreground and midground"
+          },
+          {
+            "name": "Poor Pavement Condition",
+            "severity": "Low",
+            "description": "Cracks and vegetation growth in the paved area create potential tripping hazards.",
+            "location_in_image": "Throughout the paved apron area"
+          },
+          {
+            "name": "Lack of Pedestrian Separation",
+            "severity": "Medium",
+            "description": "No curb or physical barrier separates the walking area from the roadway.",
+            "location_in_image": "Transition between road and apron"
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Driveway Consolidation",
+            "description": "Reduce the width of the vehicle access point and install a continuous curb and sidewalk to define the pedestrian path.",
+            "impact": "High"
+          },
+          {
+            "title": "Pedestrian Lighting",
+            "description": "Install pedestrian-scale street lighting to improve visibility and safety at night.",
+            "impact": "Medium"
+          },
+          {
+            "title": "Street Trees and Landscaping",
+            "description": "Add a planting strip or trees to provide a buffer between the roadway and the sidewalk.",
+            "impact": "Medium"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 828,
+        "thinking_tokens": 905,
+        "total_tokens": 3264
+      }
     },
     {
       "point_index": 3,
       "offset": 180,
       "heading": 191,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 30,
+        "confidence": 90,
+        "summary": "The pedestrian environment is highly hostile, characterized by a wide roadway with no dedicated sidewalks or marked crossings. Pedestrians must navigate a paved apron shared with parked and maneuvering vehicles, while the lack of physical separation and traffic calming measures significantly increases the risk of conflict.",
+        "features": {
+          "sidewalk_present": "no",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "no",
+          "curb_ramp": "no",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "no",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "yes",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "no",
+          "sidewalk_gap": "no",
+          "curb_present": "no",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "no",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "40_to_60ft",
+          "land_use": "commercial",
+          "sidewalk_condition": "absent",
+          "sidewalk_width": "absent",
+          "parking_configuration": "angled",
+          "frontage_type": "buildings_at_sidewalk"
+        },
+        "hazards": [
+          {
+            "name": "Lack of Protected Walkway",
+            "severity": "High",
+            "description": "There is no raised or separated sidewalk, forcing pedestrians to walk in areas shared with moving and parked vehicles.",
+            "location_in_image": "Left side of the roadway in front of the commercial buildings."
+          },
+          {
+            "name": "Unmarked Wide Crossing",
+            "severity": "High",
+            "description": "The wide roadway lacks any marked crosswalks or pedestrian refuge, requiring pedestrians to cross multiple lanes of traffic unprotected.",
+            "location_in_image": "Across the center of the roadway."
+          },
+          {
+            "name": "Visual Obstructions from Parked Vehicles",
+            "severity": "Medium",
+            "description": "Angled parking on the left creates sightline obstructions between pedestrians and oncoming traffic.",
+            "location_in_image": "Left foreground where cars are parked in front of shops."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Install Raised Sidewalks",
+            "description": "Construct a continuous, raised sidewalk with a curb to provide a dedicated and safe space for pedestrians, separated from vehicle traffic.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "High-Visibility Crosswalks and Curb Extensions",
+            "description": "Add marked crosswalks with curb extensions to reduce crossing distance and improve pedestrian visibility to drivers.",
+            "impact": "High",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "Road Diet and Lane Narrowing",
+            "description": "Reconfigure the roadway to narrow travel lanes and repurpose excess pavement for pedestrian or bicycle infrastructure, slowing traffic speeds.",
+            "impact": "Medium",
+            "source": "NACTO Urban Street Design Guide",
+            "estimated_cost": "$$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 941,
+        "thinking_tokens": 4392,
+        "total_tokens": 6864
+      }
     },
     {
       "point_index": 3,
       "offset": 270,
       "heading": 281,
-      "error": "429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'Your project has exceeded its monthly spending cap. Please go to AI Studio at https://ai.studio/spend to manage your project spend cap. Learn more at https://ai.google.dev/gemini-api/docs/billing#project-spend-caps. ', 'status': 'RESOURCE_E"
+      "result": {
+        "safety_score": 45,
+        "confidence": 85,
+        "summary": "The pedestrian environment features a marked crosswalk and some sidewalk infrastructure, but it is discontinuous and lacks signalization. The presence of wide-open paved areas and faded road markings suggests a priority for vehicle movement over pedestrian safety.",
+        "features": {
+          "sidewalk_present": "yes",
+          "sidewalk_obstruction": "no",
+          "crosswalk_marked": "yes",
+          "curb_ramp": "yes",
+          "refuge_island": "no",
+          "median_present": "no",
+          "pedestrian_signal": "no",
+          "traffic_light": "no",
+          "stop_sign": "no",
+          "crossing_sign": "no",
+          "lane_markings": "yes",
+          "street_lighting": "yes",
+          "bike_lane": "no",
+          "trees": "yes",
+          "bus_stop": "no",
+          "slip_lane": "no",
+          "visual_obstruction": "no",
+          "poor_pavement": "yes",
+          "sidewalk_buffer": "yes",
+          "sidewalk_gap": "yes",
+          "curb_present": "yes",
+          "on_street_parking": "yes",
+          "driveway_curb_cut": "yes",
+          "midblock_crossing": "no",
+          "traffic_calming": "no",
+          "blank_frontage": "no",
+          "loading_activity": "no",
+          "through_lanes": "2",
+          "crossing_distance": "24_to_40ft",
+          "land_use": "mixed",
+          "sidewalk_condition": "fair",
+          "sidewalk_width": "4_to_6ft",
+          "parking_configuration": "parallel",
+          "frontage_type": "setback_with_parking"
+        },
+        "hazards": [
+          {
+            "name": "Discontinuous Sidewalks",
+            "severity": "High",
+            "description": "The sidewalk on the far side appears to end abruptly, forcing pedestrians into the roadway or onto unpaved surfaces.",
+            "location_in_image": "Center-left background along the road edge."
+          },
+          {
+            "name": "Faded Pavement Markings",
+            "severity": "Medium",
+            "description": "The crosswalk and lane markings are significantly worn, reducing their visibility to drivers.",
+            "location_in_image": "Foreground and right side of the intersection."
+          }
+        ],
+        "interventions": [
+          {
+            "title": "Sidewalk Completion",
+            "description": "Extend and connect the sidewalk network to ensure a continuous, paved path for pedestrians along all road frontages.",
+            "impact": "High",
+            "estimated_cost": "$$"
+          },
+          {
+            "title": "High-Visibility Crosswalks",
+            "description": "Repaint the existing crosswalk with high-visibility 'continental' markings and add markings to all legs of the intersection.",
+            "impact": "Medium",
+            "estimated_cost": "$"
+          },
+          {
+            "title": "Pedestrian Signage",
+            "description": "Install pedestrian crossing warning signs to alert drivers to the presence of people crossing.",
+            "impact": "Medium",
+            "estimated_cost": "$"
+          }
+        ]
+      },
+      "usage": {
+        "prompt_tokens": 1531,
+        "output_tokens": 803,
+        "thinking_tokens": 1711,
+        "total_tokens": 4045
+      }
     }
   ],
-  "aggregate": {}
+  "aggregate": {
+    "safety_score_mean": 35.0,
+    "safety_score_sd": 10.49,
+    "safety_score_sd_within_point": 11.09,
+    "safety_score_sd_between_points": 1.77,
+    "safety_score_min": 15,
+    "safety_score_max": 55,
+    "confidence_mean": 87.2,
+    "n_views_scored": 16,
+    "n_points_scored": 4,
+    "features": {
+      "sidewalk_present": {
+        "any": true,
+        "proportion": 0.688,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "sidewalk_obstruction": {
+        "any": true,
+        "proportion": 0.25,
+        "n_visible": 12,
+        "n_views": 16,
+        "mixed": true
+      },
+      "crosswalk_marked": {
+        "any": true,
+        "proportion": 0.188,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "curb_ramp": {
+        "any": true,
+        "proportion": 0.143,
+        "n_visible": 14,
+        "n_views": 16,
+        "mixed": true
+      },
+      "refuge_island": {
+        "any": true,
+        "proportion": 0.062,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "median_present": {
+        "any": true,
+        "proportion": 0.062,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "pedestrian_signal": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 13,
+        "n_views": 16,
+        "mixed": false
+      },
+      "traffic_light": {
+        "any": true,
+        "proportion": 0.312,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "stop_sign": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": false
+      },
+      "crossing_sign": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": false
+      },
+      "lane_markings": {
+        "any": true,
+        "proportion": 0.562,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "street_lighting": {
+        "any": true,
+        "proportion": 0.933,
+        "n_visible": 15,
+        "n_views": 16,
+        "mixed": true
+      },
+      "bike_lane": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": false
+      },
+      "trees": {
+        "any": true,
+        "proportion": 0.562,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "bus_stop": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": false
+      },
+      "slip_lane": {
+        "any": true,
+        "proportion": 0.062,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "visual_obstruction": {
+        "any": true,
+        "proportion": 0.562,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "poor_pavement": {
+        "any": true,
+        "proportion": 0.625,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "sidewalk_buffer": {
+        "any": true,
+        "proportion": 0.125,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "sidewalk_gap": {
+        "any": true,
+        "proportion": 0.375,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "curb_present": {
+        "any": true,
+        "proportion": 0.625,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "on_street_parking": {
+        "any": true,
+        "proportion": 0.625,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "driveway_curb_cut": {
+        "any": true,
+        "proportion": 0.562,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "midblock_crossing": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": false
+      },
+      "traffic_calming": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": false
+      },
+      "blank_frontage": {
+        "any": true,
+        "proportion": 0.5,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": true
+      },
+      "loading_activity": {
+        "any": false,
+        "proportion": 0.0,
+        "n_visible": 16,
+        "n_views": 16,
+        "mixed": false
+      },
+      "through_lanes": {
+        "modal": "2",
+        "values": [
+          "2",
+          "2",
+          "2",
+          "4_or_more",
+          "4_or_more",
+          "2",
+          "2",
+          "2",
+          "4_or_more",
+          "2",
+          "4_or_more",
+          "2",
+          "4_or_more",
+          "2",
+          "2",
+          "2"
+        ],
+        "agreement": 0.688
+      },
+      "crossing_distance": {
+        "modal": "24_to_40ft",
+        "values": [
+          "40_to_60ft",
+          "24_to_40ft",
+          "40_to_60ft",
+          "over_60ft",
+          "over_60ft",
+          "24_to_40ft",
+          "40_to_60ft",
+          "40_to_60ft",
+          "over_60ft",
+          "24_to_40ft",
+          "over_60ft",
+          "24_to_40ft",
+          "24_to_40ft",
+          "not_visible",
+          "40_to_60ft",
+          "24_to_40ft"
+        ],
+        "agreement": 0.4
+      },
+      "land_use": {
+        "modal": "commercial",
+        "values": [
+          "commercial",
+          "commercial",
+          "mixed",
+          "mixed",
+          "commercial",
+          "commercial",
+          "mixed",
+          "mixed",
+          "commercial",
+          "commercial",
+          "mixed",
+          "commercial",
+          "not_clear",
+          "commercial",
+          "commercial",
+          "mixed"
+        ],
+        "agreement": 0.6
+      },
+      "sidewalk_condition": {
+        "modal": "fair",
+        "values": [
+          "fair",
+          "fair",
+          "fair",
+          "absent",
+          "good",
+          "fair",
+          "fair",
+          "absent",
+          "absent",
+          "fair",
+          "fair",
+          "absent",
+          "fair",
+          "fair",
+          "absent",
+          "fair"
+        ],
+        "agreement": 0.625
+      },
+      "sidewalk_width": {
+        "modal": "4_to_6ft",
+        "values": [
+          "under_4ft",
+          "6_to_10ft",
+          "4_to_6ft",
+          "absent",
+          "4_to_6ft",
+          "6_to_10ft",
+          "4_to_6ft",
+          "absent",
+          "absent",
+          "4_to_6ft",
+          "4_to_6ft",
+          "absent",
+          "6_to_10ft",
+          "over_10ft",
+          "absent",
+          "4_to_6ft"
+        ],
+        "agreement": 0.375
+      },
+      "parking_configuration": {
+        "modal": "parallel",
+        "values": [
+          "parallel",
+          "parallel",
+          "parallel",
+          "none",
+          "parallel",
+          "parallel",
+          "parallel",
+          "none",
+          "none",
+          "parallel",
+          "parallel",
+          "none",
+          "none",
+          "none",
+          "angled",
+          "parallel"
+        ],
+        "agreement": 0.562
+      },
+      "frontage_type": {
+        "modal": "buildings_at_sidewalk",
+        "values": [
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "setback_with_parking",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "setback_with_parking",
+          "setback_with_parking",
+          "buildings_at_sidewalk",
+          "buildings_at_sidewalk",
+          "setback_with_parking",
+          "open_or_vacant",
+          "setback_with_parking",
+          "buildings_at_sidewalk",
+          "setback_with_parking"
+        ],
+        "agreement": 0.562
+      }
+    },
+    "hazards": [
+      {
+        "name": "Excessive Crossing Distance",
+        "severity": "High",
+        "description": "The wide roadway lacks any mid-block crossings or refuge islands, forcing pedestrians to cross multiple lanes of traffic unprotected.",
+        "location_in_image": "Center roadway"
+      },
+      {
+        "name": "Missing Sidewalk",
+        "severity": "High",
+        "description": "There is no paved sidewalk on the left side of the street, forcing pedestrians into the grass or the roadway.",
+        "location_in_image": "Left side of the image"
+      },
+      {
+        "name": "Narrow Sidewalk without Buffer",
+        "severity": "Medium",
+        "description": "The existing sidewalk on the right is very narrow and directly abuts the travel/parking lane with no physical separation.",
+        "location_in_image": "Right side of the image"
+      },
+      {
+        "name": "Utility Pole Obstructions",
+        "severity": "Medium",
+        "description": "Large wooden poles are placed within the sidewalk, reducing the clear path for pedestrians and creating barriers for those with mobility aids.",
+        "location_in_image": "Center-left of the sidewalk area"
+      },
+      {
+        "name": "Lack of Pedestrian Buffer",
+        "severity": "Medium",
+        "description": "The sidewalk is directly adjacent to the travel and parking lanes with no physical separation like trees or a planting strip.",
+        "location_in_image": "Right side along the buildings"
+      },
+      {
+        "name": "Wide Roadway",
+        "severity": "High",
+        "description": "The wide, multi-lane roadway encourages high vehicle speeds and creates a long, unprotected crossing distance.",
+        "location_in_image": "Center and left of the roadway"
+      },
+      {
+        "name": "Lack of Sidewalk Buffer",
+        "severity": "Medium",
+        "description": "The sidewalk on the left is directly adjacent to the travel and parking lanes, offering no protection to pedestrians.",
+        "location_in_image": "Left side of the street"
+      },
+      {
+        "name": "Unmarked Crossing",
+        "severity": "High",
+        "description": "The intersection ahead lacks visible crosswalk markings, making it dangerous for pedestrians to cross.",
+        "location_in_image": "Intersection in the background"
+      },
+      {
+        "name": "Missing Sidewalks",
+        "severity": "High",
+        "description": "There are no paved walkways, forcing pedestrians to walk on uneven dirt or in the travel lanes.",
+        "location_in_image": "Foreground and corners of the intersection"
+      },
+      {
+        "name": "Absence of Marked Crossings",
+        "severity": "High",
+        "description": "There are no visible marked crosswalks or pedestrian signals, forcing pedestrians to cross multiple lanes of traffic without protection.",
+        "location_in_image": "Throughout the visible street segment"
+      },
+      {
+        "name": "Visual Obstruction",
+        "severity": "Medium",
+        "description": "Parked vehicles along the curb block the line of sight between drivers and pedestrians who might step into the roadway.",
+        "location_in_image": "Along the curb line in the foreground and mid-ground."
+      },
+      {
+        "name": "Wide unmarked roadway",
+        "severity": "High",
+        "description": "The lack of lane markings on a wide street encourages higher vehicle speeds and unpredictable lane positioning.",
+        "location_in_image": "Center roadway"
+      },
+      {
+        "name": "Lack of marked crossings",
+        "severity": "High",
+        "description": "There are no designated pedestrian crossing points visible, forcing pedestrians to cross a wide road without protection.",
+        "location_in_image": "Entire foreground roadway"
+      },
+      {
+        "name": "Sidewalk obstructions",
+        "severity": "Medium",
+        "description": "Utility poles are located directly in the narrow walking path on the left side.",
+        "location_in_image": "Left sidewalk"
+      },
+      {
+        "name": "Lack of Sidewalks",
+        "severity": "High",
+        "description": "Pedestrians are forced to walk in the roadway or through active parking lots due to the absence of a paved walkway.",
+        "location_in_image": "Along both sides of the roadway"
+      },
+      {
+        "name": "Unmarked Roadway",
+        "severity": "Medium",
+        "description": "The wide, unmarked pavement lacks lane discipline, likely leading to higher vehicle speeds and unpredictable maneuvers.",
+        "location_in_image": "Main travel lanes in the foreground"
+      },
+      {
+        "name": "Excessive Curb Cuts",
+        "severity": "High",
+        "description": "The street frontage consists of wide, undefined driveway entrances, maximizing conflict points between pedestrians and vehicles.",
+        "location_in_image": "Transition between the road and the commercial parking lots"
+      },
+      {
+        "name": "Faded Pavement Markings",
+        "severity": "Medium",
+        "description": "Lane markings and crosswalk lines are significantly worn, reducing their visibility and effectiveness in guiding traffic.",
+        "location_in_image": "Center and left side of the roadway"
+      },
+      {
+        "name": "Visual Obstruction from Parked Vehicles",
+        "severity": "Medium",
+        "description": "Large vehicles parked along the curb block sightlines between pedestrians on the sidewalk and drivers on the road.",
+        "location_in_image": "Foreground left"
+      },
+      {
+        "name": "Uneven Sidewalk Surface",
+        "severity": "Low",
+        "description": "Cracks and wear in the concrete sidewalk create potential trip hazards.",
+        "location_in_image": "Center foreground"
+      },
+      {
+        "name": "Visual obstructions from parked cars",
+        "severity": "Medium",
+        "description": "Parked vehicles along the curb block sightlines between pedestrians entering the roadway and oncoming drivers.",
+        "location_in_image": "Left side curb"
+      },
+      {
+        "name": "Lack of Lane Markings",
+        "severity": "Medium",
+        "description": "The absence of clear lane markings on a wide road can lead to unpredictable vehicle positioning and higher speeds.",
+        "location_in_image": "Center of the roadway"
+      },
+      {
+        "name": "Degraded Pavement",
+        "severity": "Low",
+        "description": "Significant cracking and wear in the asphalt surface in the foreground creates trip hazards.",
+        "location_in_image": "Foreground asphalt area"
+      },
+      {
+        "name": "Faded Crosswalk",
+        "severity": "Medium",
+        "description": "The zebra markings are significantly worn, reducing visibility to approaching drivers.",
+        "location_in_image": "Foreground across the roadway"
+      },
+      {
+        "name": "Wide Turning Radius",
+        "severity": "High",
+        "description": "The open geometry of the intersection allows for high-speed vehicle turns across the pedestrian path.",
+        "location_in_image": "Right side of the image where the road curves"
+      },
+      {
+        "name": "Excessive Driveway Width",
+        "severity": "High",
+        "description": "The entire frontage is a paved apron, allowing vehicles to cross the pedestrian path at any point without a defined entry/exit.",
+        "location_in_image": "Center foreground and midground"
+      },
+      {
+        "name": "Poor Pavement Condition",
+        "severity": "Low",
+        "description": "Cracks and vegetation growth in the paved area create potential tripping hazards.",
+        "location_in_image": "Throughout the paved apron area"
+      },
+      {
+        "name": "Lack of Pedestrian Separation",
+        "severity": "Medium",
+        "description": "No curb or physical barrier separates the walking area from the roadway.",
+        "location_in_image": "Transition between road and apron"
+      },
+      {
+        "name": "Lack of Protected Walkway",
+        "severity": "High",
+        "description": "There is no raised or separated sidewalk, forcing pedestrians to walk in areas shared with moving and parked vehicles.",
+        "location_in_image": "Left side of the roadway in front of the commercial buildings."
+      },
+      {
+        "name": "Unmarked Wide Crossing",
+        "severity": "High",
+        "description": "The wide roadway lacks any marked crosswalks or pedestrian refuge, requiring pedestrians to cross multiple lanes of traffic unprotected.",
+        "location_in_image": "Across the center of the roadway."
+      },
+      {
+        "name": "Visual Obstructions from Parked Vehicles",
+        "severity": "Medium",
+        "description": "Angled parking on the left creates sightline obstructions between pedestrians and oncoming traffic.",
+        "location_in_image": "Left foreground where cars are parked in front of shops."
+      },
+      {
+        "name": "Discontinuous Sidewalks",
+        "severity": "High",
+        "description": "The sidewalk on the far side appears to end abruptly, forcing pedestrians into the roadway or onto unpaved surfaces.",
+        "location_in_image": "Center-left background along the road edge."
+      }
+    ],
+    "interventions": [
+      {
+        "title": "Pedestrian Refuge Island",
+        "description": "Install a raised median or refuge island to allow pedestrians to cross the wide street in two stages.",
+        "impact": "High",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "New Sidewalk Construction",
+        "description": "Construct a continuous paved sidewalk on the left side of the street to complete the pedestrian network.",
+        "impact": "High",
+        "estimated_cost": "$$$"
+      },
+      {
+        "title": "Curb Extensions",
+        "description": "Install curb extensions at potential crossing points to reduce crossing distance and improve visibility between drivers and pedestrians.",
+        "impact": "Medium",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Street Trees and Furniture Zone",
+        "description": "Implement a planting strip or furniture zone to provide a physical buffer between pedestrians and the roadway.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Sidewalk Clearing and Pole Relocation",
+        "description": "Relocate utility poles to the curb edge or underground the lines to ensure a consistent clear walking width.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$$"
+      },
+      {
+        "title": "High-Visibility Crosswalks",
+        "description": "Install continental-style crosswalks at the intersection to improve pedestrian visibility and safety.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Road Diet",
+        "description": "Reconfigure the wide roadway to include narrower travel lanes and a dedicated bike lane or wider sidewalk buffers to slow traffic.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$$"
+      },
+      {
+        "title": "Sidewalk Construction",
+        "description": "Install continuous, ADA-compliant paved sidewalks on all sides of the intersection to separate pedestrians from traffic.",
+        "impact": "High",
+        "source": "NACTO",
+        "estimated_cost": "$$$"
+      },
+      {
+        "title": "High-Visibility Crosswalks and Pedestrian Signals",
+        "description": "Mark continental crosswalks and install pedestrian signal heads with countdown timers to provide protected crossing phases.",
+        "impact": "High",
+        "source": "NACTO",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Street Trees and Buffer Zone",
+        "description": "Add a planting strip with street trees between the sidewalk and the roadway to provide a physical and psychological buffer from traffic.",
+        "impact": "Medium",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Street Trees and Planters",
+        "description": "Add a furniture zone with trees or planters to provide a physical buffer between pedestrians and the roadway.",
+        "impact": "Medium",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Daylighting",
+        "description": "Remove parking spaces near potential crossing points to ensure clear sightlines between pedestrians and motorists.",
+        "impact": "High",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Lane narrowing and markings",
+        "description": "Paint clear lane lines and parking stalls to organize traffic and naturally slow vehicle speeds.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Sidewalk Installation",
+        "description": "Construct a continuous, ADA-compliant sidewalk to separate pedestrians from vehicle traffic.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$$"
+      },
+      {
+        "title": "Lane Markings and Road Diet",
+        "description": "Apply paint to define travel lanes and narrow the perceived roadway width to slow traffic.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Consolidated Driveways",
+        "description": "Reduce the number and width of curb cuts to minimize conflict zones and provide a more predictable environment.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Install Paved Sidewalks",
+        "description": "Construct continuous, ADA-compliant sidewalks on both sides of the street to provide safe pedestrian passage.",
+        "impact": "High",
+        "estimated_cost": "$$$"
+      },
+      {
+        "title": "Curb Extensions (Bulb-outs)",
+        "description": "Extend the sidewalk into the parking lane to shorten crossing distances and improve visibility.",
+        "impact": "High",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Sidewalk Repair",
+        "description": "Resurface the sidewalk to eliminate cracks and uneven joints.",
+        "impact": "Low",
+        "estimated_cost": "$"
+      },
+      {
+        "title": "Marked Midblock Crossing",
+        "description": "Install a high-visibility marked crosswalk with appropriate signage to facilitate safe crossing between land uses.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "High-Visibility Crosswalk",
+        "description": "Repaint the crosswalk with thermoplastic ladder or continental markings to improve visibility.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Pedestrian Countdown Signals",
+        "description": "Install signals to provide pedestrians with clear information on crossing time.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Driveway Consolidation",
+        "description": "Reduce the width of the vehicle access point and install a continuous curb and sidewalk to define the pedestrian path.",
+        "impact": "High"
+      },
+      {
+        "title": "Pedestrian Lighting",
+        "description": "Install pedestrian-scale street lighting to improve visibility and safety at night.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Street Trees and Landscaping",
+        "description": "Add a planting strip or trees to provide a buffer between the roadway and the sidewalk.",
+        "impact": "Medium"
+      },
+      {
+        "title": "Install Raised Sidewalks",
+        "description": "Construct a continuous, raised sidewalk with a curb to provide a dedicated and safe space for pedestrians, separated from vehicle traffic.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "High-Visibility Crosswalks and Curb Extensions",
+        "description": "Add marked crosswalks with curb extensions to reduce crossing distance and improve pedestrian visibility to drivers.",
+        "impact": "High",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Road Diet and Lane Narrowing",
+        "description": "Reconfigure the roadway to narrow travel lanes and repurpose excess pavement for pedestrian or bicycle infrastructure, slowing traffic speeds.",
+        "impact": "Medium",
+        "source": "NACTO Urban Street Design Guide",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Sidewalk Completion",
+        "description": "Extend and connect the sidewalk network to ensure a continuous, paved path for pedestrians along all road frontages.",
+        "impact": "High",
+        "estimated_cost": "$$"
+      },
+      {
+        "title": "Pedestrian Signage",
+        "description": "Install pedestrian crossing warning signs to alert drivers to the presence of people crossing.",
+        "impact": "Medium",
+        "estimated_cost": "$"
+      }
+    ]
+  }
 }
