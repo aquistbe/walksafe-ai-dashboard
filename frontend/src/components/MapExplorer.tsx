@@ -391,8 +391,11 @@ export default function MapExplorer({
         </div>
       )}
 
-      {/* Toolbar */}
-      <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 bg-white/95 backdrop-blur-sm rounded-lg shadow-md border border-gray-200 p-1">
+      {/* Toolbar.
+          z-20, above the centred maturity/caveat overlay below. Both used to
+          sit at z-10 with the same `top-3`, and because the overlay comes later
+          in DOM order it won every hit test where the two crossed. */}
+      <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-white/95 backdrop-blur-sm rounded-lg shadow-md border border-gray-200 p-1">
         {/* Dataset toggle. Deliberately EXCLUSIVE rather than a pair of
             simultaneous layers: intersection and segment risk are not on the
             same scale, and stacking two ramps invites exactly the cross-reading
@@ -442,10 +445,20 @@ export default function MapExplorer({
 
       {/* Maturity + the ecological caveat. Pinned to the map, non-dismissable:
           a notice that can be dismissed fails the moment someone dismisses it
-          and screenshots the map. */}
-      <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1.5 max-w-[min(560px,calc(100%-2rem))]">
+          and screenshots the map.
+
+          The WRAPPER is pointer-events-none. It is a centred flex column with
+          no background of its own, so its box spans the full 560px max-width
+          and stands 79px tall while the visible chip and callout inside it are
+          far narrower — an invisible rectangle sitting directly over the
+          right-hand half of the toolbar. It swallowed clicks on Observed,
+          Traffic and Dark on the Philadelphia segment layer. Bogotá escaped
+          only because its toolbar is shorter, so its buttons stop before the
+          wrapper's left edge. Pointer events are re-enabled on the two painted
+          children, which is what the user actually aims at. */}
+      <div className="pointer-events-none absolute top-3 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1.5 max-w-[min(560px,calc(100%-2rem))]">
         <span
-          className={`px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider shadow-sm border ${
+          className={`pointer-events-auto px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider shadow-sm border ${
             city.maturity === "demonstrated"
               ? "bg-walksafe-green text-white border-walksafe-green"
               : "bg-white/95 text-gray-600 border-gray-200"
@@ -456,7 +469,7 @@ export default function MapExplorer({
         </span>
 
         {dataset.mapCaveat && (
-          <div className="bg-amber-50/95 backdrop-blur-sm border border-amber-200 rounded-lg px-3 py-2 shadow-sm">
+          <div className="pointer-events-auto bg-amber-50/95 backdrop-blur-sm border border-amber-200 rounded-lg px-3 py-2 shadow-sm">
             <p className="text-[11px] text-amber-900 leading-snug text-center">
               {dataset.mapCaveat}
             </p>
