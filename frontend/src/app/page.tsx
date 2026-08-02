@@ -194,6 +194,18 @@ export default function HomePage() {
   const segMetadata: SegmentCollection["metadata"] | null =
     collection && isSegmentCollection(collection) ? collection.metadata : null;
 
+  /**
+   * The caveat, resolved once and passed to everything that shows it.
+   *
+   * The data file wins: metadata.caveat is rebuilt with the numbers it
+   * qualifies, so it cannot drift from them. dataset.mapCaveat is the fallback
+   * for a dataset whose file carries none. These used to be resolved
+   * separately — the sidebar took `metadata.caveat ?? mapCaveat` while
+   * MapExplorer always read `mapCaveat` — so both rendered, in two different
+   * wordings of the same point, free to diverge.
+   */
+  const caveat = segMetadata?.caveat ?? zatMetadata?.caveat ?? dataset.mapCaveat;
+
   return (
     <div className="h-[calc(100vh-3.5rem)] flex overflow-hidden">
       {filters.kind === "philadelphia-segment" ? (
@@ -209,7 +221,7 @@ export default function HomePage() {
             topSegments={topUnits as SegmentFeature[]}
             onSelectUnit={handleSelect}
             dataset={dataset}
-            caveat={segMetadata?.caveat ?? dataset.mapCaveat}
+            caveat={caveat}
             collapsed={sidebarCollapsed}
             onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
           />
@@ -223,7 +235,7 @@ export default function HomePage() {
           clusterCounts={legendCounts}
           topZones={topUnits as ZatFeature[]}
           onSelectUnit={handleSelect}
-          caveat={zatMetadata?.caveat ?? dataset.mapCaveat}
+          caveat={caveat}
           collapsed={sidebarCollapsed}
           onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
@@ -252,6 +264,7 @@ export default function HomePage() {
           onSelectUnit={handleSelect}
           loading={loading}
           legendCounts={legendCounts}
+          caveat={caveat}
         />
 
         {/* Exhaustive on the unit type. A two-way ternary here would hand a

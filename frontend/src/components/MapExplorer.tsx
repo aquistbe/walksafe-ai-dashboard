@@ -57,6 +57,11 @@ interface MapExplorerProps {
   onSelectUnit: (id: number | null) => void;
   loading?: boolean;
   legendCounts: LegendCounts;
+  /** Resolved once in page.tsx: the data file's caveat, falling back to
+   *  dataset.mapCaveat. Rendered here clamped to one line, in full in the
+   *  sidebar. Never read dataset.mapCaveat directly — that is the fallback,
+   *  not the answer. */
+  caveat: string | null;
 }
 
 export default function MapExplorer({
@@ -70,6 +75,7 @@ export default function MapExplorer({
   onSelectUnit,
   loading = false,
   legendCounts,
+  caveat,
 }: MapExplorerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -468,10 +474,18 @@ export default function MapExplorer({
           {city.label} · {city.maturityLabel}
         </span>
 
-        {dataset.mapCaveat && (
-          <div className="pointer-events-auto bg-amber-50/95 backdrop-blur-sm border border-amber-200 rounded-lg px-3 py-2 shadow-sm">
-            <p className="text-[11px] text-amber-900 leading-snug text-center">
-              {dataset.mapCaveat}
+        {caveat && (
+          <div
+            className="pointer-events-auto bg-amber-50/95 backdrop-blur-sm border border-amber-200 rounded-full px-3 py-1 shadow-sm max-w-full"
+            title={caveat}
+          >
+            {/* One line, clamped. The same resolved string the sidebar shows in
+                full — clamping rather than authoring a separate short version
+                means there is no second copy to drift. Splitting on the first
+                sentence was tried and rejected: the ZAT caveat opens with the
+                single word "ECOLOGICAL." */}
+            <p className="text-[11px] text-amber-900 leading-snug text-center truncate">
+              {caveat}
             </p>
           </div>
         )}
