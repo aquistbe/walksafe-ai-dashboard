@@ -12,7 +12,13 @@
 
 import type { DatasetConfig, LineDatasetConfig } from "@/lib/cities";
 import type { UnitFeature } from "@/lib/types";
-import { assertNever, isIntersectionFeature, isSegmentFeature, isZatFeature } from "@/lib/types";
+import {
+  assertNever,
+  isIntersectionFeature,
+  isSegmentFeature,
+  isTractFeature,
+  isZatFeature,
+} from "@/lib/types";
 import { RISK_TIER_COLORS, CLUSTER_COLORS, CLUSTER_LABELS } from "@/lib/constants";
 import type { RiskTier } from "@/lib/types";
 
@@ -37,6 +43,7 @@ export function buildPopupHtml(feature: UnitFeature, dataset: DatasetConfig): st
     if (dataset.unitType !== "line") return "";
     return segmentPopup(feature, dataset);
   }
+  if (isTractFeature(feature)) return tractPopup(feature);
   if (isIntersectionFeature(feature)) return intersectionPopup(feature);
   return assertNever(feature, "popup feature");
 }
@@ -114,6 +121,38 @@ function intersectionPopup(feature: UnitFeature): string {
     </div>
   `;
 }
+
+function tractPopup(feature: UnitFeature): string {
+  if (!isTractFeature(feature)) return "";
+  const p = feature.properties;
+
+  // Deliberately sparse. The tract layer is ECOLOGICAL and its crash count is
+  // NOT summable with the intersection or segment layers — those two partition
+  // the same crashes, so adding this to them double-counts. A hover popup is
+  // the wrong place to carry that caveat, so it shows what a tract IS and
+  // leaves the numbers that invite arithmetic to the panel, which explains
+  // them.
+  const tierChip = p.tier
+    ? `<span style="background: ${RISK_TIER_COLORS[p.tier]}22; color: #2D2D2D; font-weight: 600; font-size: 10px; padding: 2px 8px; border-radius: 999px;">${esc(p.tier)}</span>`
+    : `<span style="background: #E5E7EB; color: #6B7280; font-weight: 600; font-size: 10px; padding: 2px 8px; border-radius: 999px;">No model</span>`;
+
+  return `<div style="font-family: ui-sans-serif, system-ui; min-width: 190px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px;">
+        <span style="font-weight: 700; font-size: 13px;">${esc(p.unit_name)}</span>
+        ${tierChip}
+      </div>
+      <div style="display: grid; grid-template-columns: auto auto; gap: 2px 10px; font-size: 11px;">
+        <span style="color: #6B7280;">Pedestrian KSI:</span>
+        <span style="font-weight: 600;">${esc(p.ped_ksi)}</span>
+        <span style="color: #6B7280;">Population:</span>
+        <span style="font-weight: 600;">${p.pop === null ? "—" : esc(p.pop)}</span>
+      </div>
+      <div style="margin-top: 6px; font-size: 10px; color: #6B7280;">
+        Tract-level association, not individual risk.
+      </div>
+    </div>`;
+}
+
 
 function zatPopup(feature: UnitFeature): string {
   if (!isZatFeature(feature)) return "";

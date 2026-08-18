@@ -469,7 +469,11 @@ export interface SegmentCollection {
 // The analysis-unit union
 // ===========================================================================
 
-export type UnitFeature = IntersectionFeature | SegmentFeature | ZatFeature;
+export type UnitFeature =
+  | IntersectionFeature
+  | SegmentFeature
+  | ZatFeature
+  | TractFeature;
 export type UnitCollection =
   | IntersectionCollection
   | SegmentCollection
@@ -492,6 +496,10 @@ export function isSegmentFeature(f: UnitFeature): f is SegmentFeature {
 }
 export function isZatFeature(f: UnitFeature): f is ZatFeature {
   return "unit_id" in f.properties;
+}
+/** Tracts are the only unit carrying a GEOID. */
+export function isTractFeature(f: UnitFeature): f is TractFeature {
+  return "geoid" in f.properties;
 }
 export function isZatCollection(c: UnitCollection): c is ZatCollection {
   return "unit_type" in c.metadata && c.metadata.unit_type === "polygon";
@@ -579,6 +587,247 @@ export interface ZatFilterState {
   searchQuery: string;
 }
 
+
+// ===========================================================================
+// Philadelphia — census tracts
+// ===========================================================================
+
+/**
+ * ACS reliability threshold, as a coefficient of variation in percent.
+ *
+ * The Census Bureau's own guidance: above 30% an estimate is too imprecise to
+ * order one geography against another. It is not a styling constant — at tract
+ * level the margins are wide enough to swallow the estimate (one tract reports
+ * a median household income of $102,670 ± $50,798), so a bare point estimate
+ * would misrepresent rather than simplify.
+ */
+export const CV_UNRELIABLE = 30;
+
+/** Below this, an estimate carries no caveat. Between the two, use with care. */
+export const CV_CAUTION = 15;
+
+export type AcsReliability = "reliable" | "caution" | "unreliable" | "unknown";
+
+/**
+ * Reliability band for an ACS estimate from its coefficient of variation.
+ *
+ * `undefined` maps to "unknown", not to "reliable": a missing CV means the
+ * precision was never measured, which is not the same as it being fine.
+ */
+export function acsReliability(cv: number | undefined | null): AcsReliability {
+  if (cv === undefined || cv === null || Number.isNaN(cv)) return "unknown";
+  if (cv > CV_UNRELIABLE) return "unreliable";
+  if (cv > CV_CAUTION) return "caution";
+  return "reliable";
+}
+
+/** How an ACS value is rendered. `usd` is a dollar amount; `pct` a percentage. */
+export type AcsKind = "usd" | "pct";
+
+/** The ACS estimates carried per tract. Each also has `_moe` and `_cv`. */
+export type AcsKey =
+  | "pct_pov"
+  | "med_hh_income"
+  | "pct_no_vehicle"
+  | "pct_65plus"
+  | "pct_under18"
+  | "pct_hispanic"
+  | "pct_nh_white"
+  | "pct_nh_black";
+
+/**
+ * Display order and labels, mirroring `metadata.acs.fields` in tracts.geojson.
+ *
+ * Duplicated here deliberately rather than read from the file: the components
+ * index tract properties by these keys, so they have to be a compile-time type
+ * rather than whatever the data happens to contain at runtime. If the build
+ * script changes the field set, this list and `AcsKey` must change with it —
+ * and a mismatch surfaces as a type error rather than a blank column.
+ */
+export const ACS_LABELS: readonly {
+  key: AcsKey;
+  label: string;
+  kind: AcsKind;
+}[] = [
+  { key: "pct_pov", label: "Below the poverty level", kind: "pct" },
+  { key: "med_hh_income", label: "Median household income", kind: "usd" },
+  { key: "pct_no_vehicle", label: "Households with no vehicle", kind: "pct" },
+  { key: "pct_65plus", label: "Aged 65 and over", kind: "pct" },
+  { key: "pct_under18", label: "Under 18", kind: "pct" },
+  { key: "pct_hispanic", label: "Hispanic or Latino", kind: "pct" },
+  { key: "pct_nh_white", label: "Non-Hispanic White alone", kind: "pct" },
+  { key: "pct_nh_black", label: "Non-Hispanic Black alone", kind: "pct" },
+] as const;
+
+export interface TractProperties {
+  tract_id: number;
+  geoid: string;
+  unit_name: string;
+
+  // Crashes. Every geocoded pedestrian KSI 2015-2024 that falls inside the
+  // tract, intersection-related and mid-block together.
+  ped_ksi: number;
+  ped_any: number;
+  ksi_intersection: number;
+  ksi_midblock: number;
+  ksi_near_boundary: number;
+  ksi_per_10k_pop: number | null;
+
+  // Safety performance function, walkable road miles as the offset.
+  mu_spf: number | null;
+  eb_ksi: number | null;
+  eb_weight: number | null;
+  eb_per_road_mi: number | null;
+  mu_per_road_mi: number | null;
+  excess_ksi: number | null;
+  rank_eb: number | null;
+  rank_raw: number | null;
+  tier: RiskTier | null;
+
+  // Network and exposure.
+  road_mi: number | null;
+  n_segments: number | null;
+  n_nodes: number | null;
+  pct_arterial: number | null;
+  aadt_mean: number | null;
+  land_km2: number | null;
+  parks: number | null;
+  schools: number | null;
+
+  // ACS. Every estimate is accompanied by its margin of error and CV; see
+  // ACS_LABELS for the display set.
+  pop: number | null;
+  pop_moe: number | null;
+  pct_pov: number | null;
+  pct_pov_moe: number | null;
+  pct_pov_cv: number | null;
+  med_hh_income: number | null;
+  med_hh_income_moe: number | null;
+  med_hh_income_cv: number | null;
+  pct_no_vehicle: number | null;
+  pct_no_vehicle_moe: number | null;
+  pct_no_vehicle_cv: number | null;
+  pct_65plus: number | null;
+  pct_65plus_moe: number | null;
+  pct_65plus_cv: number | null;
+  pct_under18: number | null;
+  pct_under18_moe: number | null;
+  pct_under18_cv: number | null;
+  pct_hispanic: number | null;
+  pct_hispanic_moe: number | null;
+  pct_hispanic_cv: number | null;
+  pct_nh_white: number | null;
+  pct_nh_white_moe: number | null;
+  pct_nh_white_cv: number | null;
+  pct_nh_black: number | null;
+  pct_nh_black_moe: number | null;
+  pct_nh_black_cv: number | null;
+
+  // Coverage flags, so "no data" and "zero" stay distinguishable.
+  has_crashes: boolean;
+  has_model: boolean;
+  has_acs: boolean;
+  has_pov: boolean;
+
+  /**
+   * NOT PRESENT in tracts.geojson as built on 2026-08-02. The panel reads it
+   * with `?? 0`, so it renders "0 killed" for every tract. Either
+   * build_tracts_geojson.py must emit it or the panel should stop claiming a
+   * figure the layer does not carry.
+   */
+  ped_deaths?: number | null;
+}
+
+export interface TractFeature {
+  type: "Feature";
+  geometry: PolygonGeometry;
+  properties: TractProperties;
+}
+
+export interface TractCollection {
+  type: "FeatureCollection";
+  metadata: {
+    name: string;
+    city: string;
+    unit_type: "polygon";
+    unit_key: string;
+    unit_label: string;
+    description: string;
+    /** ECOLOGICAL, and not summable with the other two Philadelphia layers. */
+    caveat: string;
+    crash_window: string;
+    crash_accounting: {
+      ped_ksi_total: number;
+      geocoded: number;
+      no_usable_coordinate: number;
+      tract_layer: number;
+      intersection_layer_rendered: number;
+      segment_layer_rendered: number;
+      intersection_plus_segment: number;
+      county_edge_snapped: number;
+      rule: string;
+      county_edge_note: string;
+      not_summable: string;
+    };
+    /**
+     * Why boundary-adjacent tracts read low. A crash belongs to the tract
+     * containing it, but tract boundaries follow streets and crashes happen on
+     * streets, so an arterial dividing two tracts splits its burden across
+     * both. The panel quotes pct_within_50m, so this cannot stay `unknown`.
+     */
+    boundary_effect: {
+      ksi_within_25m_of_boundary: number;
+      ksi_within_50m_of_boundary: number;
+      ksi_within_100m_of_boundary: number;
+      pct_within_50m: number;
+      median_distance_m: number;
+      note: string;
+    };
+    spf: unknown;
+    acs: {
+      vintage: string;
+      geography: string;
+      moe_confidence: number;
+      fields: { key: string; label: string; kind: string }[];
+    };
+    not_comparable_to: unknown;
+    caveats: unknown;
+    attribution: unknown;
+    coordinate_system: string;
+    coordinate_decimals: number;
+    generated: string;
+  };
+  features: TractFeature[];
+}
+
+/** Philadelphia census tracts. */
+export interface TractFilterState {
+  kind: "philadelphia-tract";
+  /** [] = all tiers. */
+  tiers: RiskTier[];
+  /** Hide tracts with no pedestrian KSI in the window. */
+  withCrashesOnly: boolean;
+  /**
+   * Hide tracts whose ACS estimates are too imprecise to rank. Filtering on
+   * precision is itself a selection, so it is off by default.
+   */
+  reliableAcsOnly: boolean;
+  /** Matches unit_name and geoid. */
+  searchQuery: string;
+}
+
+/**
+ * The filter states the app currently dispatches on.
+ *
+ * `TractFilterState` is deliberately NOT a member yet. `filters.ts` closes its
+ * switch with a `never` exhaustiveness check, so joining this union obliges
+ * the app to handle tracts everywhere it handles the other three — filter
+ * predicates, the `page.tsx` sidebar branch, and a dataset entry in
+ * `cities.ts`. That is wiring the layer into the map, which is a product
+ * decision rather than a typing one. The tract components compile and are
+ * ready for it; add the member in the same change that does the wiring, and
+ * the `never` checks will list every site that still needs attention.
+ */
 export type FilterState =
   | CrashFilterState
   | SegmentFilterState

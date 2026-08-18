@@ -3,6 +3,7 @@ import type {
   CrashFilterState,
   SegmentFilterState,
   ZatFilterState,
+  TractFilterState,
   ZatCluster,
   SesCategory,
 } from "./types";
@@ -90,6 +91,17 @@ export const DEFAULT_ZAT_FILTERS: ZatFilterState = {
   clusters: [],
   sesCategories: [],
   showNoData: true,
+  searchQuery: "",
+};
+
+export const DEFAULT_TRACT_FILTERS: TractFilterState = {
+  kind: "philadelphia-tract",
+  tiers: [],
+  withCrashesOnly: false,
+  // Filtering on precision is itself a selection — it would drop the tracts
+  // whose estimates are least certain, which correlate with small populations.
+  // Off by default; the panel marks unreliable values instead.
+  reliableAcsOnly: false,
   searchQuery: "",
 };
 
