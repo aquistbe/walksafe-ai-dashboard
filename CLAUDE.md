@@ -37,9 +37,14 @@ make verify        # cd frontend && npx tsc --noEmit — must pass clean
 make preview       # then open http://localhost:3000/walksafe-ai-dashboard/
 ```
 
-Pushing to `main` auto-deploys to GitHub Pages via
-`.github/workflows/deploy.yml`. Check the preview before pushing; a broken
-build ships publicly.
+**Cloudflare Workers is the sole deployment target**, configured in
+`frontend/wrangler.jsonc`. GitHub Pages was retired in `79e7aef` (31 Jul 2026)
+because it published a second, diverging site that R2's CORS policy correctly
+refused to serve. There is no deploy workflow: pushing to `main` does NOT ship
+anything by itself. Anything claiming otherwise, including a reappearing
+`.github/workflows/deploy.yml`, is stale — that path is gitignored.
+
+Check the preview before pushing anyway; `main` is public.
 
 ## Conventions
 
