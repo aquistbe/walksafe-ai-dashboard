@@ -18,6 +18,11 @@
  */
 
 import type maplibregl from "maplibre-gl";
+// ExpressionSpecification lives in the style-spec package, not in
+// maplibre-gl's own d.ts: maplibre-gl 4.x re-exports only some spec
+// types (FilterSpecification, StyleSpecification) and not this one.
+// Pinned to v20 to match maplibre-gl 4.7.1's own dependency range.
+import type { ExpressionSpecification } from "@maplibre/maplibre-gl-style-spec";
 import type {
   FilterState,
   UnitFeature,
@@ -27,12 +32,17 @@ import type {
   IntersectionFeature,
   SegmentFeature,
   ZatFeature,
+  TractFilterState,
+  TractFeature,
 } from "./types";
 import {
   assertNever,
   isIntersectionFeature,
   isSegmentFeature,
   isZatFeature,
+  isTractFeature,
+  acsReliability,
+  CV_UNRELIABLE,
 } from "./types";
 
 /** The single "match nothing" sentinel. Both id fields are strictly positive. */
@@ -45,7 +55,7 @@ export function matchId(idField: string, id: number): maplibregl.FilterSpecifica
 }
 
 /** Nullable numeric field, coalesced to 0 for comparison. */
-const num = (field: string): maplibregl.ExpressionSpecification => [
+const num = (field: string): ExpressionSpecification => [
   "coalesce",
   ["to-number", ["get", field], 0],
   0,
@@ -242,6 +252,68 @@ function segmentPredicate(
   return true;
 }
 
+function buildTractFilter(
+  filters: TractFilterState,
+  searchIds: number[] | null
+): maplibregl.FilterSpecification {
+  const conds: unknown[] = ["all"];
+
+  // A tract with no model has no tier. As with ZAT clusters, that is not tier
+  // "Low" — it is excluded from a tier selection entirely.
+  if (filters.tiers.length > 0 && filters.tiers.length < 4) {
+    conds.push([
+      "all",
+      ["==", ["get", "has_model"], true],
+      ["in", ["get", "tier"], ["literal", filters.tiers]],
+    ]);
+  }
+
+  if (filters.withCrashesOnly) {
+    conds.push(["==", ["get", "has_crashes"], true]);
+  }
+
+  // Precision filtering uses poverty as the gate because it is the estimate the
+  // layer is most often read for, and pct_pov_cv is in the build's ALWAYS set
+  // so it is present on every tract with ACS data rather than only where
+  // non-zero. Filtering on precision is itself a selection -- it drops the
+  // least certain tracts, which are the smallest -- so it is opt-in.
+  if (filters.reliableAcsOnly) {
+    conds.push([
+      "all",
+      ["==", ["get", "has_acs"], true],
+      ["<=", ["to-number", ["get", "pct_pov_cv"], 999], CV_UNRELIABLE],
+    ]);
+  }
+
+  if (searchIds !== null) {
+    conds.push(["in", ["get", "tract_id"], ["literal", searchIds]]);
+  }
+
+  return conds as maplibregl.FilterSpecification;
+}
+
+function tractPredicate(
+  p: TractFeature["properties"],
+  f: TractFilterState
+): boolean {
+  // Mirrors buildTractFilter's `< 4` guard, for the same reason segmentPredicate
+  // does: without it the GPU filter and this one disagree when every tier is
+  // selected, and a tract with no model would pass one and fail the other.
+  if (f.tiers.length > 0 && f.tiers.length < 4) {
+    if (!p.has_model || !p.tier || !f.tiers.includes(p.tier)) return false;
+  }
+  if (f.withCrashesOnly && !p.has_crashes) return false;
+  if (f.reliableAcsOnly) {
+    if (!p.has_acs) return false;
+    if (acsReliability(p.pct_pov_cv) === "unreliable") return false;
+  }
+  if (f.searchQuery) {
+    const q = f.searchQuery.trim().toLowerCase();
+    if (!p.unit_name?.toLowerCase().includes(q) && p.geoid !== q) return false;
+  }
+  return true;
+}
+
 // ---------------------------------------------------------------------------
 // Entry points
 //
@@ -261,6 +333,8 @@ export function buildMapFilter(
       return buildSegmentFilter(filters, gateField, searchIds);
     case "bogota-zat":
       return buildZatFilter(filters, gateField, searchIds);
+    case "philadelphia-tract":
+      return buildTractFilter(filters, searchIds);
     default:
       return assertNever(filters, "filter kind");
   }
@@ -286,6 +360,10 @@ export function matchesFilters(
     case "bogota-zat":
       return isZatFeature(feature)
         ? zatPredicate(feature.properties, filters, gateField)
+        : false;
+    case "philadelphia-tract":
+      return isTractFeature(feature)
+        ? tractPredicate(feature.properties, filters)
         : false;
     default:
       return assertNever(filters, "filter kind");

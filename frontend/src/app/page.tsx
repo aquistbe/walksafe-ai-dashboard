@@ -12,23 +12,28 @@ import type {
   ZatFeature,
   ZatCollection,
   RiskTier,
+  TractFeature,
 } from "@/lib/types";
 import {
   isIntersectionFeature,
   isSegmentFeature,
   isZatFeature,
+  isTractFeature,
   isZatCollection,
   isSegmentCollection,
+  isTractCollection,
 } from "@/lib/types";
 import { defaultFiltersFor } from "@/lib/constants";
 import { matchesFilters } from "@/lib/filters";
 import CrashSidebar from "@/components/Sidebar";
 import ZatSidebar from "@/components/ZatSidebar";
 import SegmentSidebar from "@/components/SegmentSidebar";
+import TractSidebar from "@/components/TractSidebar";
 import MapExplorer from "@/components/MapExplorer";
 import InfoPanel from "@/components/InfoPanel";
 import ZatInfoPanel from "@/components/ZatInfoPanel";
 import SegmentInfoPanel from "@/components/SegmentInfoPanel";
+import TractInfoPanel from "@/components/TractInfoPanel";
 import type { LegendCounts } from "@/components/map/Legend";
 
 export default function HomePage() {
@@ -147,6 +152,24 @@ export default function HomePage() {
         .slice(0, 50);
     }
     if (dataset.unitType === "polygon") {
+      // Both the Bogotá ZAT layer and the Philadelphia tract layer are
+      // polygons, so unitType does not separate them; without this the tracts
+      // fall into the ZAT branch, fail isZatFeature, and the priority list is
+      // silently empty.
+      //
+      // Ranked by excess KSI — observed minus the SPF expectation — rather than
+      // by raw count. A large tract with many crashes and many road miles is
+      // not a priority; one with more than its exposure predicts is.
+      const tracts = [...filteredFeatures].filter((f): f is TractFeature =>
+        isTractFeature(f)
+      );
+      if (tracts.length > 0) {
+        return tracts
+          .sort(
+            (a, b) => (b.properties.excess_ksi ?? 0) - (a.properties.excess_ksi ?? 0)
+          )
+          .slice(0, 50);
+      }
       return [...filteredFeatures]
         .filter((f): f is ZatFeature => isZatFeature(f) && f.properties.has_covariates)
         .sort(
@@ -214,6 +237,8 @@ export default function HomePage() {
     collection && isZatCollection(collection) ? collection.metadata : null;
   const segMetadata: SegmentCollection["metadata"] | null =
     collection && isSegmentCollection(collection) ? collection.metadata : null;
+  const tractMetadata =
+    collection && isTractCollection(collection) ? collection.metadata : null;
 
   /**
    * The layer caveat: resolved once here, rendered once in the sidebar.
@@ -264,6 +289,24 @@ export default function HomePage() {
           collapsed={sidebarCollapsed}
           onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
+      ) : filters.kind === "philadelphia-tract" ? (
+        // Same narrowing as the segment arm above, and for the same reason:
+        // TractSidebar reads dataset.measure off PolygonDatasetConfig, which is
+        // reachable only on the polygon arm of the DatasetConfig union.
+        dataset.unitType === "polygon" ? (
+          <TractSidebar
+            filters={filters}
+            onFiltersChange={setFilters}
+            totalCount={features.length}
+            filteredCount={filteredFeatures.length}
+            topTracts={topUnits as TractFeature[]}
+            onSelectUnit={handleSelect}
+            dataset={dataset}
+            caveat={caveat}
+            collapsed={sidebarCollapsed}
+            onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+          />
+        ) : null
       ) : (
         <CrashSidebar
           filters={filters}
@@ -312,6 +355,14 @@ export default function HomePage() {
               attribution={dataset.attribution}
             />
           )}
+        {selectedFeature && isTractFeature(selectedFeature) && (
+          <TractInfoPanel
+            feature={selectedFeature}
+            metadata={tractMetadata}
+            onClose={() => handleSelect(null)}
+            attribution={dataset.attribution}
+          />
+        )}
         {selectedFeature && isIntersectionFeature(selectedFeature) && (
           <InfoPanel
             feature={selectedFeature}
@@ -320,7 +371,7 @@ export default function HomePage() {
         )}
 
         {/* Stats bar */}
-        {!loading && (summary || zatMetadata || segMetadata) && (
+        {!loading && (summary || zatMetadata || segMetadata || tractMetadata) && (
           <div className="absolute bottom-4 left-4 right-4 z-10">
             <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 px-4 py-2 flex items-center gap-6 text-xs">
               <div>

@@ -477,7 +477,8 @@ export type UnitFeature =
 export type UnitCollection =
   | IntersectionCollection
   | SegmentCollection
-  | ZatCollection;
+  | ZatCollection
+  | TractCollection;
 
 /**
  * TypeScript does not narrow a union on a NESTED discriminant, so testing
@@ -503,6 +504,16 @@ export function isTractFeature(f: UnitFeature): f is TractFeature {
 }
 export function isZatCollection(c: UnitCollection): c is ZatCollection {
   return "unit_type" in c.metadata && c.metadata.unit_type === "polygon";
+}
+/**
+ * `crash_accounting` is unique to the tract layer, and it is there because this
+ * is the only Philadelphia layer holding the COMPLETE geocoded crash set — so
+ * it is the one that must state it is not summable with the other two.
+ * Not keyed on `unit_type`: the intersection collection's metadata has no such
+ * field, so reading it would not typecheck across the union.
+ */
+export function isTractCollection(c: UnitCollection): c is TractCollection {
+  return "crash_accounting" in c.metadata;
 }
 export function isSegmentCollection(c: UnitCollection): c is SegmentCollection {
   return "unit_type" in c.metadata && c.metadata.unit_type === "line";
@@ -730,10 +741,11 @@ export interface TractProperties {
   has_pov: boolean;
 
   /**
-   * NOT PRESENT in tracts.geojson as built on 2026-08-02. The panel reads it
-   * with `?? 0`, so it renders "0 killed" for every tract. Either
-   * build_tracts_geojson.py must emit it or the panel should stop claiming a
-   * figure the layer does not carry.
+   * Optional BY DESIGN, not missing. build_tracts_geojson.py drops any key
+   * outside its ALWAYS set when the value is zero, to keep the payload lean —
+   * so this is absent from the 198 tracts with no pedestrian death and present
+   * on the other 210, totalling 451 of the layer's 1,494 KSI. The panel's
+   * `?? 0` is the correct reading, not a workaround.
    */
   ped_deaths?: number | null;
 }
@@ -816,19 +828,8 @@ export interface TractFilterState {
   searchQuery: string;
 }
 
-/**
- * The filter states the app currently dispatches on.
- *
- * `TractFilterState` is deliberately NOT a member yet. `filters.ts` closes its
- * switch with a `never` exhaustiveness check, so joining this union obliges
- * the app to handle tracts everywhere it handles the other three — filter
- * predicates, the `page.tsx` sidebar branch, and a dataset entry in
- * `cities.ts`. That is wiring the layer into the map, which is a product
- * decision rather than a typing one. The tract components compile and are
- * ready for it; add the member in the same change that does the wiring, and
- * the `never` checks will list every site that still needs attention.
- */
 export type FilterState =
   | CrashFilterState
   | SegmentFilterState
-  | ZatFilterState;
+  | ZatFilterState
+  | TractFilterState;

@@ -22,6 +22,7 @@ export type CityId = "philadelphia" | "bogota";
 export type DatasetId =
   | "philadelphia-intersections"
   | "philadelphia-segments"
+  | "philadelphia-tracts"
   | "bogota-zats"
   | "bogota-segments";
 
@@ -148,7 +149,11 @@ interface DatasetBase {
   layerModes: LayerModeConfig[];
   defaultLayerMode: string;
   /** Which arm of the FilterState union this dataset uses. */
-  filterKind: "philadelphia-crash" | "philadelphia-segment" | "bogota-zat";
+  filterKind:
+    | "philadelphia-crash"
+    | "philadelphia-segment"
+    | "bogota-zat"
+    | "philadelphia-tract";
 
   /** The measure and its denominator, stated so a colour cannot be misread. */
   measureLabel: string;
@@ -366,6 +371,43 @@ const BOGOTA_ZATS: PolygonDatasetConfig = {
     "carry more pedestrians and traffic.",
 };
 
+const PHILADELPHIA_TRACTS: PolygonDatasetConfig = {
+  id: "philadelphia-tracts",
+  label: "Tracts",
+  unitType: "polygon",
+  measure: {
+    distanceUnit: "mi",
+    distanceUnitLong: "miles",
+    outcomeLabel: "pedestrian KSI",
+    outcomeLabelShort: "KSI",
+    crashWindow: "2015–2024",
+  },
+  idField: "tract_id",
+  nameField: "unit_name",
+  unitLabel: "tract",
+  unitLabelPlural: "tracts",
+  dataUrl: "/data/tracts.geojson",
+  summaryUrl: null,
+  apiPath: null,
+  layerModes: [
+    { id: "excess", label: "Excess KSI", title: "Observed minus the safety-performance-function expectation", icon: "crosshair", gateField: "has_model" },
+    { id: "observed", label: "Observed KSI", title: "Pedestrian killed or seriously injured, 2015–2024", icon: "grid", gateField: "has_crashes" },
+    { id: "poverty", label: "Poverty", title: "Share below the poverty level, ACS 2020–2024", icon: "people", gateField: "has_pov" },
+  ],
+  // Excess rather than raw count. A large tract with many crashes and many road
+  // miles is not a priority; one with more than its exposure predicts is.
+  defaultLayerMode: "excess",
+  filterKind: "philadelphia-tract",
+  measureLabel: "Pedestrian KSI against an exposure-adjusted expectation, 408 tracts",
+  mapCaveat:
+    "Ecological, and NOT summable with the intersection or segment layers. " +
+    "This is the only Philadelphia layer holding the complete geocoded set — " +
+    "1,494 pedestrian KSI, intersection and mid-block together — because a " +
+    "tract contains a crash rather than being assigned one. The other two " +
+    "partition the same crashes between them, so adding this to either counts " +
+    "every crash twice. Tract-level association, not individual risk.",
+};
+
 const BOGOTA_SEGMENTS: LineDatasetConfig = {
   id: "bogota-segments",
   label: "Segments",
@@ -466,7 +508,7 @@ export const CITY_CONFIGS: Record<CityId, CityConfig> = {
       "and mid-block street segments, plus one completed imagery " +
       "measurement-validation study. The Senior Pedestrian Mobility Index is " +
       "not built yet — these are not SPMI scores.",
-    datasets: [PHILLY_INTERSECTIONS, PHILLY_SEGMENTS],
+    datasets: [PHILLY_INTERSECTIONS, PHILLY_SEGMENTS, PHILADELPHIA_TRACTS],
     defaultDatasetId: "philadelphia-intersections",
   },
 
@@ -503,6 +545,7 @@ export const DEFAULT_DATASET: DatasetId = "philadelphia-intersections";
 const DATASETS: Record<DatasetId, DatasetConfig> = {
   "philadelphia-intersections": PHILLY_INTERSECTIONS,
   "philadelphia-segments": PHILLY_SEGMENTS,
+  "philadelphia-tracts": PHILADELPHIA_TRACTS,
   "bogota-zats": BOGOTA_ZATS,
   "bogota-segments": BOGOTA_SEGMENTS,
 };

@@ -11,6 +11,11 @@
  */
 
 import type maplibregl from "maplibre-gl";
+// ExpressionSpecification lives in the style-spec package, not in
+// maplibre-gl's own d.ts: maplibre-gl 4.x re-exports only some spec
+// types (FilterSpecification, StyleSpecification) and not this one.
+// Pinned to v20 to match maplibre-gl 4.7.1's own dependency range.
+import type { ExpressionSpecification } from "@maplibre/maplibre-gl-style-spec";
 import type { DatasetConfig, SegmentFieldConfig } from "@/lib/cities";
 import {
   RISK_TIER_COLORS,
@@ -153,7 +158,7 @@ const tierMatch = (scale: number, bump: number): unknown[] => [
   3 * scale + bump,
 ];
 
-export const circleColorExpr: maplibregl.ExpressionSpecification = [
+export const circleColorExpr: ExpressionSpecification = [
   "match",
   ["get", "risk_tier"],
   "Critical", RISK_TIER_COLORS.Critical,
@@ -164,7 +169,7 @@ export const circleColorExpr: maplibregl.ExpressionSpecification = [
 ];
 
 /** Colour ramp for the blind imagery safety score (0 hostile → 100 protected). */
-export const IMAGERY_COLOR_EXPR: maplibregl.ExpressionSpecification = [
+export const IMAGERY_COLOR_EXPR: ExpressionSpecification = [
   "case",
   ["!", ["has", "img_score"]],
   "#E5E7EB",
@@ -196,7 +201,7 @@ export const IMAGERY_COLOR_EXPR: maplibregl.ExpressionSpecification = [
 export function pointRadiusExpr(
   layerMode: string,
   bump = 0
-): maplibregl.ExpressionSpecification {
+): ExpressionSpecification {
   if (layerMode === "crashes") {
     return [
       "interpolate",
@@ -214,10 +219,10 @@ export function pointRadiusExpr(
     ["zoom"],
     10, tierMatch(0.45, bump),
     14, tierMatch(1, bump),
-  ] as unknown as maplibregl.ExpressionSpecification;
+  ] as unknown as ExpressionSpecification;
 }
 
-export function pointColorExpr(layerMode: string): maplibregl.ExpressionSpecification {
+export function pointColorExpr(layerMode: string): ExpressionSpecification {
   return layerMode === "imagery" ? IMAGERY_COLOR_EXPR : circleColorExpr;
 }
 
@@ -233,11 +238,11 @@ function stepExpr(
   field: string,
   breaks: number[],
   ramp: string[]
-): maplibregl.ExpressionSpecification {
+): ExpressionSpecification {
   const step: unknown[] = ["step", ["to-number", ["get", field], 0], ramp[0]];
   breaks.forEach((b, i) => step.push(b, ramp[i + 1]));
   // Variadic `step` cannot be expressed in MapLibre's tuple types.
-  return step as unknown as maplibregl.ExpressionSpecification;
+  return step as unknown as ExpressionSpecification;
 }
 
 /**
@@ -253,7 +258,7 @@ function stepExpr(
 export function polygonFillColor(
   layerMode: string,
   basemap: BasemapMode
-): maplibregl.ExpressionSpecification {
+): ExpressionSpecification {
   const grey = noDataColor(basemap);
 
   if (layerMode === "casualties") {
@@ -262,7 +267,7 @@ export function polygonFillColor(
       ["!", ["get", "has_covariates"]],
       grey,
       stepExpr("casualties_per_km2", CASUALTY_DENSITY_BREAKS, CASUALTY_DENSITY_RAMP),
-    ] as maplibregl.ExpressionSpecification;
+    ] as ExpressionSpecification;
   }
 
   if (layerMode === "age60") {
@@ -271,7 +276,7 @@ export function polygonFillColor(
       ["!", ["get", "has_pop60"]],
       grey,
       stepExpr("pct60plus", PCT60_BREAKS, PCT60_RAMP),
-    ] as maplibregl.ExpressionSpecification;
+    ] as ExpressionSpecification;
   }
 
   // Default: cluster profile.
@@ -288,7 +293,7 @@ export function polygonFillColor(
       4, CLUSTER_COLORS[4],
       grey,
     ],
-  ] as maplibregl.ExpressionSpecification;
+  ] as ExpressionSpecification;
 }
 
 /**
@@ -298,9 +303,9 @@ export function polygonFillColor(
  */
 export function polygonFillOpacity(
   gateField: string | undefined
-): maplibregl.ExpressionSpecification | number {
+): ExpressionSpecification | number {
   if (!gateField) return 0.72;
-  return ["case", ["!", ["get", gateField]], 0.3, 0.72] as maplibregl.ExpressionSpecification;
+  return ["case", ["!", ["get", gateField]], 0.3, 0.72] as ExpressionSpecification;
 }
 
 // ---------------------------------------------------------------------------
@@ -337,7 +342,7 @@ export function lineColorExpr(
   layerMode: string,
   basemap: BasemapMode,
   seg: SegmentFieldConfig
-): maplibregl.ExpressionSpecification {
+): ExpressionSpecification {
   // Full-opacity no-data colour. See NO_DATA_LINE: the gated-out features used
   // to be dimmed to 0.28 as well as greyed, which put them at 1.13:1 against
   // the basemap and made a mode where 98.5% of segments have no value look
@@ -347,7 +352,7 @@ export function lineColorExpr(
   if (layerMode === "observed") {
     return ["case", ["!", ["get", "has_crashes"]], grey,
       stepExpr(seg.outcomeField, seg.observedBreaks, SEG_OBSERVED_RAMP),
-    ] as maplibregl.ExpressionSpecification;
+    ] as ExpressionSpecification;
   }
   if (layerMode === "aadt") {
     // Gated on has_aadt, not on the value: two thirds of segments carry
@@ -355,11 +360,11 @@ export function lineColorExpr(
     // traffic count that was never taken.
     return ["case", ["!", ["get", "has_aadt"]], grey,
       stepExpr("aadt", SEG_AADT_BREAKS, SEG_AADT_RAMP),
-    ] as maplibregl.ExpressionSpecification;
+    ] as ExpressionSpecification;
   }
   return ["case", ["!", ["get", "has_model"]], grey,
     stepExpr(seg.rateField, seg.spfBreaks, SEG_SPF_RAMP),
-  ] as maplibregl.ExpressionSpecification;
+  ] as ExpressionSpecification;
 }
 
 /**
@@ -382,13 +387,13 @@ function classWidth(scale: number, bump: number): unknown[] {
   ];
 }
 
-export function lineWidthExpr(bump = 0): maplibregl.ExpressionSpecification {
+export function lineWidthExpr(bump = 0): ExpressionSpecification {
   return [
     "interpolate", ["linear"], ["zoom"],
     10, classWidth(0.45, bump),
     14, classWidth(1.0, bump),
     17, classWidth(2.2, bump),
-  ] as unknown as maplibregl.ExpressionSpecification;
+  ] as unknown as ExpressionSpecification;
 }
 
 /**
@@ -404,13 +409,13 @@ export function lineWidthExpr(bump = 0): maplibregl.ExpressionSpecification {
  */
 export function polygonOutlineWidthExpr(
   bump = 0
-): maplibregl.ExpressionSpecification {
+): ExpressionSpecification {
   return [
     "interpolate", ["linear"], ["zoom"],
     10, 0.75 + bump,
     13, 1.5 + bump,
     16, 3 + bump,
-  ] as maplibregl.ExpressionSpecification;
+  ] as ExpressionSpecification;
 }
 
 // ---------------------------------------------------------------------------
