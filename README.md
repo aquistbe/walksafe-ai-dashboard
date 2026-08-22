@@ -2,7 +2,7 @@
 
 **Live: https://aquistbe.github.io/walksafe-ai-dashboard/**
 
-Interactive web platform for exploring pedestrian safety data, viewing the Senior Pedestrian Mobility Index (SPMI), testing interventions, and supporting community decision-making about pedestrian infrastructure. Part of the WalkSafe-AI R01 project (NIA) and integrated with the PedAudit neurosymbolic benchmark.
+Interactive web platform for exploring pedestrian safety data, viewing the Senior Pedestrian Mobility Index (SPMI), testing interventions, and supporting community decision-making about pedestrian infrastructure. Part of the WalkSafe-AI R01 project and integrated with the PedAudit neurosymbolic benchmark.
 
 The site rebuilds automatically on any push to `main` that touches `frontend/` or `data/`. To publish new imagery scores, rerun `scoring/join_scores.py --write-geojson`, then commit and push `data/`.
 
