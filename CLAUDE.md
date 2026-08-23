@@ -1,8 +1,8 @@
 # WalkSafe-AI Dashboard — project instructions
 
 Public pedestrian safety dashboard plus an imagery scoring pipeline.
-Part of the WalkSafe-AI R01 (NIA). Live at
-https://aquistbe.github.io/walksafe-ai-dashboard/
+Part of the WalkSafe-AI project. Live at
+https://walksafe-ai-dashboard.daq26.workers.dev/
 
 ## Scope
 
@@ -34,7 +34,7 @@ api/          FastAPI backend (optional — the frontend works standalone)
 
 ```bash
 make verify        # cd frontend && npx tsc --noEmit — must pass clean
-make preview       # then open http://localhost:3000/walksafe-ai-dashboard/
+make preview       # then open http://localhost:3000/
 ```
 
 **Cloudflare Workers is the sole deployment target**, configured in

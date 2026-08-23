@@ -156,7 +156,7 @@ export default function ResearchPage() {
             <Section id="overview" eyebrow="Context" title="Project overview">
               <P>
                 WalkSafe-AI is a research program on older-adult pedestrian
-                safety, funded through the National Institute on Aging. Adults
+                safety. Adults
                 aged 65 and over are killed as pedestrians at substantially
                 higher rates than younger adults, and the built-environment
                 features that drive that gap — crossing distances, signal

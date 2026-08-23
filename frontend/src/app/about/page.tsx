@@ -81,7 +81,12 @@ export default function AboutPage() {
             <p className="text-sm text-gray-600 leading-relaxed">
               WalkSafe-AI is developed at Drexel University as part of a
               research initiative on pedestrian safety and urban infrastructure
-              analytics.
+              analytics. This dashboard and the Bogot&aacute; analyses are
+              supported in part by the Built Environment, Pedestrian Injuries
+              and Deep Learning (BEPIDL) Study, NIH Fogarty International
+              Center award K01&nbsp;TW011782. The content is solely the
+              responsibility of the authors and does not necessarily represent
+              the official views of the National Institutes of Health.
             </p>
           </section>
 

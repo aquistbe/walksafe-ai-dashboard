@@ -6,10 +6,11 @@
 #   make data             both
 #   make philly-pipeline  run the full analysis pipeline, 01 -> 11
 #   make segments         mid-block crashes -> segment SPF -> data/segments.geojson
+#   make tracts           tract SPF + ACS equity -> data/tracts.geojson
 #   make bogota-segments  Bogota segment SPF -> data/bogota_segments.geojson
 #   make upload-bogota-segments   publish that file to R2
 #   make verify           type-check the frontend
-#   make preview          build and serve exactly as GitHub Pages will
+#   make preview          build and serve the static export as the Workers deploy serves it
 #
 # Derived outputs in data/ are committed. Large raw geometry in data/source/
 # is not — see data/source/README.md for provenance and checksums.
@@ -27,7 +28,7 @@ UV_DEPS := --with pandas --with numpy --with geopandas --with shapely \
            --with pyarrow --with statsmodels --with folium
 PIPELINE_PYTHON ?= uv run $(UV_DEPS) python
 
-.PHONY: help check bogota philly data philly-pipeline segments bogota-segments upload-bogota-segments verify preview clean-preview
+.PHONY: help check bogota philly data philly-pipeline segments tracts bogota-segments upload-bogota-segments verify preview clean-preview
 
 help:
 	@grep -E '^#   make' $(MAKEFILE_LIST) | sed 's/^#   /  /'
@@ -105,6 +106,21 @@ segments:
 	@echo "Built data/segments.geojson"
 
 # ---------------------------------------------------------------------------
+# Philadelphia census tracts — the only layer carrying the COMPLETE geocoded
+# pedestrian KSI set (intersections and segments partition it; tracts do not).
+#
+# Needs work/ outputs from the pipeline (steps 01, 03) and segments (13), a
+# free Census API key (CENSUS_API_KEY in the environment or the gitignored
+# repo-root .env — https://api.census.gov/data/key_signup.html), and outbound
+# network for the TIGER/Line boundary download (fetched once, then cached).
+# ---------------------------------------------------------------------------
+
+tracts:
+	(cd pipeline && $(PIPELINE_PYTHON) 16_tract_spf_equity.py)
+	$(PIPELINE_PYTHON) data/build_tracts_geojson.py
+	@echo "Built data/tracts.geojson"
+
+# ---------------------------------------------------------------------------
 # Bogota street segments
 #
 # The output is ~55 MB, over Cloudflare Workers' 25 MiB per-asset limit, so it
@@ -154,7 +170,7 @@ verify:
 	@echo "Type check passed"
 
 preview:
-	cd frontend && npm run preview:pages
+	cd frontend && npm run preview:static
 
 clean-preview:
 	rm -rf frontend/out frontend/.preview

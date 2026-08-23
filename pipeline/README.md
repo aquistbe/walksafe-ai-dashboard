@@ -13,7 +13,8 @@ Methodology is documented in `MEMO_intersection_ranking.md` in the original
 ```bash
 export WALKSAFE_DATA_ROOT="$HOME/Library/CloudStorage/OneDrive-DrexelUniversity/Grants/WALKSAFE-AI Grant/Data"
 make philly-pipeline     # 01 -> 11, the intersection ranking
-make segments            # 12, 13, then data/segments.geojson
+make segments            # 12, 13, 14, then data/segments.geojson
+make tracts              # 16 (needs CENSUS_API_KEY), then data/tracts.geojson
 ```
 
 Every path resolves through `config.py`. Nothing is machine-specific; the only
