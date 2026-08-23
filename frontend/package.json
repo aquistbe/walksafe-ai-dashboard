@@ -8,7 +8,7 @@
     "prebuild": "npm run copy-data",
     "dev": "next dev",
     "build": "next build",
-    "build:static": "npm run copy-data && NEXT_OUTPUT=export next build",
+    "build:static": "npm run copy-data && NEXT_OUTPUT=export next build && rm -f out/data/bogota_segments.geojson",
     "build:pages": "npm run copy-data && NEXT_OUTPUT=export NEXT_PUBLIC_BASE_PATH=/walksafe-ai-dashboard next build",
     "preview:static": "npm run build:static && npx serve out",
     "preview:pages": "npm run build:pages && rm -rf .preview && mkdir -p .preview/walksafe-ai-dashboard && cp -r out/. .preview/walksafe-ai-dashboard/ && echo '\\nOpen http://localhost:3000/walksafe-ai-dashboard/\\n' && npx serve .preview",
