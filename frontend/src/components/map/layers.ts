@@ -26,6 +26,9 @@ import {
   NO_DATA_LINE,
   NO_DATA_LINE_DARK,
   CASUALTY_DENSITY_BREAKS,
+  TRACT_EXCESS_BREAKS, TRACT_EXCESS_RAMP,
+  TRACT_OBSERVED_BREAKS, TRACT_OBSERVED_RAMP,
+  TRACT_POVERTY_BREAKS, TRACT_POVERTY_RAMP,
   CASUALTY_DENSITY_RAMP,
   PCT60_BREAKS,
   PCT60_RAMP,
@@ -276,6 +279,34 @@ export function polygonFillColor(
       ["!", ["get", "has_pop60"]],
       grey,
       stepExpr("pct60plus", PCT60_BREAKS, PCT60_RAMP),
+    ] as ExpressionSpecification;
+  }
+
+  // Philadelphia tracts. Excess is signed, so the step starts in the blue
+  // arm; `["to-number", ..., 0]` would put a null in the neutral middle bin,
+  // which is why the gate on has_model comes first.
+  if (layerMode === "excess") {
+    return [
+      "case",
+      ["!", ["get", "has_model"]],
+      grey,
+      stepExpr("excess_ksi", TRACT_EXCESS_BREAKS, TRACT_EXCESS_RAMP),
+    ] as ExpressionSpecification;
+  }
+
+  // Observed KSI has no gate: a tract with no crashes has a count of ZERO,
+  // which is a value, not missing (has_crashes is false for exactly the 66
+  // tracts with ped_ksi = 0). Greying them would paint zero as no data.
+  if (layerMode === "observed") {
+    return stepExpr("ped_ksi", TRACT_OBSERVED_BREAKS, TRACT_OBSERVED_RAMP);
+  }
+
+  if (layerMode === "poverty") {
+    return [
+      "case",
+      ["!", ["get", "has_pov"]],
+      grey,
+      stepExpr("pct_pov", TRACT_POVERTY_BREAKS, TRACT_POVERTY_RAMP),
     ] as ExpressionSpecification;
   }
 

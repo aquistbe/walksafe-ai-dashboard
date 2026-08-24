@@ -391,7 +391,9 @@ const PHILADELPHIA_TRACTS: PolygonDatasetConfig = {
   apiPath: null,
   layerModes: [
     { id: "excess", label: "Excess KSI", title: "Observed minus the safety-performance-function expectation", icon: "crosshair", gateField: "has_model" },
-    { id: "observed", label: "Observed KSI", title: "Pedestrian killed or seriously injured, 2015–2024", icon: "grid", gateField: "has_crashes" },
+    // No gateField: has_crashes is false for exactly the tracts with zero
+    // pedestrian KSI, and zero is a value. Gating would grey them as no data.
+    { id: "observed", label: "Observed KSI", title: "Pedestrian killed or seriously injured, 2015–2024", icon: "grid" },
     { id: "poverty", label: "Poverty", title: "Share below the poverty level, ACS 2020–2024", icon: "people", gateField: "has_pov" },
   ],
   // Excess rather than raw count. A large tract with many crashes and many road

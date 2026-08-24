@@ -20,6 +20,9 @@ import {
   CASUALTY_DENSITY_RAMP,
   PCT60_BREAKS,
   PCT60_RAMP,
+  TRACT_EXCESS_BREAKS, TRACT_EXCESS_RAMP,
+  TRACT_OBSERVED_BREAKS, TRACT_OBSERVED_RAMP,
+  TRACT_POVERTY_BREAKS, TRACT_POVERTY_RAMP,
 } from "@/lib/constants";
 import {
   SEG_SPF_RAMP,
@@ -216,6 +219,51 @@ function renderZatLegend(
     );
   }
 
+  // Philadelphia tracts (24 Aug 2026). Before these three branches every
+  // tract mode fell through to the zone-profile block below.
+  if (layerMode === "excess") {
+    return (
+      <>
+        <Title>Excess pedestrian KSI</Title>
+        <Ramp ramp={TRACT_EXCESS_RAMP} breaks={TRACT_EXCESS_BREAKS} minLabel="−8" />
+        <NoDataRow label="No model" count={noData()} />
+        <Foot>
+          Observed minus the safety-performance-function expectation,
+          {" "}{dataset.measure.crashWindow}. Blue: fewer than road miles and
+          population predict; red: more. Ecological — not individual risk.
+        </Foot>
+      </>
+    );
+  }
+
+  if (layerMode === "observed") {
+    return (
+      <>
+        <Title>Observed pedestrian KSI</Title>
+        <Ramp ramp={TRACT_OBSERVED_RAMP} breaks={TRACT_OBSERVED_BREAKS} />
+        <Foot>
+          Killed or seriously injured, {dataset.measure.crashWindow}, by crash
+          location. Zero is a count, not missing data. Not summable with the
+          intersection or segment layers.
+        </Foot>
+      </>
+    );
+  }
+
+  if (layerMode === "poverty") {
+    return (
+      <>
+        <Title>Below the poverty level</Title>
+        <Ramp ramp={TRACT_POVERTY_RAMP} breaks={TRACT_POVERTY_BREAKS} suffix="%" />
+        <NoDataRow label="No ACS estimate" count={noData()} />
+        <Foot>
+          ACS 2020–2024 5-year estimate; tract margins of error are large and
+          shown with every value in the panel.
+        </Foot>
+      </>
+    );
+  }
+
   // Cluster profile. Ordered by built-environment intensity, not by number —
   // that ordering is what the ramp encodes and what makes the map readable.
   return (
@@ -356,10 +404,14 @@ function Ramp({
   ramp,
   breaks,
   suffix = "",
+  minLabel = "0",
 }: {
   ramp: string[];
   breaks: number[];
   suffix?: string;
+  /** Left-edge label. "0" for every sequential ramp; a diverging ramp
+   *  (tract excess KSI) starts below zero and must say so. */
+  minLabel?: string;
 }) {
   return (
     <>
@@ -372,7 +424,7 @@ function Ramp({
           ramp printed bare numbers where it meant percentages — 10, 14, 18
           reading as counts rather than shares of the population. */}
       <div className="flex justify-between text-[9px] text-gray-400 tabular-nums mb-1">
-        <span>0{suffix}</span>
+        <span>{minLabel}{suffix}</span>
         {breaks.map((b) => (
           <span key={b}>
             {b}

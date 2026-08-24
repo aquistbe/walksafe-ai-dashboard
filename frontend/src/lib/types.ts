@@ -502,8 +502,21 @@ export function isZatFeature(f: UnitFeature): f is ZatFeature {
 export function isTractFeature(f: UnitFeature): f is TractFeature {
   return "geoid" in f.properties;
 }
+/**
+ * Polygon collections are two kinds — Bogotá ZATs and Philadelphia tracts —
+ * and both carry `unit_type: "polygon"`, so that field alone cannot tell them
+ * apart. This guard used to key on it alone, which made the ZAT stats bar
+ * render for tracts and read `metadata.join`, a ZAT-only block, off metadata
+ * that has none: the "client-side exception" on `?layer=philadelphia-tracts`
+ * (24 Aug 2026). `join` is what every ZAT-only consumer actually reads, so it
+ * is the honest discriminator, mirroring `crash_accounting` for tracts below.
+ */
 export function isZatCollection(c: UnitCollection): c is ZatCollection {
-  return "unit_type" in c.metadata && c.metadata.unit_type === "polygon";
+  return (
+    "unit_type" in c.metadata &&
+    c.metadata.unit_type === "polygon" &&
+    "join" in c.metadata
+  );
 }
 /**
  * `crash_accounting` is unique to the tract layer, and it is there because this

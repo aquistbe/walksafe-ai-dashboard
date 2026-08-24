@@ -8,6 +8,7 @@ import type {
   SesCategory,
 } from "./types";
 import type { DatasetConfig } from "./cities";
+import { assertNever } from "./types";
 
 /** API base URL — falls back to relative path for same-origin deployment. */
 export const API_BASE_URL =
@@ -119,7 +120,12 @@ export function defaultFiltersFor(dataset: DatasetConfig) {
   switch (dataset.filterKind) {
     case "bogota-zat": return DEFAULT_ZAT_FILTERS;
     case "philadelphia-segment": return DEFAULT_SEGMENT_FILTERS;
-    default: return DEFAULT_CRASH_FILTERS;
+    // Missing until 24 Aug 2026: the tract dataset fell through to the
+    // intersection filters, whose `philadelphia-crash` kind rejects every
+    // tract in matchesFilters — "0 of 408", no polygons, wrong sidebar.
+    case "philadelphia-tract": return DEFAULT_TRACT_FILTERS;
+    case "philadelphia-crash": return DEFAULT_CRASH_FILTERS;
+    default: return assertNever(dataset.filterKind, "filter kind");
   }
 }
 
@@ -230,6 +236,34 @@ export const NO_DATA_LINE_DARK = "#6B7280";
 export const CASUALTY_DENSITY_BREAKS = [22, 44, 73, 114, 153];
 export const CASUALTY_DENSITY_RAMP = [
   "#FEF0D9", "#FDD49E", "#FDBB84", "#FC8D59", "#E34A33", "#B30000",
+];
+
+/**
+ * Philadelphia tract ramps, from the empirical distributions in
+ * data/tracts.geojson (n = 407 with a model, 408 with crashes, 388 with an
+ * ACS poverty estimate). Added 24 Aug 2026: the tract layer shipped with a
+ * data file, filters, sidebar and info panel but no paint or legend of its
+ * own, so it rendered every tract grey under the Bogotá zone-profile legend.
+ *
+ * Excess KSI is observed minus the SPF expectation and is DIVERGING about 0
+ * (247 of 407 tracts sit below expectation): quantiles p10 −3.5, p25 −2.2,
+ * p50 −0.8, p75 +1.1, p90 +3.8, p95 +6.2. Blue = fewer than expected, red =
+ * more. The breaks are symmetric so the ramp does not imply that "below
+ * expectation" is the neutral state.
+ */
+export const TRACT_EXCESS_BREAKS = [-3, -1, 1, 3, 6];
+export const TRACT_EXCESS_RAMP = [
+  "#2166AC", "#92C5DE", "#E6E6E6", "#F4A582", "#D6604D", "#B2182B",
+];
+/** Observed pedestrian KSI, 2015–2024: p50 3, p75 5, p90 8, p95 11, max 27. */
+export const TRACT_OBSERVED_BREAKS = [1, 3, 5, 8, 12];
+export const TRACT_OBSERVED_RAMP = [
+  "#FEF0D9", "#FDD49E", "#FDBB84", "#FC8D59", "#E34A33", "#B30000",
+];
+/** Share below the poverty level, ACS 2020–2024: p25 10, p50 18, p75 30, p90 43. */
+export const TRACT_POVERTY_BREAKS = [10, 20, 30, 40, 50];
+export const TRACT_POVERTY_RAMP = [
+  "#F2F0F7", "#DADAEB", "#BCBDDC", "#9E9AC8", "#756BB1", "#54278F",
 ];
 
 export const PCT60_BREAKS = [10, 14, 18, 22, 25];

@@ -117,13 +117,17 @@ export default function HomePage() {
         counts[`no_${m.gateField}`] = 0;
       }
       for (const f of filteredFeatures) {
-        if (!isZatFeature(f)) continue;
+        // Both polygon units carry per-mode gate flags; only ZATs carry a
+        // cluster. Tracts used to be skipped here outright, so their legend
+        // reported zero coverage for every mode.
+        if (!isZatFeature(f) && !isTractFeature(f)) continue;
         const props = f.properties as unknown as Record<string, boolean>;
         for (const m of dataset.layerModes) {
           if (!m.gateField) continue;
           if (props[m.gateField]) counts[`has_${m.gateField}`]++;
           else counts[`no_${m.gateField}`]++;
         }
+        if (!isZatFeature(f)) continue;
         const c = f.properties.clus;
         if (c) counts[String(c)]++;
         else counts.none++;

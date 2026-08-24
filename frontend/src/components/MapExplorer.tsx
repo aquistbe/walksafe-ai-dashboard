@@ -16,7 +16,6 @@ import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import type { UnitCollection, UnitFeature, FilterState } from "@/lib/types";
-import { isSegmentFeature, isZatFeature } from "@/lib/types";
 import type { CityConfig, DatasetConfig } from "@/lib/cities";
 import { MAP_STYLE_URL } from "@/lib/constants";
 import { buildMapFilter, searchMatchIds } from "@/lib/filters";
@@ -217,10 +216,13 @@ export default function MapExplorer({
 
       // Areas and lines anchor under the cursor; a line's first vertex could be
       // far off-screen.
+      // Branch on GEOMETRY, not unit type: tracts are polygons too, and keying
+      // this on isZatFeature handed a tract's polygon rings to setLngLat as if
+      // they were a point (24 Aug 2026 — the LngLatLike crash on hover/click).
       const anchor: [number, number] =
-        isZatFeature(feat) || isSegmentFeature(feat)
-          ? [e.lngLat.lng, e.lngLat.lat]
-          : (feat.geometry.coordinates.slice() as [number, number]);
+        feat.geometry.type === "Point"
+          ? (feat.geometry.coordinates.slice() as [number, number])
+          : [e.lngLat.lng, e.lngLat.lat];
 
       popupRef.current?.setLngLat(anchor).addTo(map);
     });
@@ -331,7 +333,9 @@ export default function MapExplorer({
     const feat = featureIndex.get(selectedId);
     if (!feat) return;
 
-    if (isZatFeature(feat) || isSegmentFeature(feat)) {
+    // Same rule as the hover anchor above: anything that is not a point gets
+    // its bounds, whatever analysis unit it belongs to.
+    if (feat.geometry.type !== "Point") {
       map.fitBounds(featureBounds(feat), {
         // Clear the 384px (w-96) InfoPanel plus its 16px inset on the right.
         padding: { top: 60, bottom: 90, left: 60, right: 420 },
