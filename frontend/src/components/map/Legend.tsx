@@ -25,6 +25,7 @@ import {
   TRACT_POVERTY_BREAKS, TRACT_POVERTY_RAMP,
   TRACT_AGE_BREAKS, TRACT_AGE_RAMP,
   TRIP_RATE_BREAKS,
+  ZAT_EXCESS_BREAKS, ZAT_EXCESS_RAMP,
 } from "@/lib/constants";
 import {
   SEG_SPF_RAMP,
@@ -195,6 +196,22 @@ function renderZatLegend(
     const gate = dataset.layerModes.find((m) => m.id === layerMode)?.gateField;
     return gate ? counts[`no_${gate}`] : counts.none;
   };
+
+  if (layerMode === "excess_casualties") {
+    return (
+      <>
+        <Title>Excess pedestrian casualties</Title>
+        <Ramp ramp={ZAT_EXCESS_RAMP} breaks={ZAT_EXCESS_BREAKS} minLabel="−110" />
+        <NoDataRow label="No model expectation" count={noData()} />
+        <Foot>
+          Observed {dataset.measure.crashWindow} minus what the published
+          offset model expects for a zone with this profile, covariates and
+          walking + transit trips. Blue: fewer than zones like it; red: more.
+          Ecological.
+        </Foot>
+      </>
+    );
+  }
 
   if (layerMode === "casualties") {
     return (

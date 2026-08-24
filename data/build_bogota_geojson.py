@@ -44,6 +44,7 @@ from shapely.ops import transform as shapely_transform
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from rates import per_10k  # noqa: E402
+from zat_expected import EXPECTED_META, add_expected, load_coefficients  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Paths — everything stays inside the repository
@@ -151,6 +152,7 @@ df_feat = pd.read_csv(FEATURES_CSV, index_col=0)
 df_covar = pd.read_csv(COVAR_CSV, na_values=["NA"])
 df_pop60 = pd.read_csv(POP60_CSV, na_values=["NA"])
 df_models = pd.read_csv(MODELS_CSV)
+EXPECTED_COEF = load_coefficients(MODELS_CSV)
 
 for name, df in [("zat_pr312k_all", df_feat),
                  ("profile312k_all_covar_unscaled", df_covar),
@@ -412,6 +414,10 @@ for zid in sorted(geometries):
     props["injury_per_10k_trips"] = per_10k(props["injury"], trips)
     props["death_per_10k_trips"] = per_10k(props["death"], trips, 3)
 
+    # Expected counts from the published offset model and the excess over
+    # them — the exposure-adjusted map (24 Aug 2026). See zat_expected.py.
+    add_expected(props, EXPECTED_COEF)
+
     features.append({"type": "Feature", "geometry": geometries[zid],
                      "properties": props})
 
@@ -497,6 +503,7 @@ geojson = {
                     "Zewdie et al. 2024 for the ZAT tree analysis; the per-km2 fields "
                     "remain as area densities and are not exposure-adjusted.",
         },
+        "expected": EXPECTED_META,
         "crash_outcomes": {
             "carried": ["injury", "death", "casualties"],
             "casualties_definition": "injury + death",

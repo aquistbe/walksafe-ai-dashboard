@@ -288,6 +288,13 @@ export interface ZatProperties {
   casualties_per_10k_trips: number | null;
   injury_per_10k_trips: number | null;
   death_per_10k_trips: number | null;
+  /** Fitted means of the published offset model (see data/zat_expected.py)
+   *  and the observed-minus-expected excess. 770 zones; has_expected gates. */
+  has_expected: boolean;
+  expected_injury: number | null;
+  expected_death: number | null;
+  expected_casualties: number | null;
+  excess_casualties: number | null;
 }
 
 export type PolygonGeometry =
@@ -337,6 +344,9 @@ export interface ZatCollection {
       model_labels: Record<ModelSpecId, string>;
       note: string;
       age_note: string;
+      /** Per model, per outcome, per cluster (string key). The sidebar's
+       *  profile-mode legend reads these; the info panel reads the per-zone copy. */
+      models?: Record<ModelSpecId, Record<"injury" | "death", Record<string, RrEstimate>>>;
     };
     canvas_features: string[];
   };

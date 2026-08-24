@@ -281,6 +281,16 @@ export const TRIP_RATE_BREAKS = [3, 6, 10, 15, 25];
  * with 8 casualties over 345 trips. 62 of 783 zones sit under the floor.
  */
 export const MIN_TRIPS_FOR_RANKING = 5000;
+/**
+ * Bogotá excess casualties (observed minus the offset model's fitted
+ * expectation), 770 zones: p10 −16, p25 −7, p50 −0.3, p75 +7, p90 +18,
+ * range −113 to +91. Diverging about 0 on the same ramp as the tract excess
+ * map so the two cities read alike.
+ */
+export const ZAT_EXCESS_BREAKS = [-15, -5, 5, 15, 30];
+export const ZAT_EXCESS_RAMP = [
+  "#2166AC", "#92C5DE", "#E6E6E6", "#F4A582", "#D6604D", "#B2182B",
+];
 /** Philadelphia tracts, share aged 65+, ACS 2020–2024: p25 9.4, p50 13.9, p75 19.5, p90 24.7. */
 export const TRACT_AGE_BREAKS = [8, 12, 16, 20, 25];
 export const TRACT_AGE_RAMP = [

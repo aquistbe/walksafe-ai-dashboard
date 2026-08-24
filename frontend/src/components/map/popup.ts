@@ -173,7 +173,9 @@ function zatPopup(feature: UnitFeature): string {
        <span style="color: #6B7280;">Deaths:</span>
        <span style="font-weight: 600;">${esc(p.death)}</span>
        <span style="color: #6B7280;">Per 10k trips:</span>
-       <span style="font-weight: 600;">${esc(p.casualties_per_10k_trips)}</span>`
+       <span style="font-weight: 600;">${esc(p.casualties_per_10k_trips)}</span>
+       <span style="color: #6B7280;">vs expected:</span>
+       <span style="font-weight: 600;">${p.has_expected && p.excess_casualties !== null ? (p.excess_casualties > 0 ? "+" : "") + esc(p.excess_casualties) : "—"}</span>`
     : `<span style="color: #9CA3AF; grid-column: 1 / -1;">No crash data joined for this zone</span>`;
 
   const label = p.clus ? CLUSTER_LABELS[p.clus] : "";

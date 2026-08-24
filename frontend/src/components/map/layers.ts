@@ -31,6 +31,7 @@ import {
   TRACT_POVERTY_BREAKS, TRACT_POVERTY_RAMP,
   TRACT_AGE_BREAKS, TRACT_AGE_RAMP,
   TRIP_RATE_BREAKS,
+  ZAT_EXCESS_BREAKS, ZAT_EXCESS_RAMP,
   CASUALTY_DENSITY_RAMP,
   PCT60_BREAKS,
   PCT60_RAMP,
@@ -274,6 +275,18 @@ export function polygonFillColor(
       // Per 10,000 walking + public-transport trips, not per km²: area is
       // not exposure (24 Aug 2026).
       stepExpr("casualties_per_10k_trips", TRIP_RATE_BREAKS, CASUALTY_DENSITY_RAMP),
+    ] as ExpressionSpecification;
+  }
+
+  // Bogotá: observed minus the offset model's expectation. Gated on
+  // has_expected (770 of 879 zones); a zone the model could not fit is grey,
+  // not "average".
+  if (layerMode === "excess_casualties") {
+    return [
+      "case",
+      ["!", ["get", "has_expected"]],
+      grey,
+      stepExpr("excess_casualties", ZAT_EXCESS_BREAKS, ZAT_EXCESS_RAMP),
     ] as ExpressionSpecification;
   }
 

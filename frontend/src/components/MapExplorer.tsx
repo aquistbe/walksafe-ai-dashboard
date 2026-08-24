@@ -56,6 +56,9 @@ interface MapExplorerProps {
   onSelectUnit: (id: number | null) => void;
   loading?: boolean;
   legendCounts: LegendCounts;
+  /** Fires whenever the toolbar mode changes, so the page can make the
+   *  sidebar and the JS-side gate follow the map (24 Aug 2026). */
+  onLayerModeChange?: (mode: string) => void;
 }
 
 export default function MapExplorer({
@@ -69,6 +72,7 @@ export default function MapExplorer({
   onSelectUnit,
   loading = false,
   legendCounts,
+  onLayerModeChange,
 }: MapExplorerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -84,6 +88,10 @@ export default function MapExplorer({
     () => dataset.layerModes.find((m) => m.id === layerMode)?.gateField,
     [dataset, layerMode]
   );
+
+  useEffect(() => {
+    onLayerModeChange?.(layerMode);
+  }, [layerMode, onLayerModeChange]);
 
   const searchIds = useMemo(
     () => (collection ? searchMatchIds(collection.features as UnitFeature[], filters.searchQuery) : null),

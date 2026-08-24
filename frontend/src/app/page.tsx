@@ -50,8 +50,12 @@ export default function HomePage() {
    * owns that state. Mirroring just the gate field here keeps the JS predicate
    * and the GPU filter in step without lifting the whole toolbar.
    */
+  // The ACTIVE mode, mirrored from MapExplorer's toolbar (it owns the state)
+  // so the gate, the sidebar's ranking and its profile × estrato grid follow
+  // the map instead of the dataset default.
+  const [activeMode, setActiveMode] = useState<string>(dataset.defaultLayerMode);
   const gateField = dataset.layerModes.find(
-    (m) => m.id === dataset.defaultLayerMode
+    (m) => m.id === (dataset.layerModes.some((x) => x.id === activeMode) ? activeMode : dataset.defaultLayerMode)
   )?.gateField;
 
   // Filters are per analysis unit — reset them when the dataset changes, or a
@@ -60,6 +64,7 @@ export default function HomePage() {
   useEffect(() => {
     setFilters(defaultFiltersFor(dataset));
     setSelectedId(null);
+    setActiveMode(dataset.defaultLayerMode);
     deepLinkApplied.current = false;
   }, [dataset]);
 
@@ -174,20 +179,38 @@ export default function HomePage() {
           )
           .slice(0, 50);
       }
-      return [...filteredFeatures]
-        .filter((f): f is ZatFeature => isZatFeature(f) && f.properties.has_covariates
-          && (f.properties.walk_pubt ?? 0) >= MIN_TRIPS_FOR_RANKING)
-        .sort(
-          (a, b) =>
-            (b.properties.casualties_per_10k_trips ?? 0) - (a.properties.casualties_per_10k_trips ?? 0)
-        )
-        .slice(0, 50);
+      // ZATs rank by whatever the map is colouring. Profile mode ranks
+      // nothing — a categorical map has no "top".
+      const zats = [...filteredFeatures].filter((f): f is ZatFeature => isZatFeature(f));
+      if (activeMode === "excess_casualties") {
+        return zats
+          .filter((f) => f.properties.has_expected)
+          .sort((a, b) => (b.properties.excess_casualties ?? 0) - (a.properties.excess_casualties ?? 0))
+          .slice(0, 50);
+      }
+      if (activeMode === "age60") {
+        return zats
+          .filter((f) => f.properties.has_pop60)
+          .sort((a, b) => (b.properties.pct60plus ?? 0) - (a.properties.pct60plus ?? 0))
+          .slice(0, 50);
+      }
+      if (activeMode === "casualties") {
+        return zats
+          .filter((f) => f.properties.has_covariates
+            && (f.properties.walk_pubt ?? 0) >= MIN_TRIPS_FOR_RANKING)
+          .sort(
+            (a, b) =>
+              (b.properties.casualties_per_10k_trips ?? 0) - (a.properties.casualties_per_10k_trips ?? 0)
+          )
+          .slice(0, 50);
+      }
+      return [];
     }
     return [...features]
       .filter((f): f is IntersectionFeature => isIntersectionFeature(f))
       .sort((a, b) => b.properties.eb_ksi - a.properties.eb_ksi)
       .slice(0, 50);
-  }, [features, filteredFeatures, dataset.unitType]);
+  }, [features, filteredFeatures, dataset.unitType, activeMode]);
 
   const selectedFeature = useMemo(
     () => (selectedId === null ? null : getFeature(selectedId) ?? null),
@@ -289,6 +312,10 @@ export default function HomePage() {
           filteredCount={filteredFeatures.length}
           clusterCounts={legendCounts}
           topZones={topUnits as ZatFeature[]}
+          zones={filteredFeatures.filter((f): f is ZatFeature => isZatFeature(f))}
+          layerMode={activeMode}
+          metadata={zatMetadata}
+          selectedId={selectedId}
           onSelectUnit={handleSelect}
           caveat={caveat}
           collapsed={sidebarCollapsed}
@@ -337,6 +364,7 @@ export default function HomePage() {
           onSelectUnit={handleSelect}
           loading={loading}
           legendCounts={legendCounts}
+          onLayerModeChange={setActiveMode}
         />
 
         {/* Exhaustive on the unit type. A two-way ternary here would hand a

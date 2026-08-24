@@ -359,7 +359,8 @@ const BOGOTA_ZATS: PolygonDatasetConfig = {
   apiPath: null,
   layerModes: [
     { id: "cluster", label: "Zone Profile", title: "Colour by built-environment cluster", icon: "grid", gateField: "has_features" },
-    { id: "casualties", label: "Casualties", title: "Colour by pedestrian casualties per 10,000 walking and transit trips (2019 mobility survey), 2015–2019", icon: "crosshair", gateField: "has_covariates" },
+    { id: "excess_casualties", label: "Excess", title: "Observed casualties minus the offset model's expectation for a zone with this profile, covariates and trips, 2015–2019", icon: "crosshair", gateField: "has_expected" },
+    { id: "casualties", label: "Rate", title: "Colour by pedestrian casualties per 10,000 walking and transit trips (2019 mobility survey), 2015–2019", icon: "crosshair", gateField: "has_covariates" },
     { id: "age60", label: "Age 60+", title: "Colour by share of population aged 60+, 2018 census", icon: "people", gateField: "has_pop60" },
   ],
   defaultLayerMode: "cluster",

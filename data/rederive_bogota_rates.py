@@ -16,9 +16,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from rates import per_10k  # noqa: E402
+from zat_expected import EXPECTED_META, add_expected, load_coefficients  # noqa: E402
 
 REPO = Path(__file__).resolve().parent.parent
 PATH = REPO / "data" / "bogota_zats.geojson"
+MODELS_CSV = REPO / "data" / "source" / "zat_profile_models_with_age60.csv"
 
 EXPOSURE_META = {
     "field": "walk_pubt",
@@ -30,14 +32,19 @@ EXPOSURE_META = {
 }
 
 d = json.loads(PATH.read_text())
+coef = load_coefficients(MODELS_CSV)
 n = 0
+n_exp = 0
 for f in d["features"]:
     p = f["properties"]
+    add_expected(p, coef)
+    n_exp += p["has_expected"]
     trips = p.get("walk_pubt")
     p["casualties_per_10k_trips"] = per_10k(p.get("casualties"), trips)
     p["injury_per_10k_trips"] = per_10k(p.get("injury"), trips)
     p["death_per_10k_trips"] = per_10k(p.get("death"), trips, 3)
     n += p["casualties_per_10k_trips"] is not None
 d["metadata"]["exposure"] = EXPOSURE_META
+d["metadata"]["expected"] = EXPECTED_META
 PATH.write_text(json.dumps(d, separators=(",", ":")))
-print(f"{n} of {len(d['features'])} zones carry casualties_per_10k_trips; wrote {PATH.name}")
+print(f"{n} of {len(d['features'])} zones carry casualties_per_10k_trips; {n_exp} carry expected counts; wrote {PATH.name}")

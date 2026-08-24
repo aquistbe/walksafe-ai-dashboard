@@ -60,6 +60,8 @@ export default function ZatInfoPanel({ feature, metadata, onClose }: ZatInfoPane
       injury: p.injury,
       death: p.death,
       casualties: p.casualties,
+      expected_casualties: p.expected_casualties,
+      excess_casualties: p.excess_casualties,
       casualties_per_10k_trips: p.casualties_per_10k_trips,
       injury_per_10k_trips: p.injury_per_10k_trips,
       death_per_10k_trips: p.death_per_10k_trips,
@@ -200,6 +202,16 @@ export default function ZatInfoPanel({ feature, metadata, onClose }: ZatInfoPane
               <DetailRow label="Injuries" value={n0(p.injury)} />
               <DetailRow label="Deaths" value={n0(p.death)} highlight={(p.death ?? 0) > 0} />
               <DetailRow label="Per km² (area density, not exposure)" value={n1(p.casualties_per_km2)} />
+              {p.has_expected && (
+                <>
+                  <DetailRow label="Expected (offset model)" value={n1(p.expected_casualties)} />
+                  <DetailRow
+                    label="Excess over expectation"
+                    value={(p.excess_casualties ?? 0) > 0 ? `+${n1(p.excess_casualties)}` : n1(p.excess_casualties)}
+                    highlight={(p.excess_casualties ?? 0) > 15}
+                  />
+                </>
+              )}
               <p className="text-[10px] text-gray-400 mt-2 leading-snug">
                 Damage-only crashes are excluded — nearly every pedestrian struck
                 is injured or killed, and the source data agree (19 damage-only
