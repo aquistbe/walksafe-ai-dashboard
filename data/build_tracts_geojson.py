@@ -200,7 +200,7 @@ print("Building features ...")
 # render as a bare point estimate, which is the exact failure this layer is
 # supposed to prevent.
 ALWAYS = {"tract_id", "geoid", "unit_name",
-          "has_model", "has_crashes", "has_acs", "has_pov", "ped_ksi"}
+          "has_model", "has_crashes", "has_acs", "has_pov", "has_age", "ped_ksi"}
 ALWAYS |= {f"{k}_moe" for k, _, _ in ACS_DISPLAY}
 ALWAYS |= {f"{k}_cv" for k, _, _ in ACS_DISPLAY}
 
@@ -270,6 +270,10 @@ for r in gdf.to_dict("records"):
         # ["to-number", ["get","pct_pov"], 0] — which yields 0, lands them in
         # the lowest bucket and paints "no estimate" as "least poor".
         "has_pov": bool(pd.notna(r.get("pct_pov"))),
+        # The 65+ share specifically, for the same reason: the Age 65+ mode
+        # colours pct_65plus, and 17 tracts have a population estimate but no
+        # age estimate. Mirrored by data/rederive_tract_flags.py.
+        "has_age": bool(pd.notna(r.get("pct_65plus"))),
     }
 
     # ACS: estimate, 90% margin of error, coefficient of variation. All three

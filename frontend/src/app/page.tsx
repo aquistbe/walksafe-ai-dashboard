@@ -23,7 +23,7 @@ import {
   isSegmentCollection,
   isTractCollection,
 } from "@/lib/types";
-import { defaultFiltersFor } from "@/lib/constants";
+import { defaultFiltersFor, MIN_TRIPS_FOR_RANKING } from "@/lib/constants";
 import { matchesFilters } from "@/lib/filters";
 import CrashSidebar from "@/components/Sidebar";
 import ZatSidebar from "@/components/ZatSidebar";
@@ -175,10 +175,11 @@ export default function HomePage() {
           .slice(0, 50);
       }
       return [...filteredFeatures]
-        .filter((f): f is ZatFeature => isZatFeature(f) && f.properties.has_covariates)
+        .filter((f): f is ZatFeature => isZatFeature(f) && f.properties.has_covariates
+          && (f.properties.walk_pubt ?? 0) >= MIN_TRIPS_FOR_RANKING)
         .sort(
           (a, b) =>
-            (b.properties.casualties_per_km2 ?? 0) - (a.properties.casualties_per_km2 ?? 0)
+            (b.properties.casualties_per_10k_trips ?? 0) - (a.properties.casualties_per_10k_trips ?? 0)
         )
         .slice(0, 50);
     }

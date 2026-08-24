@@ -278,9 +278,15 @@ export interface ZatProperties {
   /** NESTED — same warning. A cluster-level estimate copied onto each zone. */
   rr: ZatRelativeRisk | null;
 
+  /** Area densities. NOT exposure-adjusted; kept for the panel and export. */
   casualties_per_km2: number | null;
   injury_per_km2: number | null;
   death_per_km2: number | null;
+  /** Per 10,000 walking + public-transport trips (`walk_pubt`, 2019 mobility
+   *  survey) — the mapped quantity and the published models' offset. */
+  casualties_per_10k_trips: number | null;
+  injury_per_10k_trips: number | null;
+  death_per_10k_trips: number | null;
 }
 
 export type PolygonGeometry =
@@ -752,6 +758,8 @@ export interface TractProperties {
   has_model: boolean;
   has_acs: boolean;
   has_pov: boolean;
+  /** An ACS 65+ share exists — the gate for the Age 65+ mode. */
+  has_age: boolean;
 
   /**
    * Optional BY DESIGN, not missing. build_tracts_geojson.py drops any key

@@ -42,6 +42,9 @@ import pandas as pd
 from shapely.geometry import shape, mapping
 from shapely.ops import transform as shapely_transform
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from rates import per_10k  # noqa: E402
+
 # ---------------------------------------------------------------------------
 # Paths — everything stays inside the repository
 # ---------------------------------------------------------------------------
@@ -399,6 +402,16 @@ for zid in sorted(geometries):
         props["injury_per_km2"] = None
         props["death_per_km2"] = None
 
+    # Exposure-adjusted rate: outcome per 10,000 walking + public-transport
+    # trips (`walk_pubt`, 2019 mobility survey). This is the denominator the
+    # ZAT analyses use (Zewdie et al. 2024 enter it as the offset), and it is
+    # what the map colours since 24 Aug 2026; per-km2 stays as area density.
+    # Shared helper so data/rederive_bogota_rates.py produces identical values.
+    trips = props.get("walk_pubt")
+    props["casualties_per_10k_trips"] = per_10k(props["casualties"], trips)
+    props["injury_per_10k_trips"] = per_10k(props["injury"], trips)
+    props["death_per_10k_trips"] = per_10k(props["death"], trips, 3)
+
     features.append({"type": "Feature", "geometry": geometries[zid],
                      "properties": props})
 
@@ -476,6 +489,14 @@ geojson = {
             "scoring/prompts.py. They are not independent instruments."
         ),
         "crash_window": "2015-2019",
+        "exposure": {
+            "field": "walk_pubt",
+            "definition": "walking + public-transport trips per zone, 2019 Bogota mobility survey (Encuesta de Movilidad)",
+            "rates": ["casualties_per_10k_trips", "injury_per_10k_trips", "death_per_10k_trips"],
+            "note": "Outcome per 10,000 trips. This is the exposure offset used in "
+                    "Zewdie et al. 2024 for the ZAT tree analysis; the per-km2 fields "
+                    "remain as area densities and are not exposure-adjusted.",
+        },
         "crash_outcomes": {
             "carried": ["injury", "death", "casualties"],
             "casualties_definition": "injury + death",

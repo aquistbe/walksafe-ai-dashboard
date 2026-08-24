@@ -359,16 +359,17 @@ const BOGOTA_ZATS: PolygonDatasetConfig = {
   apiPath: null,
   layerModes: [
     { id: "cluster", label: "Zone Profile", title: "Colour by built-environment cluster", icon: "grid", gateField: "has_features" },
-    { id: "casualties", label: "Casualties", title: "Colour by pedestrian casualties per km², 2015–2019", icon: "crosshair", gateField: "has_covariates" },
+    { id: "casualties", label: "Casualties", title: "Colour by pedestrian casualties per 10,000 walking and transit trips (2019 mobility survey), 2015–2019", icon: "crosshair", gateField: "has_covariates" },
     { id: "age60", label: "Age 60+", title: "Colour by share of population aged 60+, 2018 census", icon: "people", gateField: "has_pop60" },
   ],
   defaultLayerMode: "cluster",
   filterKind: "bogota-zat",
-  measureLabel: "Built-environment cluster profile, 840 ZAT zones",
+  measureLabel: "Built-environment cluster profile, 840 ZATs (Zonas de Análisis de Transporte — transport analysis zones)",
   mapCaveat:
-    "Ecological. Colours describe zones, not people — these are area-level " +
-    "associations, not individual risk. Zones with more infrastructure also " +
-    "carry more pedestrians and traffic.",
+    "Ecological. A ZAT (Zona de Análisis de Transporte) is a transport analysis " +
+    "zone, the unit of Bogotá's mobility survey. Colours describe zones, not " +
+    "people — these are area-level associations, not individual risk. Zones " +
+    "with more infrastructure also carry more pedestrians and traffic.",
 };
 
 const PHILADELPHIA_TRACTS: PolygonDatasetConfig = {
@@ -395,6 +396,7 @@ const PHILADELPHIA_TRACTS: PolygonDatasetConfig = {
     // pedestrian KSI, and zero is a value. Gating would grey them as no data.
     { id: "observed", label: "Observed KSI", title: "Pedestrian killed or seriously injured, 2015–2024", icon: "grid" },
     { id: "poverty", label: "Poverty", title: "Share below the poverty level, ACS 2020–2024", icon: "people", gateField: "has_pov" },
+    { id: "age65", label: "Age 65+", title: "Share of population aged 65 and over, ACS 2020–2024", icon: "people", gateField: "has_age" },
   ],
   // Excess rather than raw count. A large tract with many crashes and many road
   // miles is not a priority; one with more than its exposure predicts is.

@@ -149,6 +149,13 @@ export default function MapExplorer({
       attributionControl: false,
     });
 
+    // Development-only handle for automated checks (style swaps, layer
+    // presence, paint expressions). Stripped from production bundles by the
+    // NODE_ENV guard; never read by application code.
+    if (process.env.NODE_ENV === "development") {
+      (window as unknown as { __walksafeMap?: maplibregl.Map }).__walksafeMap = map;
+    }
+
     map.addControl(new maplibregl.NavigationControl({ showCompass: true }), "top-right");
     map.addControl(new maplibregl.ScaleControl({ maxWidth: 150 }), "bottom-right");
     map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
@@ -370,8 +377,17 @@ export default function MapExplorer({
       // optsRef is stale for one tick — the render carrying the new basemap has
       // not run yet — so hand the new value straight to the rebuild.
       optsRef.current = { ...optsRef.current, basemap: mode };
-      map.setStyle(mode === "dark" ? STYLE_DARK : STYLE_LIGHT);
-      map.once("style.load", () => install(map));
+      // diff: false. MapLibre diffs styles by default, and a successful diff
+      // strips our layers WITHOUT firing style.load, so the re-install below
+      // never ran: toggling Dark emptied the map, and toggling back could not
+      // refill it (24 Aug 2026). A full style load fires the event reliably.
+      map.setStyle(mode === "dark" ? STYLE_DARK : STYLE_LIGHT, { diff: false });
+      map.once("style.load", () => {
+        install(map);
+        // The data, filter, selection and paint effects all key on mapVersion;
+        // without the bump they would not re-apply to the fresh layer stack.
+        setMapVersion((v) => v + 1);
+      });
     },
     [basemap, mapReady, install]
   );

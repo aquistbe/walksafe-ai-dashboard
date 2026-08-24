@@ -23,6 +23,8 @@ import {
   TRACT_EXCESS_BREAKS, TRACT_EXCESS_RAMP,
   TRACT_OBSERVED_BREAKS, TRACT_OBSERVED_RAMP,
   TRACT_POVERTY_BREAKS, TRACT_POVERTY_RAMP,
+  TRACT_AGE_BREAKS, TRACT_AGE_RAMP,
+  TRIP_RATE_BREAKS,
 } from "@/lib/constants";
 import {
   SEG_SPF_RAMP,
@@ -197,12 +199,13 @@ function renderZatLegend(
   if (layerMode === "casualties") {
     return (
       <>
-        <Title>Casualties per km²</Title>
-        <Ramp ramp={CASUALTY_DENSITY_RAMP} breaks={CASUALTY_DENSITY_BREAKS} />
+        <Title>Casualties per 10,000 trips</Title>
+        <Ramp ramp={CASUALTY_DENSITY_RAMP} breaks={TRIP_RATE_BREAKS} />
         <NoDataRow label="No crash data" count={noData()} />
         <Foot>
-          Injury + death, {dataset.measure.crashWindow}. Per km², because raw
-          counts are not comparable across zones of very different size.
+          Injury + death, {dataset.measure.crashWindow}, per 10,000 walking and
+          public-transport trips in the 2019 mobility survey — the exposure
+          denominator of the published ZAT models, not zone area.
         </Foot>
       </>
     );
@@ -259,6 +262,20 @@ function renderZatLegend(
         <Foot>
           ACS 2020–2024 5-year estimate; tract margins of error are large and
           shown with every value in the panel.
+        </Foot>
+      </>
+    );
+  }
+
+  if (layerMode === "age65") {
+    return (
+      <>
+        <Title>Population aged 65+</Title>
+        <Ramp ramp={TRACT_AGE_RAMP} breaks={TRACT_AGE_BREAKS} suffix="%" />
+        <NoDataRow label="No ACS estimate" count={noData()} />
+        <Foot>
+          ACS 2020–2024 5-year share; 66 of 391 tract estimates have a
+          coefficient of variation above 30%. Margins of error are in the panel.
         </Foot>
       </>
     );

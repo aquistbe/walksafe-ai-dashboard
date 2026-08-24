@@ -60,6 +60,9 @@ export default function ZatInfoPanel({ feature, metadata, onClose }: ZatInfoPane
       injury: p.injury,
       death: p.death,
       casualties: p.casualties,
+      casualties_per_10k_trips: p.casualties_per_10k_trips,
+      injury_per_10k_trips: p.injury_per_10k_trips,
+      death_per_10k_trips: p.death_per_10k_trips,
       casualties_per_km2: p.casualties_per_km2,
       injury_per_km2: p.injury_per_km2,
       death_per_km2: p.death_per_km2,
@@ -192,10 +195,11 @@ export default function ZatInfoPanel({ feature, metadata, onClose }: ZatInfoPane
             <>
               <div className="grid grid-cols-2 gap-2 mb-2">
                 <StatCard label="Casualties" value={n0(p.casualties)} sublabel="injury + death" />
-                <StatCard label="Per km²" value={n1(p.casualties_per_km2)} />
+                <StatCard label="Per 10k trips" value={n1(p.casualties_per_10k_trips)} sublabel="walking + transit, 2019 survey" />
               </div>
               <DetailRow label="Injuries" value={n0(p.injury)} />
               <DetailRow label="Deaths" value={n0(p.death)} highlight={(p.death ?? 0) > 0} />
+              <DetailRow label="Per km² (area density, not exposure)" value={n1(p.casualties_per_km2)} />
               <p className="text-[10px] text-gray-400 mt-2 leading-snug">
                 Damage-only crashes are excluded — nearly every pedestrian struck
                 is injured or killed, and the source data agree (19 damage-only

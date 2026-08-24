@@ -266,6 +266,27 @@ export const TRACT_POVERTY_RAMP = [
   "#F2F0F7", "#DADAEB", "#BCBDDC", "#9E9AC8", "#756BB1", "#54278F",
 ];
 
+/**
+ * Bogotá casualties per 10,000 walking + public-transport trips (2019
+ * mobility survey, `walk_pubt`), n = 783 zones with crash data: p25 3.1,
+ * p50 5.3, p75 9.3, p90 14.9, p95 21. Replaced the per-km² density as the
+ * mapped quantity on 24 Aug 2026 — area is not exposure; trips are the
+ * offset the published ZAT models use.
+ */
+export const TRIP_RATE_BREAKS = [3, 6, 10, 15, 25];
+/**
+ * Denominator floor for the RANKED list only (the map colours every zone).
+ * Below ~5,000 trips (the 5th–10th percentile) one or two crashes swing the
+ * rate: 12 of the top 20 unfloored zones had under 5,000 trips, led by a zone
+ * with 8 casualties over 345 trips. 62 of 783 zones sit under the floor.
+ */
+export const MIN_TRIPS_FOR_RANKING = 5000;
+/** Philadelphia tracts, share aged 65+, ACS 2020–2024: p25 9.4, p50 13.9, p75 19.5, p90 24.7. */
+export const TRACT_AGE_BREAKS = [8, 12, 16, 20, 25];
+export const TRACT_AGE_RAMP = [
+  "#F0F9E8", "#CCEBC5", "#A8DDB5", "#7BCCC4", "#43A2CA", "#0868AC",
+];
+
 export const PCT60_BREAKS = [10, 14, 18, 22, 25];
 export const PCT60_RAMP = [
   "#F2F0F7", "#DADAEB", "#BCBDDC", "#9E9AC8", "#756BB1", "#54278F",

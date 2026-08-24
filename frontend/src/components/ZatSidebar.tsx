@@ -83,7 +83,8 @@ export default function ZatSidebar({
         <div>
           <h2 className="font-semibold text-sm text-walksafe-text">Filters</h2>
           <p className="text-xs text-walksafe-text-muted mt-0.5">
-            {filteredCount.toLocaleString()} of {totalCount.toLocaleString()} ZAT zones
+            {filteredCount.toLocaleString()} of {totalCount.toLocaleString()} ZATs
+            <span className="block text-[10px] text-gray-400">Zonas de An&aacute;lisis de Transporte &mdash; transport analysis zones</span>
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -203,7 +204,7 @@ export default function ZatSidebar({
         {/* Priority list */}
         <div className="px-4 py-3">
           <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-            Highest casualty density
+            Highest casualty rate
           </h3>
           {topZones.length === 0 ? (
             <p className="text-[11px] text-gray-400">No zones match the filters.</p>
@@ -230,10 +231,10 @@ export default function ZatSidebar({
                       {p.unit_name}
                     </span>
                     <span className="text-[10px] text-gray-500 tabular-nums shrink-0">
-                      {p.casualties_per_km2?.toLocaleString(undefined, {
-                        maximumFractionDigits: 0,
+                      {p.casualties_per_10k_trips?.toLocaleString(undefined, {
+                        maximumFractionDigits: 1,
                       })}
-                      /km²
+                      /10k trips
                     </span>
                   </button>
                 );
@@ -241,8 +242,11 @@ export default function ZatSidebar({
             </div>
           )}
           <p className="text-[10px] text-gray-400 mt-2 leading-snug">
-            Ranked among the 783 zones with crash data. Density, not a rate per
-            person &mdash; it does not adjust for how many people walk there.
+            Per 10,000 walking and public-transport trips in the 2019 mobility
+            survey &mdash; the exposure offset of the published ZAT models.
+            Ranked among the 721 zones with at least 5,000 trips; below that
+            floor one or two crashes swing the rate. The map colours every zone.
+            Ecological.
           </p>
         </div>
       </div>

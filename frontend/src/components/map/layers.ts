@@ -29,6 +29,8 @@ import {
   TRACT_EXCESS_BREAKS, TRACT_EXCESS_RAMP,
   TRACT_OBSERVED_BREAKS, TRACT_OBSERVED_RAMP,
   TRACT_POVERTY_BREAKS, TRACT_POVERTY_RAMP,
+  TRACT_AGE_BREAKS, TRACT_AGE_RAMP,
+  TRIP_RATE_BREAKS,
   CASUALTY_DENSITY_RAMP,
   PCT60_BREAKS,
   PCT60_RAMP,
@@ -269,7 +271,9 @@ export function polygonFillColor(
       "case",
       ["!", ["get", "has_covariates"]],
       grey,
-      stepExpr("casualties_per_km2", CASUALTY_DENSITY_BREAKS, CASUALTY_DENSITY_RAMP),
+      // Per 10,000 walking + public-transport trips, not per km²: area is
+      // not exposure (24 Aug 2026).
+      stepExpr("casualties_per_10k_trips", TRIP_RATE_BREAKS, CASUALTY_DENSITY_RAMP),
     ] as ExpressionSpecification;
   }
 
@@ -307,6 +311,15 @@ export function polygonFillColor(
       ["!", ["get", "has_pov"]],
       grey,
       stepExpr("pct_pov", TRACT_POVERTY_BREAKS, TRACT_POVERTY_RAMP),
+    ] as ExpressionSpecification;
+  }
+
+  if (layerMode === "age65") {
+    return [
+      "case",
+      ["!", ["get", "has_age"]],
+      grey,
+      stepExpr("pct_65plus", TRACT_AGE_BREAKS, TRACT_AGE_RAMP),
     ] as ExpressionSpecification;
   }
 
