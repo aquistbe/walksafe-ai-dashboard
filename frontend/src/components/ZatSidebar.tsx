@@ -242,8 +242,10 @@ export default function ZatSidebar({
             </div>
           )}
           <p className="text-[10px] text-gray-400 mt-2 leading-snug">
-            Per 10,000 walking and public-transport trips in the 2019 mobility
-            survey &mdash; the exposure offset of the published ZAT models.
+            Per 10,000 walking and public-transport trips to the zone in the
+            2019 mobility survey, a one-day travel diary of a representative
+            sample from every ZAT &mdash; the exposure offset of the published
+            ZAT models.
             Ranked among the 721 zones with at least 5,000 trips; below that
             floor one or two crashes swing the rate. The map colours every zone.
             Ecological.

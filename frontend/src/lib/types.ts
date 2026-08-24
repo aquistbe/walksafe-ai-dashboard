@@ -282,8 +282,9 @@ export interface ZatProperties {
   casualties_per_km2: number | null;
   injury_per_km2: number | null;
   death_per_km2: number | null;
-  /** Per 10,000 walking + public-transport trips (`walk_pubt`, 2019 mobility
-   *  survey) — the mapped quantity and the published models' offset. */
+  /** Per 10,000 walking + public-transport trips to the zone (`walk_pubt`,
+   *  2019 mobility survey: a one-day travel diary of a representative sample
+   *  from every ZAT) — the mapped quantity and the published models' offset. */
   casualties_per_10k_trips: number | null;
   injury_per_10k_trips: number | null;
   death_per_10k_trips: number | null;

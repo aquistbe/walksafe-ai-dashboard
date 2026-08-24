@@ -204,8 +204,9 @@ function renderZatLegend(
         <NoDataRow label="No crash data" count={noData()} />
         <Foot>
           Injury + death, {dataset.measure.crashWindow}, per 10,000 walking and
-          public-transport trips in the 2019 mobility survey — the exposure
-          denominator of the published ZAT models, not zone area.
+          public-transport trips to the zone in the 2019 mobility survey (a
+          one-day travel diary of a representative sample from every ZAT) — the
+          exposure denominator of the published ZAT models, not zone area.
         </Foot>
       </>
     );

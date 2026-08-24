@@ -22,7 +22,7 @@ PATH = REPO / "data" / "bogota_zats.geojson"
 
 EXPOSURE_META = {
     "field": "walk_pubt",
-    "definition": "walking + public-transport trips per zone, 2019 Bogota mobility survey (Encuesta de Movilidad)",
+    "definition": "walking and public-transport trips to each zone recorded by the 2019 Bogota mobility survey, a one-day travel diary of a representative sample from every ZAT (Encuesta de Movilidad)",
     "rates": ["casualties_per_10k_trips", "injury_per_10k_trips", "death_per_10k_trips"],
     "note": "Outcome per 10,000 trips. This is the exposure offset used in "
             "Zewdie et al. 2024 for the ZAT tree analysis; the per-km2 fields "

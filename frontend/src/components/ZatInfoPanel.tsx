@@ -195,7 +195,7 @@ export default function ZatInfoPanel({ feature, metadata, onClose }: ZatInfoPane
             <>
               <div className="grid grid-cols-2 gap-2 mb-2">
                 <StatCard label="Casualties" value={n0(p.casualties)} sublabel="injury + death" />
-                <StatCard label="Per 10k trips" value={n1(p.casualties_per_10k_trips)} sublabel="walking + transit, 2019 survey" />
+                <StatCard label="Per 10k trips" value={n1(p.casualties_per_10k_trips)} sublabel="walking + transit trips to the zone, 2019 survey" />
               </div>
               <DetailRow label="Injuries" value={n0(p.injury)} />
               <DetailRow label="Deaths" value={n0(p.death)} highlight={(p.death ?? 0) > 0} />
