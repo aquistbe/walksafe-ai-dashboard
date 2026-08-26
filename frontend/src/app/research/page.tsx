@@ -107,7 +107,7 @@ function StatusPill({ status }: { status: "done" | "active" | "planned" }) {
 
 const TOC = [
   ["overview", "Project overview"],
-  ["aims", "Study aims"],
+  ["aims", "Research direction"],
   ["methods", "Phase 0 methodology"],
   ["model", "Risk model"],
   ["validation", "Validation"],
@@ -215,54 +215,27 @@ export default function ResearchPage() {
             </Section>
 
             {/* ---------------------------------------------------------- */}
-            <Section id="aims" eyebrow="Design" title="Study aims">
-              <div className="space-y-3">
-                {[
-                  {
-                    n: 1,
-                    title: "Senior Pedestrian Mobility Index",
-                    status: "active" as const,
-                    body: "A graph neural network over the street network produces three sub-scores — safety, walkability, and accessibility — at street points sampled with 360-degree imagery, then aggregated to segments and intersections. Outputs carry both feature attributions and model uncertainty, so a score can be interrogated rather than merely trusted.",
-                  },
-                  {
-                    n: 2,
-                    title: "Participatory weighting",
-                    status: "planned" as const,
-                    body: "The three sub-scores have to be combined, and the weights are a value judgment rather than a statistical one. Older residents, caregivers, advocates, and city staff set those weights through structured elicitation, so the composite reflects community priorities instead of analyst defaults.",
-                  },
-                  {
-                    n: 3,
-                    title: "Multi-objective optimization",
-                    status: "planned" as const,
-                    body: "Given a budget and a set of candidate treatments, a multi-agent search identifies portfolios of investments that trade off injury reduction, mobility gain, and equitable distribution — surfacing a frontier of defensible options rather than a single ranked list.",
-                  },
-                  {
-                    n: 4,
-                    title: "Co-designed public platform",
-                    status: "active" as const,
-                    body: "This dashboard. Built with the community advisory board rather than delivered to it, with separate views for residents, advocates, city engineers, and researchers. The prototype you are using now exists to give that board something concrete to react to early.",
-                  },
-                ].map((aim) => (
-                  <Card key={aim.n}>
-                    <div className="flex items-start gap-4">
-                      <div className="w-8 h-8 rounded-lg bg-walksafe-green/10 text-walksafe-green font-bold text-sm flex items-center justify-center shrink-0">
-                        {aim.n}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h3 className="font-semibold text-sm text-walksafe-text">
-                            {aim.title}
-                          </h3>
-                          <StatusPill status={aim.status} />
-                        </div>
-                        <p className="text-sm text-walksafe-text-muted mt-1.5 leading-relaxed">
-                          {aim.body}
-                        </p>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
+            <Section id="aims" eyebrow="Design" title="Research direction">
+              <P>
+                WalkSafe-AI is a research programme on pedestrian safety for
+                older adults, led at Drexel University&apos;s Dornsife School
+                of Public Health. Its premise is that the street features which
+                shape whether an older person can walk safely &mdash; crossings,
+                signals, sidewalks, lighting, traffic calming &mdash; can be
+                measured at scale from street-level imagery with computer
+                vision, checked against field audits, and linked to crash
+                records with proper attention to pedestrian exposure. The
+                longer-term programme extends that measurement into indices of
+                safety, walkability and accessibility for older pedestrians,
+                weighted with residents, advocates and city staff rather than
+                by researchers alone; into tools that help a city choose among
+                candidate street investments under a budget; and into public
+                platforms co-designed with the communities they describe. Those
+                later components depend on funding decisions that are pending,
+                and this site reports only what has been built and tested: the
+                Phase 0 crash-risk layers for Philadelphia and the imagery
+                measurement work in Bogot&aacute; described below.
+              </P>
             </Section>
 
             {/* ---------------------------------------------------------- */}
