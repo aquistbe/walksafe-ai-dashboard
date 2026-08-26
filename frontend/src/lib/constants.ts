@@ -149,9 +149,8 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { label: "Map Explorer", href: "/" },
-  { label: "City Reports", href: "/reports" },
-  { label: "Equity Dashboard", href: "/equity" },
-  { label: "Data Downloads", href: "/data" },
+  // City Reports, Equity Dashboard and Data Downloads are hidden until they
+  // exist (Alex, 26 Aug 2026); the stub pages were removed with them.
   { label: "Research", href: "/research" },
   { label: "About", href: "/about" },
 ];

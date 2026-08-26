@@ -461,7 +461,7 @@ export default function ResearchPage() {
                   multi-crash sites from sites whose traffic volume, road
                   class, and network position already predicted high counts.
                   The field <code className="text-[11px] bg-gray-100 px-1 rounded">eb_ksi</code>{" "}
-                  in the data downloads is this quantity, expressed as expected
+                  in the intersection table is this quantity, expressed as expected
                   KSI crashes per year.
                 </p>
               </Card>
@@ -840,28 +840,12 @@ export default function ResearchPage() {
                   <p className="text-xs text-walksafe-text-muted leading-relaxed">
                     The full ranked table of all 16,984 intersections, the
                     candidate shortlists, and GIS layers in both projected and
-                    geographic coordinate systems are available from the data
-                    page. Crash microdata remain subject to PennDOT terms; the
-                    derived intersection-level table carries no personal
+                    geographic coordinate systems are available on request
+                    (see the contact on the About page) ahead of a public data
+                    release. Crash microdata remain subject to PennDOT terms;
+                    the derived intersection-level table carries no personal
                     information.
                   </p>
-                  <a
-                    href="/data"
-                    className="inline-flex items-center gap-1.5 mt-3 text-xs font-medium text-walksafe-green hover:text-walksafe-green-dark"
-                  >
-                    Go to data downloads
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                    >
-                      <polyline points="9 18 15 12 9 6" />
-                    </svg>
-                  </a>
                 </Card>
               </div>
 
