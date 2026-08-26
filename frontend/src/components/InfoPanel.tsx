@@ -313,7 +313,7 @@ export default function InfoPanel({ feature, onClose }: InfoPanelProps) {
       <div className="px-5 py-3 border-t border-gray-100 bg-gray-50 flex gap-2 shrink-0">
         <button
           disabled
-          title="Site reports arrive with the SPMI model outputs (Phase 1)"
+          title="Site reports arrive with a later phase of the project"
           className="flex-1 px-3 py-2 bg-gray-200 text-gray-400 text-xs font-medium rounded-lg cursor-not-allowed"
         >
           Full Report

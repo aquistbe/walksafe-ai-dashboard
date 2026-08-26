@@ -201,13 +201,12 @@ export default function ResearchPage() {
                     </div>
                     <p className="text-xs text-amber-800 mt-1 leading-relaxed">
                       Risk scores on this dashboard are{" "}
-                      <strong>crash-based estimates</strong>, not the Senior
-                      Pedestrian Mobility Index. They measure where severe
+                      <strong>crash-based estimates</strong>, not a composite
+                      pedestrian-mobility index. They measure where severe
                       pedestrian injuries have concentrated and where the road
-                      environment predicts more of them. The SPMI, which adds
-                      walkability and accessibility from street imagery, is
-                      still being built and will replace these scores when it
-                      is ready.
+                      environment predicts more of them. A composite index that
+                      adds walkability and accessibility from street imagery is
+                      a later stage of the programme and is not built.
                     </p>
                   </div>
                 </div>

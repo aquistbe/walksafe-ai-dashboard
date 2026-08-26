@@ -511,8 +511,8 @@ export const CITY_CONFIGS: Record<CityId, CityConfig> = {
     maturityNote:
       "Crash-based ranking from PennDOT data, now covering both intersections " +
       "and mid-block street segments, plus one completed imagery " +
-      "measurement-validation study. The Senior Pedestrian Mobility Index is " +
-      "not built yet — these are not SPMI scores.",
+      "measurement-validation study. A composite pedestrian-mobility index " +
+      "is not built yet — these are crash-based scores, not index scores.",
     datasets: [PHILLY_INTERSECTIONS, PHILLY_SEGMENTS, PHILADELPHIA_TRACTS],
     defaultDatasetId: "philadelphia-intersections",
   },
