@@ -1,4 +1,12 @@
 import type { ReactNode } from "react";
+import summary from "../../../../data/summary.json";
+
+// Counts and thresholds come from the same summary.json the map footer reads,
+// so the two pages cannot drift apart again (they did: 225/678/3,464/12,617
+// here against 150/344/2,803/13,687 in the footer, and 932/783 against
+// 728/609 — stale figures from before the mid-block reallocation).
+const tiers = summary.risk_tiers as Record<string, number>;
+const fmt = (n: number) => n.toLocaleString("en-US");
 
 // ---------------------------------------------------------------------------
 // Small presentational helpers
@@ -327,11 +335,11 @@ export default function ResearchPage() {
                     ],
                     [
                       "Define the analysis universe",
-                      "All 16,984 intersections in the city traffic-control inventory: 3,388 signalized, 3,841 all-way stop, 9,755 conventional. Including zero-crash sites is what makes the empirical Bayes step possible. 932 assigned KSI crashes fall at 783 distinct intersections.",
+                      "All 16,984 intersections in the city traffic-control inventory: 3,388 signalized, 3,841 all-way stop, 9,755 conventional. Including zero-crash sites is what makes the empirical Bayes step possible. " + fmt(summary.total_ped_ksi_crashes) + " assigned KSI crashes fall at " + fmt(summary.intersections_with_ksi) + " distinct intersections (after the mid-block reallocation described above).",
                     ],
                     [
                       "Attach exposure and context",
-                      "Vehicle volume from PennDOT traffic segments within 30 metres (measured for 99.8 percent of sites), population within 800 metres, schools and parks within 200 metres, control type, and proximity to the 2020 High Injury Network. Roughly a fifth of intersections sit on the HIN and they carry 68.6 percent of assigned pedestrian KSI.",
+                      "Vehicle volume from PennDOT traffic segments within 30 metres (measured for 99.8 percent of sites), population within 800 metres, schools and parks within 200 metres, control type, and proximity to the 2020 High Injury Network. Roughly a fifth of intersections sit on the HIN and they carry 71.2 percent of assigned pedestrian KSI (recomputed 26 Aug 2026 from the intersection layer after the mid-block reallocation; 68.6 percent before it).",
                     ],
                     [
                       "Estimate risk three ways",
@@ -492,10 +500,10 @@ export default function ResearchPage() {
                 </h3>
                 <div className="space-y-2">
                   {[
-                    ["Critical", "#C44536", "0.50 and above", "225"],
-                    ["High", "#D4820A", "0.25 to 0.50", "678"],
-                    ["Moderate", "#2563EB", "0.05 to 0.25", "3,464"],
-                    ["Low", "#6B7280", "below 0.05", "12,617"],
+                    ["Critical", "#C44536", "0.50 and above", fmt(tiers.Critical)],
+                    ["High", "#D4820A", "0.25 to 0.50", fmt(tiers.High)],
+                    ["Moderate", "#2563EB", "0.05 to 0.25", fmt(tiers.Moderate)],
+                    ["Low", "#6B7280", "below 0.05", fmt(tiers.Low)],
                   ].map(([tier, color, range, count]) => (
                     <div
                       key={tier}

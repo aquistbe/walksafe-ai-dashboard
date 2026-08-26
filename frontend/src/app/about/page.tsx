@@ -68,7 +68,18 @@ export default function AboutPage() {
                   <strong>City of Bogot&aacute; open data:</strong> street
                   segments, transport analysis zones, crash records and
                   built-environment attributes. Processing by Universidad de
-                  los Andes under subcontract to the WalkSafe-AI project.
+                  los Andes under subcontract to the WalkSafe-AI project. The
+                  detector is STRIDE, developed by the Biomedical Computer
+                  Vision group at Universidad de los Andes and released at{" "}
+                  <a
+                    href="https://github.com/BCV-Uniandes/STRIDE"
+                    className="text-walksafe-blue underline"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    github.com/BCV-Uniandes/STRIDE
+                  </a>
+                  .
                 </span>
               </li>
             </ul>
@@ -95,8 +106,16 @@ export default function AboutPage() {
               Contact
             </h2>
             <p className="text-sm text-gray-600 leading-relaxed">
-              For questions, data requests, or collaboration inquiries, please
-              contact the project team at Drexel University.
+              For questions, data requests, or collaboration inquiries, contact
+              D. Alex Quistberg, Dornsife School of Public Health, Drexel
+              University:{" "}
+              <a
+                href="mailto:daq26@drexel.edu"
+                className="text-walksafe-blue underline"
+              >
+                daq26@drexel.edu
+              </a>
+              .
             </p>
           </section>
         </div>
