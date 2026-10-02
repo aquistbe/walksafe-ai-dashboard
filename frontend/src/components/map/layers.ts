@@ -10,12 +10,11 @@
  * a polygon path tractable at all.
  */
 
-import type maplibregl from "maplibre-gl";
-// ExpressionSpecification lives in the style-spec package, not in
-// maplibre-gl's own d.ts: maplibre-gl 4.x re-exports only some spec
-// types (FilterSpecification, StyleSpecification) and not this one.
-// Pinned to v20 to match maplibre-gl 4.7.1's own dependency range.
-import type { ExpressionSpecification } from "@maplibre/maplibre-gl-style-spec";
+// maplibre-gl 6 has no default export, and re-exports every style-spec type,
+// so ExpressionSpecification comes from the same package (and therefore the
+// same spec version) as the map it is handed to.
+import type * as maplibregl from "maplibre-gl";
+import type { ExpressionSpecification } from "maplibre-gl";
 import type { DatasetConfig, SegmentFieldConfig } from "@/lib/cities";
 import {
   RISK_TIER_COLORS,

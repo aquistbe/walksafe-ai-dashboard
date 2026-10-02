@@ -12,7 +12,8 @@
  */
 
 import { useEffect, useRef, useCallback, useState, useMemo } from "react";
-import maplibregl from "maplibre-gl";
+// Namespace import: maplibre-gl 6 is ESM-only and has no default export.
+import * as maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import type { UnitCollection, UnitFeature, FilterState } from "@/lib/types";
