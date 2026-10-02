@@ -40,11 +40,26 @@ make preview       # then open http://localhost:3000/
 **Cloudflare Workers is the sole deployment target**, configured in
 `frontend/wrangler.jsonc`. GitHub Pages was retired in `79e7aef` (31 Jul 2026)
 because it published a second, diverging site that R2's CORS policy correctly
-refused to serve. There is no deploy workflow: pushing to `main` does NOT ship
-anything by itself. Anything claiming otherwise, including a reappearing
-`.github/workflows/deploy.yml`, is stale — that path is gitignored.
+refused to serve.
 
-Check the preview before pushing anyway; `main` is public.
+**Pushing or merging to `main` DEPLOYS TO THE LIVE SITE.** Cloudflare Workers
+Builds (Cloudflare's Git integration, the "Workers Builds:
+walksafe-ai-dashboard" check on each commit) builds every push to `main` and
+publishes it within a few minutes. Confirmed 2 Oct 2026, when merging PR #2
+put the MapLibre 6 build live with no manual step. The build settings live in
+the Cloudflare dashboard, not in this repo; `frontend/wrangler.jsonc` records
+what they should be.
+
+Other branches are built too, as a check, but are not served: `preview_urls`
+is `false` in `wrangler.jsonc`, so the preview links Cloudflare posts on a pull
+request return 404.
+
+There is no GitHub Actions deploy workflow. A reappearing
+`.github/workflows/deploy.yml` is the retired Pages workflow and is stale; the
+only tracked workflows are the two Claude ones.
+
+So: run `make preview` and check it BEFORE merging or pushing to `main`, and
+treat a merge as a production release that needs the user's go-ahead.
 
 ## Conventions
 
