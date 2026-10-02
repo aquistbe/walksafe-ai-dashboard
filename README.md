@@ -138,16 +138,26 @@ docker-compose up --build
 
 ## Deployment
 
-The site deploys to Cloudflare Workers as a static export. **Deploys are
-manual** — pushing to `main` publishes nothing.
+The site deploys to Cloudflare Workers as a static export. **Every push or
+merge to `main` deploys automatically**: Cloudflare Workers Builds
+(Cloudflare's Git integration) builds the commit and publishes it to the live
+site within a few minutes. The build settings live in the Cloudflare
+dashboard; `frontend/wrangler.jsonc` records what they should be.
+
+Other branches are built as a check but not served — preview URLs are turned
+off in `wrangler.jsonc`, so the preview links Cloudflare posts on a pull
+request return 404.
+
+Check the export locally with `make preview` (from the repo root) **before**
+merging to `main`.
+
+A manual deploy from a local checkout is still possible:
 
 ```bash
 cd frontend
 npm run build:static
 npx wrangler deploy
 ```
-
-Check the export locally first with `make preview` (from the repo root).
 
 The Bogotá segment layer exceeds the 25 MiB per-asset limit for Workers
 static assets, so it is published to an R2 bucket instead
@@ -156,8 +166,8 @@ static assets, so it is published to an R2 bucket instead
 layer is selected.
 
 To publish new imagery scores: rerun
-`python scoring/join_scores.py --write-geojson`, commit `data/`, then rebuild
-and deploy as above.
+`python scoring/join_scores.py --write-geojson`, commit `data/`, and merge to
+`main`; the deploy follows automatically.
 
 ## Rebuilding the Data
 
