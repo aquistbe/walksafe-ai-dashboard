@@ -18,7 +18,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 
 import type { UnitCollection, UnitFeature, FilterState } from "@/lib/types";
 import type { CityConfig, DatasetConfig } from "@/lib/cities";
-import { MAP_STYLE_URL } from "@/lib/constants";
+import { BASE_PATH, MAP_STYLE_URL } from "@/lib/constants";
 import { buildMapFilter, searchMatchIds } from "@/lib/filters";
 import { featureBounds } from "@/lib/geo";
 import {
@@ -40,6 +40,12 @@ import {
 import { buildPopupHtml } from "./map/popup";
 import Legend, { type LegendCounts } from "./map/Legend";
 import { matchId, matchNothing } from "@/lib/filters";
+
+// maplibre-gl 6 loads its worker from a real URL instead of an inlined Blob,
+// and Next.js does not bundle that file. scripts/copy-maplibre-worker.mjs
+// puts it in public/maplibre/; without this call the map mounts, draws no
+// tiles, and nothing else on the page looks wrong.
+maplibregl.setWorkerUrl(`${BASE_PATH}/maplibre/maplibre-gl-worker.mjs`);
 
 const STYLE_DARK =
   "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
